@@ -99,7 +99,7 @@ if (footer && footerBottom) {
         <button type="button" data-question="Can I see your work?">Selected work</button>
         <button type="button" data-question="How can I contact you?">Contact</button>
       </div>
-      <p class="assistant-notice">Opening this chat sends Raihan a Telegram alert. Your questions stay in this browser.</p>
+      <p class="assistant-notice">Messages are sent to OpenAI to generate replies. Raihan also gets a Telegram alert when a chat starts.</p>
       <form class="assistant-form">
         <label class="sr-only" for="assistant-question">Ask a question</label>
         <input id="assistant-question" name="question" maxlength="300" placeholder="Ask a quick question…" autocomplete="off" required>
@@ -122,27 +122,36 @@ if (footer && footerBottom) {
     messages.scrollTop = messages.scrollHeight;
   };
 
-  const answerQuestion = (question) => {
-    const text = question.toLowerCase();
-    if (/service|seo|search|social|content|strategy|google ads|advertis|marketing/.test(text)) {
-      return "Raihan offers Search & SEO, social media, Google Ads, and content & strategy. Use the contact section to discuss what your business needs.";
+  const conversation = [];
+  const sendQuestion = async (question) => {
+    const cleanQuestion = question.trim().slice(0, 300);
+    if (!cleanQuestion) return;
+    addAssistantMessage(cleanQuestion, "user");
+    conversation.push({ role: "user", content: cleanQuestion });
+    questionInput.value = "";
+    const sendButton = assistant.querySelector(".assistant-form button");
+    sendButton.disabled = true;
+    sendButton.textContent = "…";
+    try {
+      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: conversation.slice(-8) })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "The assistant is temporarily unavailable.");
+      const reply = typeof data.reply === "string" ? data.reply : "";
+      if (!reply) throw new Error("The assistant couldn't create a reply. Please try again.");
+      conversation.push({ role: "assistant", content: reply });
+      addAssistantMessage(reply);
+    } catch (error) {
+      if (conversation.at(-1)?.role === "user") conversation.pop();
+      addAssistantMessage(error.message || "I couldn't connect just now. Please try again.");
+    } finally {
+      sendButton.disabled = false;
+      sendButton.textContent = "Send";
+      questionInput.focus();
     }
-    if (/work|portfolio|project|creative|example|gallery|case stud/.test(text)) {
-      return "You can browse the Selected Creative gallery above for brand direction, campaign artwork, and portfolio visuals.";
-    }
-    if (/contact|email|whatsapp|phone|message|hire|meet|call/.test(text)) {
-      return `You can reach Raihan at ${CONTACT_EMAIL.trim()} or use the WhatsApp link in the contact section.`;
-    }
-    if (/where|location|based|bangladesh/.test(text)) {
-      return "Raihan is a digital marketer based in Bangladesh.";
-    }
-    if (/price|cost|rate|budget|fee/.test(text)) {
-      return "Pricing depends on the project. Share a few details through the contact form and Raihan can discuss the scope with you.";
-    }
-    if (/hello|hi|hey|assalamu|salam/.test(text)) {
-      return "Hi! I can answer quick questions about Raihan's services, selected work, and contact details. What would you like to know?";
-    }
-    return `I can help with services, selected work, or contact details. For anything specific, email Raihan at ${CONTACT_EMAIL.trim()}.`;
   };
 
   toggle.addEventListener("click", () => {
@@ -179,8 +188,7 @@ if (footer && footerBottom) {
   assistant.querySelectorAll("[data-question]").forEach((button) => {
     button.addEventListener("click", () => {
       const question = button.dataset.question;
-      addAssistantMessage(question, "user");
-      addAssistantMessage(answerQuestion(question));
+      void sendQuestion(question);
     });
   });
 
@@ -188,8 +196,7 @@ if (footer && footerBottom) {
     event.preventDefault();
     const question = questionInput.value.trim();
     if (!question) return;
-    addAssistantMessage(question, "user");
-    addAssistantMessage(answerQuestion(question));
+    void sendQuestion(question);
     questionInput.value = "";
     questionInput.focus();
   });
