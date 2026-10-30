@@ -75,6 +75,7 @@ assistantStyle.textContent = `
   .assistant-form input:focus{outline:1px solid #f5bd3680}
   .assistant-form button{border:0;border-radius:5px;background:var(--gold);padding:0 13px;color:#111;font:700 10px var(--font);cursor:pointer}
   .assistant-contact-link{color:var(--gold);text-decoration:underline}
+  .assistant-notice{margin:0 0 8px;color:#858a87;font:9px/1.5 var(--font)}
   @media(max-width:640px){.portfolio-assistant{grid-template-columns:1fr;gap:14px;padding:16px}.assistant-messages{height:150px}}
 `;
 document.head.append(assistantStyle);
@@ -98,6 +99,7 @@ if (footer && footerBottom) {
         <button type="button" data-question="Can I see your work?">Selected work</button>
         <button type="button" data-question="How can I contact you?">Contact</button>
       </div>
+      <p class="assistant-notice">Opening this chat sends Raihan a WhatsApp alert. Your questions stay in this browser.</p>
       <form class="assistant-form">
         <label class="sr-only" for="assistant-question">Ask a question</label>
         <input id="assistant-question" name="question" maxlength="300" placeholder="Ask a quick question…" autocomplete="off" required>
@@ -151,7 +153,24 @@ if (footer && footerBottom) {
     if (isOpening && !messages.children.length) {
       addAssistantMessage("Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
     }
-    if (isOpening) questionInput.focus();
+    if (isOpening) {
+      questionInput.focus();
+      const alertKey = "portfolio-assistant-chat-start-alert";
+      let alreadyAlerted = false;
+      try {
+        alreadyAlerted = sessionStorage.getItem(alertKey) === "1";
+      } catch {}
+      if (!alreadyAlerted) {
+        try {
+          sessionStorage.setItem(alertKey, "1");
+        } catch {}
+        fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/chat-start-alert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event: "chat_start" })
+        }).catch(() => {});
+      }
+    }
   });
 
   assistant.querySelectorAll("[data-question]").forEach((button) => {
