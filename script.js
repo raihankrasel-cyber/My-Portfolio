@@ -99,7 +99,7 @@ if (footer && footerBottom) {
         <button type="button" data-question="Can I see your work?">Selected work</button>
         <button type="button" data-question="How can I contact you?">Contact</button>
       </div>
-      <p class="assistant-notice">Opening this chat sends Raihan a WhatsApp alert. Your questions stay in this browser.</p>
+      <p class="assistant-notice">Opening this chat sends Raihan a Telegram alert. Your questions stay in this browser.</p>
       <form class="assistant-form">
         <label class="sr-only" for="assistant-question">Ask a question</label>
         <input id="assistant-question" name="question" maxlength="300" placeholder="Ask a quick question…" autocomplete="off" required>
