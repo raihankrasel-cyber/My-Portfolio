@@ -35,3 +35,7 @@
 .language-list{margin:0}
 @media(max-width:900px){.experience-grid{grid-template-columns:1fr;gap:30px}.experience-side{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.experience{padding:78px 0}.experience-side{grid-template-columns:1fr}.experience-item{gap:10px}.experience-date{max-width:105px}.experience-card{padding:19px}}
+
+
+.footer-bottom a:last-child{font-size:13px;padding:8px 12px;border:1px solid rgba(245,189,54,.38);border-radius:24px}
+.footer-bottom a:last-child:hover{border-color:rgba(245,189,54,.75)}
