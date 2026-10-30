@@ -8,3 +8,5 @@
 .work-wide img{object-position:center}
 @media(max-width:900px){.work-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,220px)}}
 @media(max-width:640px){.work-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,185px)}.work-wide,.work-tall{grid-column:auto;grid-row:auto}}
+
+.workplace-note{font-size:11px;color:#9fa29f;margin-top:0}.workplace-note a{color:var(--gold);text-decoration:none}.workplace-note a:hover{text-decoration:underline}
