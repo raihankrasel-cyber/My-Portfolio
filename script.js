@@ -35,7 +35,7 @@ contactForm.addEventListener("submit", (event) => {
   const sender = formData.get("email").toString().trim();
   const message = formData.get("message").toString().trim();
   const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
-  const body = encodeURIComponent(`${message}\\n\\nFrom: ${name}\\nEmail: ${sender}`);
+  const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${sender}`);
   window.location.href = `mailto:${CONTACT_EMAIL.trim()}?subject=${subject}&body=${body}`;
   formNote.textContent = "Your email app is opening with your message ready to send.";
   formNote.classList.remove("form-error");
@@ -55,6 +55,7 @@ nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () =>
 // A lightweight on-site assistant with instant, predefined portfolio answers.
 const assistantStyle = document.createElement("style");
 assistantStyle.textContent = `
+  .portfolio-assistant .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .portfolio-assistant{margin:24px 0 28px;padding:20px;border:1px solid rgba(245,189,54,.28);border-radius:10px;background:linear-gradient(120deg,#121517,#0d0f10);display:grid;grid-template-columns:minmax(180px,.7fr) 1fr;gap:20px;align-items:start}
   .portfolio-assistant-intro h2{font:600 15px var(--display);margin:0 0 7px;color:var(--white)}
   .portfolio-assistant-intro p{font:10px/1.7 var(--font);margin:0;color:var(--muted)}
