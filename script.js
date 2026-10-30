@@ -161,13 +161,16 @@ if (footer && footerBottom) {
         alreadyAlerted = sessionStorage.getItem(alertKey) === "1";
       } catch {}
       if (!alreadyAlerted) {
-        try {
-          sessionStorage.setItem(alertKey, "1");
-        } catch {}
         fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/chat-start-alert", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ event: "chat_start" })
+        }).then((response) => {
+          if (response.ok) {
+            try {
+              sessionStorage.setItem(alertKey, "1");
+            } catch {}
+          }
         }).catch(() => {});
       }
     }
