@@ -1,6 +1,6 @@
 // Add Raihan's contact details here to activate the contact buttons.
-const CONTACT_EMAIL = "";
-const WHATSAPP_NUMBER = ""; // International format, digits only, e.g. 8801XXXXXXXXX
+const CONTACT_EMAIL = "raihan.k.rasel@gmail.com";
+const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only, e.g. 8801XXXXXXXXX
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
