@@ -72,17 +72,17 @@ export default {
       if (requestedLanguage === "bn") {
         let reply = "এ বিষয়ে আমার কাছে যাচাই করা তথ্য নেই। Raihan-কে raihan.k.rasel@gmail.com ঠিকানায় ইমেইল করুন।";
         if (/service|offer|সেবা|সার্ভিস|কাজ করেন|কি করেন/.test(question)) {
-          reply = "রাইহান SEO ও সার্চ, সোশ্যাল মিডিয়া, Google Ads, কনটেন্ট কৌশল, CRM ও ইমেইল মার্কেটিং এবং মার্কেটিং অটোমেশন নিয়ে কাজ করেন। তিনি GA4, Google Tag Manager, Search Console, HubSpot, Salesforce, Zoho ও Canva ব্যবহার করেন।";
+          reply = "রায়হান SEO ও সার্চ, সোশ্যাল মিডিয়া, Google Ads, কনটেন্ট কৌশল, CRM ও ইমেইল মার্কেটিং এবং মার্কেটিং অটোমেশন নিয়ে কাজ করেন। তিনি GA4, Google Tag Manager, Search Console, HubSpot, Salesforce, Zoho ও Canva ব্যবহার করেন।";
         } else if (/work|portfolio|project|creative|sample|gallery|কাজ|পোর্টফোলিও|প্রকল্প|নমুনা|গ্যালারি/.test(question)) {
-          reply = "রাইহানের নির্বাচিত সৃজনশীল কাজ পোর্টফোলিওর গ্যালারিতে দেখতে পারেন।";
+          reply = "রায়হানের নির্বাচিত সৃজনশীল কাজ পোর্টফোলিওর গ্যালারিতে দেখতে পারেন।";
         } else if (/contact|email|reach|whatsapp|message|যোগাযোগ|ইমেইল|হোয়াটসঅ্যাপ|বার্তা/.test(question)) {
-          reply = "রাইহানকে raihan.k.rasel@gmail.com ঠিকানায় ইমেইল করতে পারেন অথবা পোর্টফোলিওর WhatsApp লিংক ব্যবহার করুন।";
+          reply = "রায়হানকে raihan.k.rasel@gmail.com ঠিকানায় ইমেইল করতে পারেন অথবা পোর্টফোলিওর WhatsApp লিংক ব্যবহার করুন।";
         } else if (/experience|background|career|reply\.bd|quality|অভিজ্ঞতা|কর্মজীবন|ক্যারিয়ার|গুণগত মান/.test(question)) {
-          reply = "রাইহান বর্তমানে reply.bd-তে ডিজিটাল মার্কেটিংয়ে কাজ করেন। পোশাকের গুণগত মান যাচাই, উৎপাদন এবং বিক্রয়েও তাঁর অভিজ্ঞতা রয়েছে।";
+          reply = "রায়হান বর্তমানে reply.bd-তে ডিজিটাল মার্কেটিংয়ে কাজ করেন। পোশাকের গুণগত মান যাচাই, উৎপাদন এবং বিক্রয়েও তাঁর অভিজ্ঞতা রয়েছে।";
         } else if (/education|degree|certificate|certification|training|শিক্ষা|ডিগ্রি|সনদ|প্রশিক্ষণ/.test(question)) {
-          reply = "রাইহান যুব উন্নয়ন অধিদপ্তরের অধীনে ২০২৬ সালে Bogura-তে e-Learning & Earning Ltd.-এর পরিচালনায় ৬০০ ঘণ্টার Freelancing Training Course সম্পন্ন করেছেন।";
+          reply = "রায়হান যুব উন্নয়ন অধিদপ্তরের অধীনে ২০২৬ সালে Bogura-তে e-Learning & Earning Ltd.-এর পরিচালনায় ৬০০ ঘণ্টার Freelancing Training Course সম্পন্ন করেছেন।";
         } else if (/where|location|country|based|bangladesh|কোথায়|অবস্থান|দেশ|বাংলাদেশ/.test(question)) {
-          reply = "রাইহান বাংলাদেশে অবস্থিত একজন ডিজিটাল মার্কেটার।";
+          reply = "রায়হান বাংলাদেশে অবস্থিত একজন ডিজিটাল মার্কেটার।";
         }
         return Response.json({ reply }, { headers: { ...headers, "Cache-Control": "no-store" } });
       }
