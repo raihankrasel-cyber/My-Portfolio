@@ -90,8 +90,8 @@ if (footer && footerBottom) {
       "<div class='assistant-messages' role='log' aria-live='polite' aria-relevant='additions text' aria-busy='false'></div>",
       "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
       "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
-      "<form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off' required><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
-      "<p class='assistant-notice'>Questions may be sent to OpenAI to generate replies. Raihan is notified after your first message. Please don’t share sensitive information.</p>",
+      "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
+      "<p class='assistant-notice'>Messages, images, and recordings may be sent to OpenAI to generate replies. Raihan is notified after your first message. Please don’t share sensitive information.</p>",
     "</div>",
   ].join("");
   footer.insertBefore(assistant, footerBottom);
@@ -116,9 +116,14 @@ if (footer && footerBottom) {
     quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
     assistant.querySelector('label[for="assistant-question"]').textContent = "আপনার প্রশ্ন লিখুন";
     assistant.querySelector("#assistant-question").placeholder = "আপনার ভাবনাটা বলুন…";
+    assistant.querySelector(".assistant-attach").textContent = "＋ ছবি";
+    assistant.querySelector(".assistant-attach").setAttribute("aria-label", "ছবি যোগ করুন");
+    assistant.querySelector(".assistant-mic").textContent = "🎙 ভয়েস";
+    assistant.querySelector(".assistant-mic").setAttribute("aria-label", "ভয়েস বার্তা রেকর্ড করুন");
+    assistant.querySelector(".assistant-image-remove").setAttribute("aria-label", "ছবি সরান");
     assistant.querySelector(".assistant-submit-label").textContent = "পাঠান";
     assistant.querySelector(".assistant-submit").setAttribute("aria-label", "বার্তা পাঠান");
-    assistant.querySelector(".assistant-notice").textContent = "উত্তরের জন্য আপনার প্রশ্ন OpenAI-তে পাঠানো হতে পারে। প্রথম বার্তা পাঠালে Raihan-কে জানানো হবে। সংবেদনশীল তথ্য দেবেন না।";
+    assistant.querySelector(".assistant-notice").textContent = "আপনার বার্তা, ছবি বা রেকর্ডিং উত্তর তৈরির জন্য OpenAI-তে পাঠানো হতে পারে। প্রথম বার্তার পর Raihan-কে জানানো হবে। সংবেদনশীল তথ্য দেবেন না।";
     assistant.querySelector(".assistant-typing-label").textContent = "উত্তর তৈরি হচ্ছে…";
   }
 
@@ -130,19 +135,62 @@ if (footer && footerBottom) {
   const messages = assistant.querySelector(".assistant-messages");
   const typing = assistant.querySelector(".assistant-typing");
   const questionInput = assistant.querySelector("#assistant-question");
+  const imageInput = assistant.querySelector(".assistant-image-input");
+  const imagePreview = assistant.querySelector(".assistant-image-preview");
+  const previewImage = imagePreview.querySelector("img");
+  const voiceStatus = assistant.querySelector(".assistant-voice-status");
+  const micButton = assistant.querySelector(".assistant-mic");
+  let selectedImage = null;
+  let recorder = null;
+  let audioChunks = [];
+  let recordingTimer = null;
   const sendButton = assistant.querySelector(".assistant-submit");
   const sendLabel = assistant.querySelector(".assistant-submit-label");
   const quickButtons = Array.from(quickQuestionLabels);
   const conversation = [];
   let isSending = false;
 
-  const addAssistantMessage = (text, sender = "bot") => {
+  const addAssistantMessage = (text, sender = "bot", imageData = null) => {
     const message = document.createElement("div");
     message.className = "assistant-message assistant-message-" + sender;
-    message.textContent = text;
-    messages.append(message);
-    messages.scrollTop = messages.scrollHeight;
+    if (text) { const copy = document.createElement("div"); copy.textContent = text; message.append(copy); }
+    if (imageData && sender === "user") {
+      const image = document.createElement("img"); image.className = "assistant-message-image";
+      image.src = imageData; image.alt = isBangla ? "আপনার পাঠানো ছবি" : "Image you sent"; message.append(image);
+    }
+    if (sender === "bot" && text && "speechSynthesis" in window) {
+      const speak = document.createElement("button"); speak.type = "button"; speak.className = "assistant-speak";
+      speak.textContent = isBangla ? "🔊 শুনুন" : "🔊 Listen";
+      speak.setAttribute("aria-label", isBangla ? "উত্তরটি পড়ে শোনান" : "Read this reply aloud");
+      speak.addEventListener("click", () => {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = isBangla ? "bn-BD" : "en-US";
+        window.speechSynthesis.speak(utterance);
+      });
+      message.append(speak);
+    }
+    messages.append(message); messages.scrollTop = messages.scrollHeight;
   };
+
+  const prepareImage = (file) => new Promise((resolve, reject) => {
+    if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {
+      reject(new Error(isBangla ? "JPG, PNG বা WebP ছবি ৮ MB-এর মধ্যে দিন।" : "Choose a JPG, PNG, or WebP image under 8 MB.")); return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error(isBangla ? "ছবিটি পড়া যায়নি।" : "Could not read that image."));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error(isBangla ? "ছবিটি খোলা যায়নি।" : "Could not open that image."));
+      image.onload = () => {
+        const scale = Math.min(1, 1280 / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement("canvas"); canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   const notifyChatStarted = () => {
     const alertKey = "portfolio-assistant-chat-start-alert";
@@ -163,6 +211,7 @@ if (footer && footerBottom) {
   const setSending = (sending) => {
     isSending = sending;
     questionInput.disabled = sending;
+    micButton.disabled = sending;
     sendButton.disabled = sending;
     messages.setAttribute("aria-busy", String(sending));
     typing.hidden = !sending;
@@ -173,10 +222,19 @@ if (footer && footerBottom) {
 
   const sendQuestion = async (question) => {
     const cleanQuestion = question.trim().slice(0, 300);
-    if (!cleanQuestion || isSending) return;
-    addAssistantMessage(cleanQuestion, "user");
-    conversation.push({ role: "user", content: cleanQuestion });
+    if ((!cleanQuestion && !selectedImage) || isSending) return;
+    const imageForMessage = selectedImage;
+    const fallbackText = isBangla ? "এই ছবিটি সম্পর্কে বলুন।" : "What can you tell me about this image?";
+    const messageContent = imageForMessage
+      ? [{ type: "input_text", text: cleanQuestion || fallbackText }, { type: "input_image", image_url: imageForMessage }]
+      : cleanQuestion;
+    addAssistantMessage(cleanQuestion || (imageForMessage ? fallbackText : ""), "user", imageForMessage);
+    conversation.push({ role: "user", content: messageContent });
+    if (imageForMessage) conversation.slice(0, -1).forEach((turn) => {
+      if (turn.role === "user" && Array.isArray(turn.content)) turn.content = turn.content.filter((part) => part.type !== "input_image");
+    });
     questionInput.value = "";
+    selectedImage = null; imageInput.value = ""; imagePreview.hidden = true;
     notifyChatStarted();
     setSending(true);
 
@@ -223,6 +281,49 @@ if (footer && footerBottom) {
     if (open) questionInput.focus();
   };
 
+  assistant.querySelector(".assistant-attach").addEventListener("click", () => imageInput.click());
+  imageInput.addEventListener("change", async () => {
+    const file = imageInput.files?.[0]; if (!file) return;
+    try { selectedImage = await prepareImage(file); previewImage.src = selectedImage; imagePreview.hidden = false; voiceStatus.textContent = ""; questionInput.focus(); }
+    catch (error) { imageInput.value = ""; voiceStatus.textContent = error.message; }
+  });
+  assistant.querySelector(".assistant-image-remove").addEventListener("click", () => {
+    selectedImage = null; imageInput.value = ""; previewImage.removeAttribute("src"); imagePreview.hidden = true;
+  });
+  micButton.addEventListener("click", async () => {
+    if (isSending) return;
+    if (recorder?.state === "recording") { recorder.stop(); window.clearTimeout(recordingTimer); micButton.textContent = isBangla ? "🎙 ভয়েস" : "🎙 Voice"; return; }
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+      voiceStatus.textContent = isBangla ? "এই ব্রাউজারে ভয়েস রেকর্ডিং সমর্থিত নয়।" : "Voice recording isn’t supported in this browser."; return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) => MediaRecorder.isTypeSupported(type));
+      recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined); audioChunks = [];
+      recorder.ondataavailable = (event) => { if (event.data.size) audioChunks.push(event.data); };
+      recorder.onerror = () => { stream.getTracks().forEach((track) => track.stop()); voiceStatus.textContent = isBangla ? "রেকর্ডিং ব্যর্থ হয়েছে।" : "Recording failed."; };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const blob = new Blob(audioChunks, { type: recorder.mimeType || "audio/webm" });
+        if (!blob.size) return;
+        if (blob.size > 10 * 1024 * 1024) { voiceStatus.textContent = isBangla ? "রেকর্ডিংটি ১০ MB-এর বেশি। ছোট করে বলুন।" : "Recording is over 10 MB. Please record a shorter message."; return; }
+        voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া হচ্ছে…" : "Transcribing your voice…"; setSending(true);
+        try {
+          const formData = new FormData(); formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
+          const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", { method: "POST", body: formData });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.transcript) throw new Error("Transcription failed");
+          questionInput.value = data.transcript.slice(0, 300);
+          voiceStatus.textContent = isBangla ? "কথাটি লিখে দেওয়া হয়েছে—পাঠানোর আগে সম্পাদনা করুন।" : "Transcribed—edit it if you like, then send.";
+          questionInput.focus();
+        } catch { voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again."; }
+        finally { setSending(false); }
+      };
+      recorder.start(); micButton.textContent = isBangla ? "■ থামান" : "■ Stop";
+      voiceStatus.textContent = isBangla ? "রেকর্ড হচ্ছে… সর্বোচ্চ ১৫ সেকেন্ড" : "Recording… up to 15 seconds";
+      recordingTimer = window.setTimeout(() => { if (recorder?.state === "recording") recorder.stop(); }, 15000);
+    } catch { voiceStatus.textContent = isBangla ? "মাইক্রোফোন ব্যবহারের অনুমতি দিন।" : "Allow microphone access to record a message."; }
+  });
   toggle.addEventListener("click", () => setPanelOpen(panel.hidden));
   assistant.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) {
