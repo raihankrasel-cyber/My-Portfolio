@@ -201,3 +201,69 @@ if (footer && footerBottom) {
     questionInput.focus();
   });
 }
+
+
+// Selected work slideshow: advance every three seconds and pause for interaction.
+const workCarousel = document.querySelector(".work-grid[aria-roledescription='carousel']");
+if (workCarousel) {
+  const workSlides = Array.from(workCarousel.querySelectorAll(".work-item"));
+  const workStatus = document.querySelector(".work-slide-status");
+  const previousButton = document.querySelector(".work-previous");
+  const nextButton = document.querySelector(".work-next");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let activeSlide = 0;
+  let rotationTimer;
+  let isPaused = false;
+
+  const showWorkSlide = (index) => {
+    activeSlide = (index + workSlides.length) % workSlides.length;
+    workSlides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === activeSlide;
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-label", `${slideIndex + 1} of ${workSlides.length}`);
+      slide.setAttribute("aria-hidden", String(!isActive));
+      slide.tabIndex = isActive ? 0 : -1;
+    });
+    workStatus.textContent = `${activeSlide + 1} / ${workSlides.length}`;
+  };
+
+  const stopRotation = () => window.clearInterval(rotationTimer);
+  const startRotation = () => {
+    stopRotation();
+    if (!isPaused && !reduceMotion.matches && !document.hidden) {
+      rotationTimer = window.setInterval(() => showWorkSlide(activeSlide + 1), 3000);
+    }
+  };
+
+  previousButton.addEventListener("click", () => {
+    showWorkSlide(activeSlide - 1);
+    startRotation();
+  });
+  nextButton.addEventListener("click", () => {
+    showWorkSlide(activeSlide + 1);
+    startRotation();
+  });
+  workCarousel.addEventListener("mouseenter", () => {
+    isPaused = true;
+    stopRotation();
+  });
+  workCarousel.addEventListener("mouseleave", () => {
+    isPaused = false;
+    startRotation();
+  });
+  workCarousel.addEventListener("focusin", () => {
+    isPaused = true;
+    stopRotation();
+  });
+  workCarousel.addEventListener("focusout", (event) => {
+    if (!workCarousel.contains(event.relatedTarget)) {
+      isPaused = false;
+      startRotation();
+    }
+  });
+  document.addEventListener("visibilitychange", startRotation);
+  reduceMotion.addEventListener?.("change", startRotation);
+
+  showWorkSlide(0);
+  startRotation();
+}
