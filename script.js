@@ -147,6 +147,10 @@ if (footer && footerBottom) {
   let recorder = null;
   let audioChunks = [];
   let recordingTimer = null;
+  const voicePauseKey = "portfolio-assistant-voice-paused-until";
+  const voiceRetryKey = "portfolio-assistant-voice-retry-seconds";
+  let voiceCheckTimer = null;
+  let voiceRetrySeconds = 900;
   const sendButton = assistant.querySelector(".assistant-submit");
   const sendLabel = assistant.querySelector(".assistant-submit-label");
   const quickButtons = Array.from(quickQuestionLabels);
@@ -235,6 +239,60 @@ if (footer && footerBottom) {
     sendLabel.textContent = sending ? (isBangla ? "অপেক্ষা করুন" : "Replying…") : (isBangla ? "পাঠান" : "Send");
     sendButton.setAttribute("aria-label", sending ? (isBangla ? "উত্তরের অপেক্ষায়" : "Waiting for reply") : (isBangla ? "বার্তা পাঠান" : "Send message"));
   };
+
+  const voicePausedMessage = () => isBangla
+    ? "ভয়েস ইনপুট সাময়িক বন্ধ—সীমা উঠলে নিজে থেকেই ফিরবে।"
+    : "Voice input is paused. I’ll check automatically and show it again when it’s available.";
+
+  const scheduleVoiceCheck = (seconds) => {
+    const delaySeconds = Math.max(60, Math.min(21600, Math.ceil(Number(seconds) || 900)));
+    voiceRetrySeconds = Math.max(voiceRetrySeconds, delaySeconds);
+    micButton.hidden = true;
+    voiceStatus.textContent = voicePausedMessage();
+    window.clearTimeout(voiceCheckTimer);
+    const retryAt = Date.now() + delaySeconds * 1000;
+    try {
+      localStorage.setItem(voicePauseKey, String(retryAt));
+      localStorage.setItem(voiceRetryKey, String(voiceRetrySeconds));
+    } catch {}
+    voiceCheckTimer = window.setTimeout(() => { void checkVoiceAvailability(); }, delaySeconds * 1000);
+  };
+
+  const checkVoiceAvailability = async () => {
+    voiceStatus.textContent = voicePausedMessage();
+    try {
+      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voiceStatusCheck: true }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.available === true) {
+        window.clearTimeout(voiceCheckTimer);
+        micButton.hidden = false;
+        voiceRetrySeconds = 900;
+        try { localStorage.removeItem(voicePauseKey); localStorage.removeItem(voiceRetryKey); } catch {}
+        voiceStatus.textContent = isBangla ? "ভয়েস ইনপুট আবার চালু হয়েছে।" : "Voice input is available again.";
+        window.setTimeout(() => {
+          if (!micButton.hidden) voiceStatus.textContent = "";
+        }, 5000);
+        return;
+      }
+      scheduleVoiceCheck(Number(data.retryAfterSeconds) || Math.min(21600, voiceRetrySeconds * 2));
+    } catch {
+      scheduleVoiceCheck(Math.min(21600, voiceRetrySeconds * 2));
+    }
+  };
+
+  try {
+    const retryAt = Number(localStorage.getItem(voicePauseKey) || 0);
+    voiceRetrySeconds = Number(localStorage.getItem(voiceRetryKey) || 900);
+    if (retryAt > 0) {
+      micButton.hidden = true;
+      if (retryAt > Date.now()) scheduleVoiceCheck((retryAt - Date.now()) / 1000);
+      else void checkVoiceAvailability();
+    }
+  } catch {}
 
   const sendQuestion = async (question) => {
     const cleanQuestion = question.trim().slice(0, 300);
@@ -352,7 +410,11 @@ if (footer && footerBottom) {
           const formData = new FormData(); formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
           const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", { method: "POST", body: formData });
           const data = await response.json().catch(() => ({}));
-          if (!response.ok || !data.transcript) throw new Error("Transcription failed");
+          if (response.status === 429) {
+            scheduleVoiceCheck(Number(data.retryAfterSeconds) || 900);
+            return;
+          }
+          if (!response.ok || !data.transcript) throw new Error(data.error || "Transcription failed");
           questionInput.value = data.transcript.slice(0, 300);
           voiceStatus.textContent = isBangla ? "কথাটি লিখে দেওয়া হয়েছে—পাঠানোর আগে সম্পাদনা করুন।" : "Transcribed—edit it if you like, then send.";
           questionInput.focus();
