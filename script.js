@@ -185,7 +185,7 @@ if (footer && footerBottom) {
     toggle.setAttribute("aria-expanded", String(isOpening));
     toggle.firstChild.textContent = isBangla ? (isOpening ? "সহকারী বন্ধ করুন " : "সহকারীকে জিজ্ঞেস করুন ") : (isOpening ? "Close assistant " : "Ask the assistant ");
     if (isOpening && !messages.children.length) {
-      addAssistantMessage(isBangla ? "হ্যালো! রাইহানের সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে জিজ্ঞেস করুন।" : "Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
+      addAssistantMessage(isBangla ? "হ্যালো! রায়হানের সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে জিজ্ঞেস করুন।" : "Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
     }
     if (isOpening) {
       questionInput.focus();
