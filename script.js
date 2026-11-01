@@ -358,7 +358,11 @@ if (footer && footerBottom) {
           questionInput.focus();
         } catch (error) {
           const detail = error instanceof Error ? error.message : "";
-          if (detail && detail !== "Transcription failed") {
+          if (isBangla && detail.toLowerCase().includes("usage limit")) {
+            voiceStatus.textContent = "AI সেবার সাময়িক ব্যবহারসীমার কারণে ভয়েস লেখা যাচ্ছে না। বার্তাটি টাইপ করুন বা কিছুক্ষণ পর চেষ্টা করুন।";
+          } else if (isBangla && detail.toLowerCase().includes("unsupported audio format")) {
+            voiceStatus.textContent = "এই অডিও ফরম্যাটটি সমর্থিত নয়। আবার রেকর্ড করে চেষ্টা করুন।";
+          } else if (detail && detail !== "Transcription failed") {
             voiceStatus.textContent = isBangla ? "ভয়েস লেখা যায়নি: " + detail : detail;
           } else {
             voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again.";
