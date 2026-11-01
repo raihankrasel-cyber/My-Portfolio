@@ -65,170 +65,184 @@ nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () =>
   menuButton.setAttribute("aria-expanded", "false");
 }));
 
-// A lightweight on-site assistant with instant, predefined portfolio answers.
-const assistantStyle = document.createElement("style");
-assistantStyle.textContent = `
-  .portfolio-assistant .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  .portfolio-assistant{margin:24px 0 28px;padding:20px;border:1px solid rgba(245,189,54,.28);border-radius:10px;background:linear-gradient(120deg,#121517,#0d0f10);display:grid;grid-template-columns:minmax(180px,.7fr) 1fr;gap:20px;align-items:start}
-  .portfolio-assistant-intro h2{font:600 15px var(--display);margin:0 0 7px;color:var(--white)}
-  .portfolio-assistant-intro p{font:10px/1.7 var(--font);margin:0;color:var(--muted)}
-  .portfolio-assistant-toggle{margin-top:14px;border:1px solid rgba(245,189,54,.6);border-radius:24px;padding:9px 13px;background:transparent;color:var(--white);font:600 10px var(--font);cursor:pointer}
-  .portfolio-assistant-toggle:hover{background:#f5bd3618}
-  .portfolio-assistant-panel[hidden]{display:none}
-  .portfolio-assistant-panel{min-width:0}
-  .assistant-messages{height:170px;overflow:auto;padding:12px;border:1px solid var(--line);border-radius:7px;background:#090b0d;display:flex;flex-direction:column;gap:9px}
-  .assistant-message{max-width:90%;padding:9px 11px;border-radius:8px;font:10px/1.6 var(--font);white-space:pre-wrap}
-  .assistant-message-bot{align-self:flex-start;background:#171a1c;color:#e7e7e1}
-  .assistant-message-user{align-self:flex-end;background:#f5bd36;color:#111}
-  .assistant-quick-questions{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
-  .assistant-quick-questions button{border:1px solid var(--line);border-radius:20px;background:transparent;color:#ddd;font:9px var(--font);padding:7px 10px;cursor:pointer}
-  .assistant-quick-questions button:hover{border-color:#f5bd3680;color:var(--gold)}
-  .assistant-form{display:flex;gap:7px}
-  .assistant-form input{flex:1;min-width:0;background:#111416;border:1px solid var(--line);border-radius:5px;padding:10px;color:var(--white);font:10px var(--font)}
-  .assistant-form input:focus{outline:1px solid #f5bd3680}
-  .assistant-form button{border:0;border-radius:5px;background:var(--gold);padding:0 13px;color:#111;font:700 10px var(--font);cursor:pointer}
-  .assistant-contact-link{color:var(--gold);text-decoration:underline}
-  .assistant-notice{margin:0 0 8px;color:#858a87;font:9px/1.5 var(--font)}
-  @media(max-width:640px){.portfolio-assistant{grid-template-columns:1fr;gap:14px;padding:16px}.assistant-messages{height:150px}}
-`;
-document.head.append(assistantStyle);
-
+// Footer portfolio assistant
 const footer = document.querySelector(".footer");
 const footerBottom = footer?.querySelector(".footer-bottom");
 if (footer && footerBottom) {
   const assistant = document.createElement("section");
   assistant.className = "portfolio-assistant";
   assistant.setAttribute("aria-label", "Portfolio visitor assistant");
-  assistant.innerHTML = `
-    <div class="portfolio-assistant-intro">
-      <h2>Need a quick answer?</h2>
-      <p>Ask my portfolio assistant about services, selected work, or how to get in touch.</p>
-      <button class="portfolio-assistant-toggle" type="button" aria-expanded="false">Ask the assistant <span aria-hidden="true">↗</span></button>
-    </div>
-    <div class="portfolio-assistant-panel" hidden>
-      <div class="assistant-messages" role="log" aria-live="polite" aria-relevant="additions"></div>
-      <div class="assistant-quick-questions">
-        <button type="button" data-question="What services do you offer?">Services</button>
-        <button type="button" data-question="Can I see your work?">Selected work</button>
-        <button type="button" data-question="How can I contact you?">Contact</button>
-      </div>
-      <p class="assistant-notice">Messages are sent to OpenAI to generate replies. Raihan also gets a Telegram alert when a chat starts.</p>
-      <form class="assistant-form">
-        <label class="sr-only" for="assistant-question">Ask a question</label>
-        <input id="assistant-question" name="question" maxlength="300" placeholder="Ask a quick question…" autocomplete="off" required>
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  `;
+  assistant.innerHTML = [
+    "<div class='portfolio-assistant-intro'>",
+      "<div class='assistant-heading-row'><span class='assistant-mark' aria-hidden='true'>✦</span><span class='assistant-kicker'>PORTFOLIO ASSISTANT</span><span class='assistant-online'><i></i><span class='assistant-online-label'>ONLINE</span></span></div>",
+      "<h2><span class='assistant-title-first'>Have a quick question?</span><em class='assistant-title-emphasis'>Ask Raihan’s assistant.</em></h2>",
+      "<p class='assistant-intro-copy'>Get clear answers about services, experience, selected work, and how to get in touch.</p>",
+      "<button class='portfolio-assistant-toggle' type='button' aria-expanded='false' aria-controls='portfolio-assistant-panel'><span class='assistant-toggle-label'>Start a conversation</span><span class='assistant-toggle-icon' aria-hidden='true'>↗</span></button>",
+      "<small class='assistant-guidance'>No account needed · Answers are based on this portfolio</small>",
+    "</div>",
+    "<div class='assistant-preview' aria-hidden='true'>",
+      "<span class='assistant-preview-label'>QUICK ANSWERS</span>",
+      "<div class='assistant-preview-items'><span><i>01</i> Services & skills</span><span><i>02</i> Selected work</span><span><i>03</i> Contact Raihan</span></div>",
+      "<span class='assistant-preview-mark' aria-hidden='true'>↗</span>",
+    "</div>",
+    "<div class='portfolio-assistant-panel' id='portfolio-assistant-panel' hidden>",
+      "<div class='assistant-chat-header'><span class='assistant-avatar' aria-hidden='true'>R</span><span class='assistant-chat-identity'><strong class='assistant-chat-title'>Raihan’s portfolio assistant</strong><small class='assistant-chat-subtitle'>Answers based on portfolio details</small></span><span class='assistant-chat-status'><i></i><span class='assistant-ready-label'>READY</span></span></div>",
+      "<div class='assistant-messages' role='log' aria-live='polite' aria-relevant='additions text' aria-busy='false'></div>",
+      "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
+      "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
+      "<form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='Ask about services or work…' autocomplete='off' required><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
+      "<p class='assistant-notice'>Questions may be sent to OpenAI to generate replies. Raihan is notified after your first message. Please don’t share sensitive information.</p>",
+    "</div>",
+  ].join("");
   footer.insertBefore(assistant, footerBottom);
 
+  const quickQuestionLabels = assistant.querySelectorAll("[data-question]");
   if (isBangla) {
-    assistant.querySelector(".portfolio-assistant-intro h2").textContent = "দ্রুত কোনো উত্তর জানতে চান?";
-    assistant.querySelector(".portfolio-assistant-intro p").textContent = "সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে আমার পোর্টফোলিও সহকারীকে জিজ্ঞেস করুন।";
-    assistant.querySelector(".portfolio-assistant-toggle").textContent = "সহকারীকে জিজ্ঞেস করুন ↗";
-    const quickLabels = ["সেবাসমূহ", "নির্বাচিত কাজ", "যোগাযোগ"];
-    assistant.querySelectorAll("[data-question]").forEach((button, index) => { button.textContent = quickLabels[index]; });
-    assistant.querySelector(".assistant-notice").textContent = "আপনার প্রশ্নের উত্তর পোর্টফোলিও-সংক্রান্ত তথ্যের ভিত্তিতে দেওয়া হয়।";
+    assistant.querySelector(".assistant-kicker").textContent = "পোর্টফোলিও সহকারী";
+    assistant.querySelector(".assistant-online-label").textContent = "এখন অনলাইন";
+    assistant.querySelector(".assistant-title-first").textContent = "দ্রুত কোনো প্রশ্ন?";
+    assistant.querySelector(".assistant-title-emphasis").textContent = "রায়হানের সহকারীকে জিজ্ঞেস করুন।";
+    assistant.querySelector(".assistant-intro-copy").textContent = "সেবা, অভিজ্ঞতা, নির্বাচিত কাজ বা যোগাযোগ সম্পর্কে সহজ উত্তর পান।";
+    assistant.querySelector(".assistant-toggle-label").textContent = "কথা শুরু করুন";
+    assistant.querySelector(".assistant-guidance").textContent = "অ্যাকাউন্ট লাগবে না · উত্তর পোর্টফোলিওর তথ্যের ভিত্তিতে";
+    const previewLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "রায়হানের সঙ্গে যোগাযোগ"];
+    assistant.querySelectorAll(".assistant-preview-items span").forEach((item, index) => {
+      item.lastChild.textContent = " " + previewLabels[index];
+    });
+    assistant.querySelector(".assistant-chat-title").textContent = "রায়হানের পোর্টফোলিও সহকারী";
+    assistant.querySelector(".assistant-chat-subtitle").textContent = "পোর্টফোলিওর তথ্যের ভিত্তিতে উত্তর";
+    assistant.querySelector(".assistant-ready-label").textContent = "প্রস্তুত";
+    const quickLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "যোগাযোগ"];
+    quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
     assistant.querySelector('label[for="assistant-question"]').textContent = "আপনার প্রশ্ন লিখুন";
-    assistant.querySelector("#assistant-question").placeholder = "একটি প্রশ্ন করুন…";
-    assistant.querySelector(".assistant-form button").textContent = "পাঠান";
+    assistant.querySelector("#assistant-question").placeholder = "সেবা বা কাজ সম্পর্কে জিজ্ঞেস করুন…";
+    assistant.querySelector(".assistant-submit-label").textContent = "পাঠান";
+    assistant.querySelector(".assistant-submit").setAttribute("aria-label", "বার্তা পাঠান");
+    assistant.querySelector(".assistant-notice").textContent = "উত্তরের জন্য আপনার প্রশ্ন OpenAI-তে পাঠানো হতে পারে। প্রথম বার্তা পাঠালে Raihan-কে জানানো হবে। সংবেদনশীল তথ্য দেবেন না।";
+    assistant.querySelector(".assistant-typing-label").textContent = "উত্তর তৈরি হচ্ছে…";
   }
 
   const toggle = assistant.querySelector(".portfolio-assistant-toggle");
+  const toggleLabel = assistant.querySelector(".assistant-toggle-label");
+  const toggleIcon = assistant.querySelector(".assistant-toggle-icon");
+  const preview = assistant.querySelector(".assistant-preview");
   const panel = assistant.querySelector(".portfolio-assistant-panel");
   const messages = assistant.querySelector(".assistant-messages");
+  const typing = assistant.querySelector(".assistant-typing");
   const questionInput = assistant.querySelector("#assistant-question");
+  const sendButton = assistant.querySelector(".assistant-submit");
+  const sendLabel = assistant.querySelector(".assistant-submit-label");
+  const quickButtons = Array.from(quickQuestionLabels);
+  const conversation = [];
+  let isSending = false;
 
   const addAssistantMessage = (text, sender = "bot") => {
     const message = document.createElement("div");
-    message.className = `assistant-message assistant-message-${sender}`;
+    message.className = "assistant-message assistant-message-" + sender;
     message.textContent = text;
     messages.append(message);
     messages.scrollTop = messages.scrollHeight;
   };
 
-  const conversation = [];
+  const notifyChatStarted = () => {
+    const alertKey = "portfolio-assistant-chat-start-alert";
+    let alreadyAlerted = false;
+    try { alreadyAlerted = sessionStorage.getItem(alertKey) === "1"; } catch {}
+    if (alreadyAlerted) return;
+    fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/chat-start-alert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "chat_start" }),
+    }).then((response) => {
+      if (response.ok) {
+        try { sessionStorage.setItem(alertKey, "1"); } catch {}
+      }
+    }).catch(() => {});
+  };
+
+  const setSending = (sending) => {
+    isSending = sending;
+    questionInput.disabled = sending;
+    sendButton.disabled = sending;
+    messages.setAttribute("aria-busy", String(sending));
+    typing.hidden = !sending;
+    quickButtons.forEach((button) => { button.disabled = sending; });
+    sendLabel.textContent = sending ? (isBangla ? "অপেক্ষা করুন" : "Replying…") : (isBangla ? "পাঠান" : "Send");
+    sendButton.setAttribute("aria-label", sending ? (isBangla ? "উত্তরের অপেক্ষায়" : "Waiting for reply") : (isBangla ? "বার্তা পাঠান" : "Send message"));
+  };
+
   const sendQuestion = async (question) => {
     const cleanQuestion = question.trim().slice(0, 300);
-    if (!cleanQuestion) return;
+    if (!cleanQuestion || isSending) return;
     addAssistantMessage(cleanQuestion, "user");
     conversation.push({ role: "user", content: cleanQuestion });
     questionInput.value = "";
-    const sendButton = assistant.querySelector(".assistant-form button");
-    sendButton.disabled = true;
-    sendButton.textContent = "…";
+    notifyChatStarted();
+    setSending(true);
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 20000);
     try {
       const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversation.slice(-8), language: isBangla ? "bn" : "en" })
+        body: JSON.stringify({ messages: conversation.slice(-8), language: isBangla ? "bn" : "en" }),
+        signal: controller.signal,
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "The assistant is temporarily unavailable.");
-      const reply = typeof data.reply === "string" ? data.reply : "";
-      if (!reply) throw new Error("The assistant couldn't create a reply. Please try again.");
+      if (!response.ok) throw new Error("Assistant request failed");
+      const reply = typeof data.reply === "string" ? data.reply.trim() : "";
+      if (!reply) throw new Error("Assistant returned no reply");
       conversation.push({ role: "assistant", content: reply });
       addAssistantMessage(reply);
     } catch (error) {
       if (conversation.at(-1)?.role === "user") conversation.pop();
-      addAssistantMessage(error.message || "I couldn't connect just now. Please try again.");
+      const message = error.name === "AbortError"
+        ? (isBangla ? "উত্তর পেতে একটু বেশি সময় লাগছে। আবার চেষ্টা করুন।" : "That took longer than expected. Please try again.")
+        : (isBangla ? "দুঃখিত, এই মুহূর্তে উত্তর দিতে পারছি না। একটু পরে আবার চেষ্টা করুন।" : "Sorry, I couldn’t get a reply just now. Please try again shortly.");
+      addAssistantMessage(message);
     } finally {
-      sendButton.disabled = false;
-      sendButton.textContent = isBangla ? "পাঠান" : "Send";
+      window.clearTimeout(timeoutId);
+      setSending(false);
       questionInput.focus();
     }
   };
 
-  toggle.addEventListener("click", () => {
-    const isOpening = panel.hidden;
-    panel.hidden = !isOpening;
-    toggle.setAttribute("aria-expanded", String(isOpening));
-    toggle.firstChild.textContent = isBangla ? (isOpening ? "সহকারী বন্ধ করুন " : "সহকারীকে জিজ্ঞেস করুন ") : (isOpening ? "Close assistant " : "Ask the assistant ");
-    if (isOpening && !messages.children.length) {
-      addAssistantMessage(isBangla ? "হ্যালো! রায়হানের সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে জিজ্ঞেস করুন।" : "Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
+  const setPanelOpen = (open) => {
+    panel.hidden = !open;
+    preview.hidden = open;
+    assistant.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggleLabel.textContent = isBangla ? (open ? "চ্যাট বন্ধ করুন" : "কথা শুরু করুন") : (open ? "Close chat" : "Start a conversation");
+    toggleIcon.textContent = open ? "×" : "↗";
+    if (open && !messages.children.length) {
+      addAssistantMessage(isBangla
+        ? "হ্যালো! রায়হানের সেবা, নির্বাচিত কাজ বা যোগাযোগ সম্পর্কে আমাকে জিজ্ঞেস করুন।"
+        : "Hi! Ask me about Raihan’s services, selected work, or how to get in touch.");
     }
-    if (isOpening) {
-      questionInput.focus();
-      const alertKey = "portfolio-assistant-chat-start-alert";
-      let alreadyAlerted = false;
-      try {
-        alreadyAlerted = sessionStorage.getItem(alertKey) === "1";
-      } catch {}
-      if (!alreadyAlerted) {
-        fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/chat-start-alert", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event: "chat_start" })
-        }).then((response) => {
-          if (response.ok) {
-            try {
-              sessionStorage.setItem(alertKey, "1");
-            } catch {}
-          }
-        }).catch(() => {});
-      }
+    if (open) questionInput.focus();
+  };
+
+  toggle.addEventListener("click", () => setPanelOpen(panel.hidden));
+  assistant.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hidden) {
+      setPanelOpen(false);
+      toggle.focus();
     }
   });
 
-  assistant.querySelectorAll("[data-question]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const question = button.dataset.question;
-      void sendQuestion(question);
-    });
+  quickButtons.forEach((button) => {
+    button.addEventListener("click", () => { void sendQuestion(button.dataset.question); });
   });
 
   assistant.querySelector(".assistant-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const question = questionInput.value.trim();
-    if (!question) return;
-    void sendQuestion(question);
-    questionInput.value = "";
-    questionInput.focus();
+    void sendQuestion(questionInput.value);
   });
 }
 
 
-// Selected work slideshow: advance every three seconds and pause for interaction.
+//// Selected work slideshow: advance every three seconds and pause for interaction.
 const workCarousel = document.querySelector(".work-grid[aria-roledescription='carousel']");
 if (workCarousel) {
   const workSlides = Array.from(workCarousel.querySelectorAll(".work-item"));
