@@ -282,7 +282,10 @@ if (footer && footerBottom) {
     }
   };
 
+  const panelHome = panel.parentElement;
   const setFullscreen = (open) => {
+    if (open && panel.parentElement !== document.body) document.body.append(panel);
+    if (!open && panel.parentElement === document.body) assistant.append(panel);
     panel.classList.toggle("is-fullscreen", open);
     document.body.classList.toggle("assistant-fullscreen-open", open);
     expandButton.setAttribute("aria-pressed", String(open));
@@ -293,6 +296,12 @@ if (footer && footerBottom) {
     expandButton.textContent = open ? "×" : "⛶";
   };
   expandButton.addEventListener("click", () => setFullscreen(!panel.classList.contains("is-fullscreen")));
+  panel.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.classList.contains("is-fullscreen")) {
+      setFullscreen(false);
+      expandButton.focus();
+    }
+  });
 
   const setPanelOpen = (open) => {
     if (!open && panel.classList.contains("is-fullscreen")) setFullscreen(false);
