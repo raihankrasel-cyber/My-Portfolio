@@ -176,3 +176,6 @@ html[lang="bn"] .assistant-kicker,html[lang="bn"] .assistant-online,html[lang="b
 .portfolio-assistant-panel.is-fullscreen .assistant-messages{height:auto;min-height:0;flex:1;margin:14px 0 10px}
 .portfolio-assistant-panel.is-fullscreen .assistant-typing,.portfolio-assistant-panel.is-fullscreen .assistant-quick-questions,.portfolio-assistant-panel.is-fullscreen .assistant-media-tools,.portfolio-assistant-panel.is-fullscreen .assistant-form,.portfolio-assistant-panel.is-fullscreen .assistant-notice{flex:none}
 @media(max-width:600px){.portfolio-assistant-panel.is-fullscreen{inset:0;width:100vw;height:100dvh;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));border:0;border-radius:0}.portfolio-assistant-panel.is-fullscreen .assistant-messages{margin-top:10px}}
+
+.assistant-fullscreen-open .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.portfolio-assistant-panel.is-fullscreen{--assistant-gold:#f5bd36}
