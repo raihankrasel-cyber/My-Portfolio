@@ -4,6 +4,19 @@ const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only,
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+const isBangla = document.documentElement.lang === "bn";
+const languageDialog = document.getElementById("language-dialog");
+if (languageDialog) {
+  let languageChoice = null;
+  try { languageChoice = localStorage.getItem("portfolio-language-choice"); } catch {}
+  if (!languageChoice) languageDialog.hidden = false;
+  languageDialog.querySelectorAll("[data-language-choice]").forEach((link) => {
+    link.addEventListener("click", () => {
+      try { localStorage.setItem("portfolio-language-choice", link.dataset.languageChoice); } catch {}
+    });
+  });
+}
+
 const emailLink = document.getElementById("email-link");
 const emailLabel = document.getElementById("email-label");
 const whatsappLink = document.getElementById("whatsapp-link");
@@ -109,6 +122,18 @@ if (footer && footerBottom) {
   `;
   footer.insertBefore(assistant, footerBottom);
 
+  if (isBangla) {
+    assistant.querySelector(".portfolio-assistant-intro h2").textContent = "দ্রুত কোনো উত্তর জানতে চান?";
+    assistant.querySelector(".portfolio-assistant-intro p").textContent = "সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে আমার পোর্টফোলিও সহকারীকে জিজ্ঞেস করুন।";
+    assistant.querySelector(".portfolio-assistant-toggle").textContent = "সহকারীকে জিজ্ঞেস করুন ↗";
+    const quickLabels = ["সেবাসমূহ", "নির্বাচিত কাজ", "যোগাযোগ"];
+    assistant.querySelectorAll("[data-question]").forEach((button, index) => { button.textContent = quickLabels[index]; });
+    assistant.querySelector(".assistant-notice").textContent = "আপনার প্রশ্নের উত্তর পোর্টফোলিও-সংক্রান্ত তথ্যের ভিত্তিতে দেওয়া হয়।";
+    assistant.querySelector('label[for="assistant-question"]').textContent = "আপনার প্রশ্ন লিখুন";
+    assistant.querySelector("#assistant-question").placeholder = "একটি প্রশ্ন করুন…";
+    assistant.querySelector(".assistant-form button").textContent = "পাঠান";
+  }
+
   const toggle = assistant.querySelector(".portfolio-assistant-toggle");
   const panel = assistant.querySelector(".portfolio-assistant-panel");
   const messages = assistant.querySelector(".assistant-messages");
@@ -136,7 +161,7 @@ if (footer && footerBottom) {
       const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversation.slice(-8) })
+        body: JSON.stringify({ messages: conversation.slice(-8), language: isBangla ? "bn" : "en" })
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "The assistant is temporarily unavailable.");
@@ -149,7 +174,7 @@ if (footer && footerBottom) {
       addAssistantMessage(error.message || "I couldn't connect just now. Please try again.");
     } finally {
       sendButton.disabled = false;
-      sendButton.textContent = "Send";
+      sendButton.textContent = isBangla ? "পাঠান" : "Send";
       questionInput.focus();
     }
   };
@@ -158,9 +183,9 @@ if (footer && footerBottom) {
     const isOpening = panel.hidden;
     panel.hidden = !isOpening;
     toggle.setAttribute("aria-expanded", String(isOpening));
-    toggle.firstChild.textContent = isOpening ? "Close assistant " : "Ask the assistant ";
+    toggle.firstChild.textContent = isBangla ? (isOpening ? "সহকারী বন্ধ করুন " : "সহকারীকে জিজ্ঞেস করুন ") : (isOpening ? "Close assistant " : "Ask the assistant ");
     if (isOpening && !messages.children.length) {
-      addAssistantMessage("Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
+      addAssistantMessage(isBangla ? "হ্যালো! রাইহানের সেবা, নির্বাচিত কাজ অথবা যোগাযোগের উপায় সম্পর্কে জিজ্ঞেস করুন।" : "Hi! Ask me about Raihan's services, selected work, or how to get in touch.");
     }
     if (isOpening) {
       questionInput.focus();

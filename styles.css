@@ -68,3 +68,22 @@
 @keyframes work-slide-in{from{opacity:.25}to{opacity:1}}
 @media(max-width:640px){.work-grid[aria-roledescription="carousel"]{height:min(74vw,390px);min-height:260px}}
 @media(prefers-reduced-motion:reduce){.work-grid[aria-roledescription="carousel"] .work-item.is-active{animation:none}}
+
+.language-switch{display:inline-flex;align-items:center;justify-content:center;min-width:44px;padding:9px 12px;border:1px solid rgba(245,189,54,.45);border-radius:22px;color:var(--gold)!important;font:600 11px var(--font)!important;text-decoration:none}
+.language-switch:hover{background:#f5bd3618}
+.language-dialog[hidden]{display:none}
+.language-dialog{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:22px}
+.language-backdrop{position:absolute;inset:0;background:rgba(3,5,6,.78);backdrop-filter:blur(8px)}
+.language-card{position:relative;width:min(450px,100%);padding:34px;border:1px solid rgba(245,189,54,.42);border-radius:16px;background:linear-gradient(145deg,#171a1b,#0b0d0f);box-shadow:0 28px 100px #0009;text-align:center}
+.language-mark{display:inline-grid;place-items:center;width:46px;height:46px;border:1px solid var(--gold);border-radius:50%;color:var(--gold);font:800 20px var(--display)}
+.language-eyebrow{margin:18px 0 8px;color:var(--gold);font:700 9px var(--font);letter-spacing:.16em}
+.language-card h2{margin:0;color:var(--white);font:700 25px/1.25 var(--display)}
+.language-card>p:not(.language-eyebrow){margin:11px 0 22px;color:#b2b5b2;font:12px/1.7 var(--font)}
+.language-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.language-options a{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border:1px solid rgba(245,189,54,.48);border-radius:8px;color:var(--white);font:600 12px var(--font);text-decoration:none}
+.language-options a:hover,.language-options a:focus-visible{background:#f5bd36;color:#111;outline:2px solid var(--gold);outline-offset:2px}
+.language-card small{display:block;margin-top:17px;color:#888e8a;font:10px var(--font)}
+html[lang="bn"] body{font-family:'Noto Sans Bengali','DM Sans',sans-serif}
+html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-heading h2,html[lang="bn"] .contact h2,html[lang="bn"] .language-card h2{font-family:'Noto Sans Bengali',var(--display),sans-serif;letter-spacing:0;line-height:1.4}
+html[lang="bn"] .section-kicker,html[lang="bn"] .hero-scroll,html[lang="bn"] .eyebrow{letter-spacing:.04em}
+@media(max-width:640px){.language-card{padding:26px 20px}.language-options a{padding:12px}}
