@@ -182,10 +182,23 @@ if (footer && footerBottom) {
       const image = new Image();
       image.onerror = () => reject(new Error(isBangla ? "ছবিটি খোলা যায়নি।" : "Could not open that image."));
       image.onload = () => {
-        const scale = Math.min(1, 1280 / Math.max(image.naturalWidth, image.naturalHeight));
+        const scale = Math.min(1, 1024 / Math.max(image.naturalWidth, image.naturalHeight));
         const canvas = document.createElement("canvas"); canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
         canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
-        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL("image/jpeg", 0.82));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        let compressed = canvas.toDataURL("image/jpeg", 0.74);
+        if (compressed.length > 1_400_000) {
+          canvas.width = Math.max(1, Math.round(canvas.width * 0.75));
+          canvas.height = Math.max(1, Math.round(canvas.height * 0.75));
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          compressed = canvas.toDataURL("image/jpeg", 0.66);
+        }
+        if (compressed.length > 1_400_000) {
+          reject(new Error(isBangla ? "ছবিটি খুব বড়। ছোট ছবি ব্যবহার করুন।" : "That image is still too large. Please choose a smaller image."));
+          return;
+        }
+        resolve(compressed);
       };
       image.src = reader.result;
     };
