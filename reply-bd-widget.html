@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071321">
+  <meta name="description" content="Reply BD helps Bangladesh's online sellers reply to Facebook customers, recommend products, and collect orders around the clock.">
+  <title>Reply BD — Your always-on sales assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#071321;--ink2:#0b1d30;--panel:#10263b;--panel2:#132d45;--blue:#5ea6ff;--cyan:#65e3db;--white:#f2f7fb;--muted:#a8bbca;--line:#ffffff18;--font:'DM Sans',sans-serif;--display:'Manrope',sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--ink);color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased}a{color:inherit}.shell{overflow:hidden}.wrap{width:min(1160px,calc(100% - 48px));margin-inline:auto}.topbar{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:10}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 18px var(--display);letter-spacing:-.04em}.brand-mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,var(--cyan),var(--blue));color:#062033;display:grid;place-items:center;font-size:17px}.brand small{display:block;color:#9db5c8;font:500 8px var(--font);letter-spacing:.17em;margin-top:1px}.nav{display:flex;align-items:center;gap:28px}.nav a{font-size:12px;color:#c3d2de;text-decoration:none}.nav a:hover{color:var(--cyan)}.nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:9px;background:linear-gradient(110deg,var(--cyan),#80baff);color:#071a2a;text-decoration:none;font:700 12px var(--font);padding:12px 17px;box-shadow:0 9px 30px #2ecbc72a;transition:transform .2s,filter .2s}.nav-cta:hover,.button:hover{transform:translateY(-2px);filter:brightness(1.06)}.menu{display:none;border:1px solid var(--line);background:#ffffff08;color:white;border-radius:8px;padding:8px 10px;font-size:19px}
+    .hero{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center;min-height:635px;padding:72px 0 86px;position:relative}.hero:before{content:"";position:absolute;width:540px;height:540px;top:-190px;right:-220px;background:#357de223;filter:blur(60px);border-radius:50%;pointer-events:none}.hero-copy,.chat-scene{position:relative;z-index:1}.announcement{display:inline-flex;align-items:center;gap:9px;border:1px solid #65e3db38;background:#65e3db0e;color:#b7f4eb;padding:8px 12px;border-radius:30px;font-size:10px;font-weight:600;letter-spacing:.04em}.pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 13px var(--cyan)}h1,h2,h3,p{margin-top:0}h1{font:700 clamp(45px,6vw,70px)/1.03 var(--display);letter-spacing:-.07em;margin:24px 0 20px;max-width:620px}h1 span{background:linear-gradient(100deg,#a5f4ec,#80bbff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-lede{max-width:495px;color:#b5c7d5;font-size:15px;line-height:1.8;margin-bottom:27px}.actions{display:flex;gap:13px;align-items:center;flex-wrap:wrap}.button{padding:14px 20px}.button.secondary{background:#ffffff09;color:#e7f3fb;border:1px solid #ffffff24;box-shadow:none}.trust{display:flex;flex-wrap:wrap;gap:14px 21px;margin-top:28px;color:#bdd0dd;font-size:10px}.trust span{display:flex;align-items:center;gap:7px}.check{color:var(--cyan);font-weight:800}.chat-scene{min-height:440px;display:grid;place-items:center}.scene-glow{position:absolute;width:440px;height:400px;border-radius:50%;background:#338dcb1b;filter:blur(35px)}.chat-window{width:min(100%,440px);border:1px solid #ffffff22;border-radius:18px;background:#0e2236;box-shadow:0 35px 90px #0007;overflow:hidden;transform:rotate(1deg)}.chat-head{display:flex;align-items:center;gap:11px;padding:17px 18px;border-bottom:1px solid var(--line);background:#ffffff04}.chat-logo{width:37px;height:37px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#07304a;font-weight:800}.chat-title{font-size:12px;font-weight:700}.chat-sub{font-size:9px;color:#9db3c5;margin-top:3px}.chat-dot{width:6px;height:6px;background:#64e0a3;display:inline-block;border-radius:50%;margin-right:5px}.chat-body{padding:18px;display:flex;flex-direction:column;gap:13px;background:radial-gradient(ellipse at 82% 0,#2a83a016,transparent 60%),#0b1b2d}.bubble{max-width:85%;padding:12px 14px;border-radius:14px;font-size:11px;line-height:1.6}.bubble.customer{align-self:flex-end;background:#175e9d;color:#f4faff;border-bottom-right-radius:4px}.bubble.reply{align-self:flex-start;background:#172c40;border:1px solid #ffffff12;color:#e5f2fb;border-bottom-left-radius:4px}.product-mini{display:flex;align-items:center;gap:10px;border:1px solid #ffffff17;background:#ffffff08;border-radius:10px;padding:9px;margin-top:8px}.product-art{width:42px;height:42px;border-radius:8px;background:linear-gradient(145deg,#efc88a,#8c5737 55%,#314454);display:grid;place-items:center;color:#fff8}.product-mini strong{font-size:10px}.product-mini small{display:block;color:#a8bdcd;font-size:9px;margin-top:4px}.chat-compose{padding:11px 14px;border-top:1px solid var(--line);color:#8ea3b4;font-size:10px}.floating-note{position:absolute;right:-16px;bottom:28px;background:#112940;border:1px solid #ffffff20;padding:13px 16px;border-radius:12px;box-shadow:0 12px 40px #0005;font-size:10px;color:#cfe5f0}.floating-note b{display:block;color:var(--cyan);font-size:12px;margin-bottom:4px}
+    .social-proof{border-block:1px solid var(--line);padding:20px 0;display:flex;align-items:center;justify-content:center;gap:30px;color:#a9bdcc;font-size:10px;flex-wrap:wrap}.social-proof strong{color:#e2eff7;font-size:11px}.section{padding:96px 0}.section-head{text-align:center;max-width:680px;margin:0 auto 45px}.eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);font-weight:700}.section h2{font:700 clamp(32px,4vw,48px)/1.12 var(--display);letter-spacing:-.055em;margin:12px 0 14px}.section-head p{color:var(--muted);font-size:13px;line-height:1.8}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{padding:25px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#10283d,#0a1b2c);min-height:200px}.feature-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#65e3db16;color:var(--cyan);font-size:18px;margin-bottom:21px}.feature h3{font:650 14px var(--display);margin-bottom:8px}.feature p{font-size:11px;color:#a8bdcc;line-height:1.8;margin-bottom:0}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:19px;counter-reset:step}.step{border-top:1px solid #65e3db55;padding:20px 12px 0 0;counter-increment:step}.step:before{content:"0" counter(step);color:var(--cyan);font:700 11px var(--font);letter-spacing:.1em}.step h3{font:650 15px var(--display);margin:15px 0 8px}.step p{color:#a8bdcc;font-size:11px;line-height:1.8}.showcase{background:linear-gradient(180deg,transparent,#0d2031 40%,#0d2031 60%,transparent)}.showcase-grid{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center}.showcase-art{min-height:360px;border:1px solid #ffffff1d;border-radius:18px;background:radial-gradient(ellipse at 50% 42%,#4799ed42,transparent 48%),linear-gradient(135deg,#102d47,#0a1a29);display:grid;place-items:center;position:relative;overflow:hidden}.browser-card{width:75%;border:1px solid #ffffff2b;border-radius:12px;background:#0b1928;box-shadow:0 25px 55px #0007;transform:rotate(-3deg)}.browser-dots{padding:11px;display:flex;gap:5px;border-bottom:1px solid var(--line)}.browser-dots i{width:6px;height:6px;border-radius:50%;background:#6d9cb9}.storefront{padding:20px}.storefront b{font:700 16px var(--display)}.storefront p{font-size:9px;color:#acc0ce;margin:8px 0 15px}.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tiles i{height:75px;border-radius:7px;background:linear-gradient(145deg,#d3a679,#543c38 60%,#18314a)}.showcase-copy h2{font:700 clamp(30px,4vw,43px)/1.15 var(--display);letter-spacing:-.06em}.showcase-copy p{color:#a9bfce;font-size:12px;line-height:1.9}.showcase-copy ul{list-style:none;padding:0;display:grid;gap:12px;color:#d0dfe8;font-size:11px}.showcase-copy li:before{content:"✓";color:var(--cyan);font-weight:800;margin-right:10px}
+    .pricing{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:stretch}.price-card{padding:22px 18px;border:1px solid var(--line);border-radius:14px;background:#0d2134;position:relative}.price-card.popular{border-color:#65e3db88;background:linear-gradient(160deg,#12334b,#0e2235);box-shadow:0 16px 50px #43d6d51a}.popular-tag{position:absolute;top:-11px;right:13px;padding:5px 9px;border-radius:20px;background:var(--cyan);color:#06202d;font-size:8px;font-weight:800}.price-card h3{font:700 13px var(--display);margin:3px 0 8px}.price{font:750 28px var(--display);letter-spacing:-.06em}.price small{font:500 10px var(--font);letter-spacing:0;color:#a9bfce}.price-caption{font-size:9px;color:#98afc0;min-height:29px;margin:6px 0 14px}.price-card ul{list-style:none;padding:13px 0 0;border-top:1px solid var(--line);display:grid;gap:10px;margin:0;color:#c8d8e3;font-size:9px}.price-card li:before{content:"✓";color:var(--cyan);margin-right:7px;font-weight:800}.price-card .button{width:100%;margin-top:18px;font-size:10px;padding:11px 9px}
+    .faq-list{max-width:760px;margin:auto;border-top:1px solid var(--line)}details{border-bottom:1px solid var(--line);padding:18px 2px}summary{list-style:none;cursor:pointer;font-size:12px;font-weight:650;display:flex;justify-content:space-between;gap:18px}summary::-webkit-details-marker{display:none}summary:after{content:"+";color:var(--cyan);font-size:18px;line-height:12px}details[open] summary:after{content:"−"}details p{color:#a9bfce;font-size:11px;line-height:1.8;margin:13px 30px 0 0}.cta{padding:58px 30px;text-align:center;border:1px solid #65e3db36;border-radius:18px;background:radial-gradient(ellipse at center,#1b5c7840,transparent 70%),linear-gradient(130deg,#102c44,#0b1d2d)}.cta h2{font:700 clamp(32px,4vw,47px)/1.1 var(--display);letter-spacing:-.06em;margin:10px 0}.cta p{max-width:520px;margin:0 auto 23px;color:#aec3d1;font-size:12px;line-height:1.8}.footer{padding:48px 0 25px;color:#91a8b9;font-size:10px}.footer-top{display:flex;justify-content:space-between;gap:25px;align-items:start;padding-bottom:28px}.footer p{max-width:300px;line-height:1.8;margin:13px 0 0}.footer-links{display:flex;gap:20px;flex-wrap:wrap}.footer-links a{color:#bfd0dc;text-decoration:none}.footer-bottom{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:12px}.footer-bottom a{color:var(--cyan);text-decoration:none}
+    @media(max-width:900px){.hero{gap:28px;min-height:560px}.chat-window{transform:none}.floating-note{right:-5px}.pricing{grid-template-columns:repeat(2,1fr)}.section{padding:78px 0}}
+    @media(max-width:640px){.wrap{width:calc(100% - 34px)}.topbar{height:68px}.menu{display:block}.nav{display:none;position:absolute;top:60px;left:0;right:0;padding:17px;background:#0d2031;border:1px solid var(--line);border-radius:12px;flex-direction:column;align-items:stretch;gap:16px}.nav.open{display:flex}.nav-cta{text-align:center}.hero{display:flex;flex-direction:column;align-items:stretch;padding:48px 0 60px;gap:25px}.hero h1{font-size:clamp(44px,13vw,62px)}.hero-lede{font-size:13px}.chat-scene{min-height:365px}.chat-window{width:calc(100% - 10px)}.floating-note{right:0;bottom:5px}.social-proof{gap:12px 18px;font-size:9px}.section{padding:68px 0}.section-head{margin-bottom:30px}.features{grid-template-columns:1fr}.feature{min-height:0}.steps{grid-template-columns:1fr;gap:5px}.step{padding:18px 0}.showcase-grid{grid-template-columns:1fr;gap:24px}.showcase-art{min-height:280px}.pricing{grid-template-columns:1fr}.price-card{padding:22px}.price-caption{min-height:0}.cta{padding:40px 19px}.footer-top{flex-direction:column}.footer-bottom{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar wrap">
+    <a class="brand" href="#home" aria-label="Reply BD home"><span class="brand-mark">R</span><span>Reply BD<small>SELL SMARTER, EVERY DAY</small></span></a>
+    <button class="menu" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#features">Features</a><a href="#website">Website</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+      <a href="https://reply-bd.com" target="_blank" rel="noreferrer">Log in ↗</a>
+      <a class="nav-cta" href="https://reply-bd.com" target="_blank" rel="noreferrer">Get started free <span>→</span></a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <span class="announcement"><i class="pulse"></i> AI replies in under 2 seconds</span>
+        <h1>Never miss a <span>Facebook message</span> again.</h1>
+        <p class="hero-lede">Turn your Facebook Page into an always-on sales team. Reply BD answers product questions, recommends the right item, and collects orders while you focus on growing your business.</p>
+        <div class="actions"><a class="button" href="https://reply-bd.com" target="_blank" rel="noreferrer">Get started free <span>→</span></a><a class="button secondary" href="#how-it-works">See how it works <span>↓</span></a></div>
+        <div class="trust"><span><i class="check">✓</i> 7-day free trial</span><span><i class="check">✓</i> No credit card needed</span><span><i class="check">✓</i> Connect your Page in 30 seconds</span></div>
+      </div>
+      <div class="chat-scene" aria-label="Example conversation with Reply BD">
+        <div class="scene-glow"></div>
+        <div class="chat-window">
+          <div class="chat-head"><span class="chat-logo">R</span><div><div class="chat-title">Reply.BD</div><div class="chat-sub"><i class="chat-dot"></i>Active now · replies in ~2s</div></div></div>
+          <div class="chat-body">
+            <div class="bubble customer">Vai, eitar dam koto? 😊</div>
+            <div class="bubble reply">Assalamu alaikum! Eitar price ৳850, ঢাকার ভিতরে ডেলিভারি ফ্রি 🚚</div>
+            <div class="product-mini"><span class="product-art">✦</span><span><strong>Everyday kurti</strong><small>In stock · ৳850</small></span></div>
+            <div class="bubble customer">Nibo. Ekhon order korte chai.</div>
+            <div class="bubble reply">দারুণ! আপনার নাম, ফোন আর ঠিকানা দিন — আমি অর্ডারটা কনফার্ম করে দিচ্ছি ✅</div>
+          </div>
+          <div class="chat-compose">Message Reply BD…</div>
+        </div>
+        <div class="floating-note"><b>Order captured ✓</b>Name · phone · delivery address</div>
+      </div>
+    </section>
+
+    <div class="social-proof"><strong>Built for online sellers in Bangladesh</strong><span>💬 Bangla + English + Banglish</span><span>৳ bKash · Nagad · COD</span><span>◉ Human takeover anytime</span></div>
+
+    <section class="section wrap" id="features">
+      <div class="section-head"><span class="eyebrow">Your sales assistant, always on</span><h2>Everything you need to sell on Messenger</h2><p>Connect your Page in minutes. Reply BD handles the repetitive work and keeps you in control of every conversation.</p></div>
+      <div class="features">
+        <article class="feature"><span class="feature-icon">✳</span><h3>Instant AI replies</h3><p>Helpful, contextual answers that match your brand voice and recommend the right product.</p></article>
+        <article class="feature"><span class="feature-icon">▣</span><h3>Order collection</h3><p>Collect a customer's name, phone, and delivery address, then review the order in your dashboard.</p></article>
+        <article class="feature"><span class="feature-icon">↗</span><h3>Live analytics</h3><p>See replies sent, conversations converted, and usage at a glance.</p></article>
+        <article class="feature"><span class="feature-icon">♫</span><h3>Your voice, your rules</h3><p>Teach the assistant your shop's tone, policies, and the details customers ask about.</p></article>
+        <article class="feature"><span class="feature-icon">◇</span><h3>Your product catalog</h3><p>Keep product details, prices, and variants ready for quick, relevant recommendations.</p></article>
+        <article class="feature"><span class="feature-icon">☝</span><h3>Human takeover</h3><p>Jump into a conversation whenever you want. The assistant pauses while you handle it.</p></article>
+      </div>
+    </section>
+
+    <section class="section showcase" id="website">
+      <div class="wrap showcase-grid">
+        <div class="showcase-art" aria-hidden="true"><div class="browser-card"><div class="browser-dots"><i></i><i></i><i></i></div><div class="storefront"><b>Your shop, online.</b><p>Browse products · Search · Order for delivery</p><div class="tiles"><i></i><i></i><i></i></div></div></div></div>
+        <div class="showcase-copy"><span class="eyebrow">More ways to grow</span><h2>Your website and landing pages, all in one place.</h2><p>Build an online storefront for your products and focused landing pages for your ads, with tools designed for local sellers.</p><ul><li>Product pages, categories, search, and checkout</li><li>Cash on delivery options for Bangladesh</li><li>Landing pages with order forms and FAQs</li><li>Campaign links and Meta Pixel tracking</li></ul><a class="button" href="https://reply-bd.com" target="_blank" rel="noreferrer">Explore Reply BD <span>↗</span></a></div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="how-it-works">
+      <div class="section-head"><span class="eyebrow">Simple to start</span><h2>From first message to confirmed order</h2><p>Set up your assistant once, then stay close to the conversations that matter.</p></div>
+      <div class="steps"><article class="step"><h3>Connect your Page</h3><p>Link your Facebook Page and choose how Reply BD should represent your shop.</p></article><article class="step"><h3>Add products and rules</h3><p>Share product details, policies, delivery information, and the tone you want.</p></article><article class="step"><h3>Let conversations flow</h3><p>Reply BD answers common questions and collects order details around the clock.</p></article></div>
+    </section>
+
+    <section class="section wrap" id="pricing">
+      <div class="section-head"><span class="eyebrow">Straightforward plans</span><h2>Start free. Grow when you're ready.</h2><p>Pick a plan that fits the size of your shop. Visit Reply BD for the latest plan details.</p></div>
+      <div class="pricing">
+        <article class="price-card"><h3>Free Trial</h3><div class="price">Free</div><p class="price-caption">7 days · no card needed</p><ul><li>1 Facebook Page</li><li>50 AI replies during trial</li><li>AI cost included</li></ul><a class="button secondary" href="https://reply-bd.com" target="_blank" rel="noreferrer">Start free</a></article>
+        <article class="price-card"><h3>Solo F-commerce</h3><div class="price">৳999<small> /mo</small></div><p class="price-caption">For one growing shop</p><ul><li>1 Facebook Page</li><li>1,200 AI replies</li><li>10 product uploads</li><li>3 ad landing pages</li></ul><a class="button secondary" href="https://reply-bd.com" target="_blank" rel="noreferrer">Choose Solo</a></article>
+        <article class="price-card popular"><span class="popular-tag">MOST POPULAR</span><h3>Growth F-commerce</h3><div class="price">৳1,999<small> /mo</small></div><p class="price-caption">For a busy online shop</p><ul><li>1 Facebook Page</li><li>2,500 AI replies</li><li>30 product uploads</li><li>5 ad landing pages</li></ul><a class="button" href="https://reply-bd.com" target="_blank" rel="noreferrer">Choose Growth</a></article>
+        <article class="price-card"><h3>Premium</h3><div class="price">৳4,999<small> /mo</small></div><p class="price-caption">More tools for a bigger business</p><ul><li>3 Facebook Pages</li><li>6,000 AI replies</li><li>Online store included</li><li>10 ad landing pages</li></ul><a class="button secondary" href="https://reply-bd.com" target="_blank" rel="noreferrer">Choose Premium</a></article>
+      </div>
+    </section>
+
+    <section class="section wrap" id="faq">
+      <div class="section-head"><span class="eyebrow">Good questions</span><h2>Frequently asked questions</h2><p>Quick answers to help you decide if Reply BD fits your shop.</p></div>
+      <div class="faq-list">
+        <details><summary>How fast is setup? Do I need technical skills?</summary><p>Connect a Facebook Page in around 30 seconds, then add your product details. No code or server setup is needed.</p></details>
+        <details><summary>Can the AI reply in Bangla?</summary><p>Reply BD is designed for Bangla, English, and Banglish conversations, and can answer in the customer's language.</p></details>
+        <details><summary>What if I want to answer a customer myself?</summary><p>Use human takeover to step into a conversation. The assistant pauses so you can handle the chat directly.</p></details>
+        <details><summary>Can I use bKash or Nagad?</summary><p>Reply BD's public site lists bKash, Nagad, bank transfer, and cash-on-delivery options. Check the current billing page for details.</p></details>
+      </div>
+    </section>
+
+    <section class="wrap"><div class="cta"><span class="eyebrow">Your next customer is waiting</span><h2>Let every message move your business forward.</h2><p>Connect your Facebook Page and give your customers a faster, more helpful reply.</p><a class="button" href="https://reply-bd.com" target="_blank" rel="noreferrer">Get started free <span>→</span></a></div></section>
+  </main>
+  <footer class="footer wrap">
+    <div class="footer-top"><div><a class="brand" href="#home"><span class="brand-mark">R</span><span>Reply BD<small>SELL SMARTER, EVERY DAY</small></span></a><p>AI-powered customer conversations for online sellers in Bangladesh.</p></div><nav class="footer-links" aria-label="Footer"><a href="#features">Features</a><a href="#website">Website</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="https://reply.bd" target="_blank" rel="noreferrer">Reply.bd ↗</a></nav></div>
+    <div class="footer-bottom"><span>© <span id="year"></span> Reply BD</span><a href="#home">Back to top ↑</a></div>
+  </footer>
+</div>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const menuButton = document.querySelector(".menu");
+  const navigation = document.querySelector(".nav");
+  menuButton.addEventListener("click", () => {
+    const isOpen = navigation.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    menuButton.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    menuButton.textContent = isOpen ? "×" : "☰";
+  });
+  navigation.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
+    navigation.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open menu");
+    menuButton.textContent = "☰";
+  }));
+</script>
+</body>
+</html>
