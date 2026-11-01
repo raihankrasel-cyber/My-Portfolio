@@ -8,11 +8,11 @@ const isBangla = document.documentElement.lang === "bn";
 const languageDialog = document.getElementById("language-dialog");
 if (languageDialog) {
   let languageChoice = null;
-  try { languageChoice = localStorage.getItem("portfolio-language-choice"); } catch {}
+  try { languageChoice = sessionStorage.getItem("portfolio-language-choice"); } catch {}
   if (!languageChoice) languageDialog.hidden = false;
   languageDialog.querySelectorAll("[data-language-choice]").forEach((link) => {
     link.addEventListener("click", () => {
-      try { localStorage.setItem("portfolio-language-choice", link.dataset.languageChoice); } catch {}
+      try { sessionStorage.setItem("portfolio-language-choice", link.dataset.languageChoice); } catch {}
     });
   });
 }
