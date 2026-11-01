@@ -418,7 +418,9 @@ if (footer && footerBottom) {
         if (blob.size > 10 * 1024 * 1024) { voiceStatus.textContent = isBangla ? "রেকর্ডিংটি ১০ MB-এর বেশি। ছোট করে বলুন।" : "Recording is over 10 MB. Please record a shorter message."; return; }
         voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া হচ্ছে…" : "Transcribing your voice…"; setSending(true);
         try {
-          const formData = new FormData(); formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
+          const formData = new FormData();
+          formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
+          formData.append("language", isBangla ? "bn" : "en");
           const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", { method: "POST", body: formData });
           const data = await response.json().catch(() => ({}));
           if (response.status === 429) {
