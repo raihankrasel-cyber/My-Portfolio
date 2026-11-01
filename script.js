@@ -356,8 +356,14 @@ if (footer && footerBottom) {
           questionInput.value = data.transcript.slice(0, 300);
           voiceStatus.textContent = isBangla ? "কথাটি লিখে দেওয়া হয়েছে—পাঠানোর আগে সম্পাদনা করুন।" : "Transcribed—edit it if you like, then send.";
           questionInput.focus();
-        } catch { voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again."; }
-        finally { setSending(false); }
+        } catch (error) {
+          const detail = error instanceof Error ? error.message : "";
+          if (detail && detail !== "Transcription failed") {
+            voiceStatus.textContent = isBangla ? "ভয়েস লেখা যায়নি: " + detail : detail;
+          } else {
+            voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again.";
+          }
+        } finally { setSending(false); }
       };
       recorder.start(); micButton.textContent = isBangla ? "■ থামান" : "■ Stop";
       voiceStatus.textContent = isBangla ? "রেকর্ড হচ্ছে… সর্বোচ্চ ১৫ সেকেন্ড" : "Recording… up to 15 seconds";
