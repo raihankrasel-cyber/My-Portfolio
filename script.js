@@ -149,6 +149,7 @@ if (footer && footerBottom) {
   let recordingTimer = null;
   const voicePauseKey = "portfolio-assistant-voice-paused-until";
   const voiceRetryKey = "portfolio-assistant-voice-retry-seconds";
+  const voiceLastCheckKey = "portfolio-assistant-voice-last-check";
   let voiceCheckTimer = null;
   let voiceRetrySeconds = 900;
   const sendButton = assistant.querySelector(".assistant-submit");
@@ -261,7 +262,10 @@ if (footer && footerBottom) {
   const checkVoiceAvailability = async () => {
     voiceStatus.textContent = voicePausedMessage();
     try {
-      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
+      localStorage.setItem(voiceLastCheckKey, String(Date.now()));
+    } catch {}
+    try {
+      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ voiceStatusCheck: true }),
@@ -278,7 +282,7 @@ if (footer && footerBottom) {
         }, 5000);
         return;
       }
-      scheduleVoiceCheck(Number(data.retryAfterSeconds) || Math.min(21600, voiceRetrySeconds * 2));
+      scheduleVoiceCheck(Math.max(Number(data.retryAfterSeconds) || 0, Math.min(21600, voiceRetrySeconds * 2)));
     } catch {
       scheduleVoiceCheck(Math.min(21600, voiceRetrySeconds * 2));
     }
@@ -375,7 +379,14 @@ if (footer && footerBottom) {
         ? "আসসালামু আলাইকুম ওয়া রহমাতুল্লাহ! হাই! কী নিয়ে কাজ করছেন? একটু বলুন—একসঙ্গে ভেবে দেখি কীভাবে এগোনো যায়।"
         : "Hey! What are you working on? Tell me a little, and we’ll figure out a good next step together.");
     }
-    if (open) questionInput.focus();
+    if (open) {
+      questionInput.focus();
+      if (!micButton.hidden) {
+        let lastVoiceCheck = 0;
+        try { lastVoiceCheck = Number(localStorage.getItem(voiceLastCheckKey) || 0); } catch {}
+        if (Date.now() - lastVoiceCheck > 15 * 60 * 1000) void checkVoiceAvailability();
+      }
+    }
   };
 
   assistant.querySelector(".assistant-attach").addEventListener("click", () => imageInput.click());
