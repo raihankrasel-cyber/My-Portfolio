@@ -303,6 +303,7 @@ if (footer && footerBottom) {
       recorder.ondataavailable = (event) => { if (event.data.size) audioChunks.push(event.data); };
       recorder.onerror = () => { stream.getTracks().forEach((track) => track.stop()); voiceStatus.textContent = isBangla ? "রেকর্ডিং ব্যর্থ হয়েছে।" : "Recording failed."; };
       recorder.onstop = async () => {
+        micButton.textContent = isBangla ? "🎙 ভয়েস" : "🎙 Voice";
         stream.getTracks().forEach((track) => track.stop());
         const blob = new Blob(audioChunks, { type: recorder.mimeType || "audio/webm" });
         if (!blob.size) return;
