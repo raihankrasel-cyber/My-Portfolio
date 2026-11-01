@@ -298,6 +298,7 @@ if (footer && footerBottom) {
   expandButton.addEventListener("click", () => setFullscreen(!panel.classList.contains("is-fullscreen")));
   panel.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && panel.classList.contains("is-fullscreen")) {
+      event.stopPropagation();
       setFullscreen(false);
       expandButton.focus();
     }
