@@ -86,7 +86,7 @@ if (footer && footerBottom) {
       "<span class='assistant-preview-mark' aria-hidden='true'>↗</span>",
     "</div>",
     "<div class='portfolio-assistant-panel' id='portfolio-assistant-panel' hidden>",
-      "<div class='assistant-chat-header'><span class='assistant-avatar' aria-hidden='true'>R</span><span class='assistant-chat-identity'><strong class='assistant-chat-title'>Raihan’s portfolio assistant</strong><small class='assistant-chat-subtitle'>Here to think it through with you</small></span><span class='assistant-chat-status'><i></i><span class='assistant-ready-label'>READY</span></span></div>",
+      "<div class='assistant-chat-header'><span class='assistant-avatar' aria-hidden='true'>R</span><span class='assistant-chat-identity'><strong class='assistant-chat-title'>Raihan’s portfolio assistant</strong><small class='assistant-chat-subtitle'>Here to think it through with you</small></span><button class='assistant-expand' type='button' aria-label='Open chat full screen' aria-pressed='false' title='Fullscreen'>⛶</button><span class='assistant-chat-status'><i></i><span class='assistant-ready-label'>READY</span></span></div>",
       "<div class='assistant-messages' role='log' aria-live='polite' aria-relevant='additions text' aria-busy='false'></div>",
       "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
       "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
@@ -112,6 +112,8 @@ if (footer && footerBottom) {
     assistant.querySelector(".assistant-chat-title").textContent = "রায়হানের পোর্টফোলিও সহকারী";
     assistant.querySelector(".assistant-chat-subtitle").textContent = "একসঙ্গে ভেবে দেখতে পাশে আছি";
     assistant.querySelector(".assistant-ready-label").textContent = "প্রস্তুত";
+    assistant.querySelector(".assistant-expand").setAttribute("aria-label", "চ্যাট পূর্ণপর্দায় খুলুন");
+    assistant.querySelector(".assistant-expand").title = "পূর্ণপর্দা";
     const quickLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "যোগাযোগ"];
     quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
     assistant.querySelector('label[for="assistant-question"]').textContent = "আপনার প্রশ্ন লিখুন";
@@ -132,6 +134,7 @@ if (footer && footerBottom) {
   const toggleIcon = assistant.querySelector(".assistant-toggle-icon");
   const preview = assistant.querySelector(".assistant-preview");
   const panel = assistant.querySelector(".portfolio-assistant-panel");
+  const expandButton = assistant.querySelector(".assistant-expand");
   const messages = assistant.querySelector(".assistant-messages");
   const typing = assistant.querySelector(".assistant-typing");
   const questionInput = assistant.querySelector("#assistant-question");
@@ -279,7 +282,20 @@ if (footer && footerBottom) {
     }
   };
 
+  const setFullscreen = (open) => {
+    panel.classList.toggle("is-fullscreen", open);
+    document.body.classList.toggle("assistant-fullscreen-open", open);
+    expandButton.setAttribute("aria-pressed", String(open));
+    expandButton.setAttribute("aria-label", isBangla
+      ? (open ? "পূর্ণপর্দা বন্ধ করুন" : "চ্যাট পূর্ণপর্দায় খুলুন")
+      : (open ? "Exit full screen" : "Open chat full screen"));
+    expandButton.title = isBangla ? (open ? "পূর্ণপর্দা বন্ধ" : "পূর্ণপর্দা") : (open ? "Exit full screen" : "Fullscreen");
+    expandButton.textContent = open ? "×" : "⛶";
+  };
+  expandButton.addEventListener("click", () => setFullscreen(!panel.classList.contains("is-fullscreen")));
+
   const setPanelOpen = (open) => {
+    if (!open && panel.classList.contains("is-fullscreen")) setFullscreen(false);
     panel.hidden = !open;
     preview.hidden = open;
     assistant.classList.toggle("is-open", open);
@@ -341,8 +357,13 @@ if (footer && footerBottom) {
   toggle.addEventListener("click", () => setPanelOpen(panel.hidden));
   assistant.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) {
-      setPanelOpen(false);
-      toggle.focus();
+      if (panel.classList.contains("is-fullscreen")) {
+        setFullscreen(false);
+        expandButton.focus();
+      } else {
+        setPanelOpen(false);
+        toggle.focus();
+      }
     }
   });
 
