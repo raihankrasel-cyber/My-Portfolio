@@ -76,7 +76,7 @@ if (footer && footerBottom) {
     "<div class='portfolio-assistant-intro'>",
       "<div class='assistant-heading-row'><span class='assistant-mark' aria-hidden='true'>✦</span><span class='assistant-kicker'>PORTFOLIO ASSISTANT</span><span class='assistant-online'><i></i><span class='assistant-online-label'>ONLINE</span></span></div>",
       "<h2><span class='assistant-title-first'>Have something on your mind?</span><em class='assistant-title-emphasis'>Let’s think it through together.</em></h2>",
-      "<p class='assistant-intro-copy'>Get thoughtful answers about services, experience, and selected work. Share your goal for a tailored recommendation or next step.</p>",
+      "<p class='assistant-intro-copy'>Tell me what you’re working toward. I’ll think it through with you and help find a practical next step.</p>",
       "<button class='portfolio-assistant-toggle' type='button' aria-expanded='false' aria-controls='portfolio-assistant-panel'><span class='assistant-toggle-label'>Let’s chat</span><span class='assistant-toggle-icon' aria-hidden='true'>↗</span></button>",
       "<small class='assistant-guidance'>No account needed · Answers are based on this portfolio</small>",
     "</div>",
@@ -213,7 +213,7 @@ if (footer && footerBottom) {
     preview.hidden = open;
     assistant.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", String(open));
-    toggleLabel.textContent = isBangla ? (open ? "চ্যাট বন্ধ করুন" : "কথা শুরু করুন") : (open ? "Close chat" : "Start a conversation");
+    toggleLabel.textContent = isBangla ? (open ? "চ্যাট বন্ধ করুন" : "চলুন কথা বলি") : (open ? "Close chat" : "Let’s chat");
     toggleIcon.textContent = open ? "×" : "↗";
     if (open && !messages.children.length) {
       addAssistantMessage(isBangla
