@@ -217,7 +217,7 @@ if (footer && footerBottom) {
     toggleIcon.textContent = open ? "×" : "↗";
     if (open && !messages.children.length) {
       addAssistantMessage(isBangla
-        ? "হাই! কী নিয়ে কাজ করছেন? একটু বলুন—একসঙ্গে ভেবে দেখি কীভাবে এগোনো যায়।"
+        ? "আসসালামু আলাইকুম ওয়া রহমাতুল্লাহ! হাই! কী নিয়ে কাজ করছেন? একটু বলুন—একসঙ্গে ভেবে দেখি কীভাবে এগোনো যায়।"
         : "Hey! What are you working on? Tell me a little, and we’ll figure out a good next step together.");
     }
     if (open) questionInput.focus();
