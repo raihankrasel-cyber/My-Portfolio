@@ -265,7 +265,7 @@ if (footer && footerBottom) {
       localStorage.setItem(voiceLastCheckKey, String(Date.now()));
     } catch {}
     try {
-      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant",
+      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ voiceStatusCheck: true }),
