@@ -76,7 +76,7 @@ if (footer && footerBottom) {
     "<div class='portfolio-assistant-intro'>",
       "<div class='assistant-heading-row'><span class='assistant-mark' aria-hidden='true'>✦</span><span class='assistant-kicker'>PORTFOLIO ASSISTANT</span><span class='assistant-online'><i></i><span class='assistant-online-label'>ONLINE</span></span></div>",
       "<h2><span class='assistant-title-first'>Have a quick question?</span><em class='assistant-title-emphasis'>Ask Raihan’s assistant.</em></h2>",
-      "<p class='assistant-intro-copy'>Get clear answers about services, experience, selected work, and how to get in touch.</p>",
+      "<p class='assistant-intro-copy'>Get thoughtful answers about services, experience, and selected work. Share your goal for a tailored recommendation or next step.</p>",
       "<button class='portfolio-assistant-toggle' type='button' aria-expanded='false' aria-controls='portfolio-assistant-panel'><span class='assistant-toggle-label'>Start a conversation</span><span class='assistant-toggle-icon' aria-hidden='true'>↗</span></button>",
       "<small class='assistant-guidance'>No account needed · Answers are based on this portfolio</small>",
     "</div>",
@@ -86,7 +86,7 @@ if (footer && footerBottom) {
       "<span class='assistant-preview-mark' aria-hidden='true'>↗</span>",
     "</div>",
     "<div class='portfolio-assistant-panel' id='portfolio-assistant-panel' hidden>",
-      "<div class='assistant-chat-header'><span class='assistant-avatar' aria-hidden='true'>R</span><span class='assistant-chat-identity'><strong class='assistant-chat-title'>Raihan’s portfolio assistant</strong><small class='assistant-chat-subtitle'>Answers based on portfolio details</small></span><span class='assistant-chat-status'><i></i><span class='assistant-ready-label'>READY</span></span></div>",
+      "<div class='assistant-chat-header'><span class='assistant-avatar' aria-hidden='true'>R</span><span class='assistant-chat-identity'><strong class='assistant-chat-title'>Raihan’s portfolio assistant</strong><small class='assistant-chat-subtitle'>Thinks through your question using portfolio details</small></span><span class='assistant-chat-status'><i></i><span class='assistant-ready-label'>READY</span></span></div>",
       "<div class='assistant-messages' role='log' aria-live='polite' aria-relevant='additions text' aria-busy='false'></div>",
       "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
       "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
@@ -102,7 +102,7 @@ if (footer && footerBottom) {
     assistant.querySelector(".assistant-online-label").textContent = "এখন অনলাইন";
     assistant.querySelector(".assistant-title-first").textContent = "দ্রুত কোনো প্রশ্ন?";
     assistant.querySelector(".assistant-title-emphasis").textContent = "রায়হানের সহকারীকে জিজ্ঞেস করুন।";
-    assistant.querySelector(".assistant-intro-copy").textContent = "সেবা, অভিজ্ঞতা, নির্বাচিত কাজ বা যোগাযোগ সম্পর্কে সহজ উত্তর পান।";
+    assistant.querySelector(".assistant-intro-copy").textContent = "সেবা, অভিজ্ঞতা ও নির্বাচিত কাজ সম্পর্কে ভেবেচিন্তে উত্তর পান। আপনার লক্ষ্য জানালে উপযুক্ত পরামর্শ বা পরবর্তী পদক্ষেপও পাবেন।";
     assistant.querySelector(".assistant-toggle-label").textContent = "কথা শুরু করুন";
     assistant.querySelector(".assistant-guidance").textContent = "অ্যাকাউন্ট লাগবে না · উত্তর পোর্টফোলিওর তথ্যের ভিত্তিতে";
     const previewLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "রায়হানের সঙ্গে যোগাযোগ"];
@@ -110,7 +110,7 @@ if (footer && footerBottom) {
       item.lastChild.textContent = " " + previewLabels[index];
     });
     assistant.querySelector(".assistant-chat-title").textContent = "রায়হানের পোর্টফোলিও সহকারী";
-    assistant.querySelector(".assistant-chat-subtitle").textContent = "পোর্টফোলিওর তথ্যের ভিত্তিতে উত্তর";
+    assistant.querySelector(".assistant-chat-subtitle").textContent = "পোর্টফোলিওর তথ্য ভেবে উত্তর দেয়";
     assistant.querySelector(".assistant-ready-label").textContent = "প্রস্তুত";
     const quickLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "যোগাযোগ"];
     quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
@@ -217,8 +217,8 @@ if (footer && footerBottom) {
     toggleIcon.textContent = open ? "×" : "↗";
     if (open && !messages.children.length) {
       addAssistantMessage(isBangla
-        ? "হ্যালো! রায়হানের সেবা, নির্বাচিত কাজ বা যোগাযোগ সম্পর্কে আমাকে জিজ্ঞেস করুন।"
-        : "Hi! Ask me about Raihan’s services, selected work, or how to get in touch.");
+        ? "হ্যালো! আপনি কী করতে চান তা বলুন—রায়হানের কোন সেবা বা কাজ আপনার লক্ষ্যের সঙ্গে মানানসই হতে পারে, তা ভেবে দেখতে সাহায্য করব।"
+        : "Hi! Tell me what you’re trying to achieve, and I’ll help you think through which of Raihan’s services or work may fit.");
     }
     if (open) questionInput.focus();
   };
