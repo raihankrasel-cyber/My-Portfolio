@@ -375,7 +375,7 @@ export default {
             system: chatSystemInstruction,
             messages: anthropicMessages,
           }),
-          signal: AbortSignal.timeout(12_000),
+          signal: AbortSignal.timeout(10_000),
         });
         const result = await anthropicResponse.json().catch(() => ({}));
         if (!anthropicResponse.ok) {
