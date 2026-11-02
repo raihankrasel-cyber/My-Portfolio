@@ -80,6 +80,14 @@ if (footer && footerBottom) {
       "<div class='assistant-messages' role='log' aria-live='polite' aria-relevant='additions text' aria-busy='false'></div>",
       "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
       "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
+            "<section class='assistant-skill-picks' aria-label='Mini marketing skills'>",
+        "<span class='assistant-skill-label'>MINI SKILLS · JUST FOR FUN</span>",
+        "<div class='assistant-skill-buttons'>",
+          "<button type='button' data-question='Give me three playful marketing ideas for a small business this week.'>✨ Idea spark</button>",
+          "<button type='button' data-question='Give me one quick SEO improvement I can make to my portfolio today.'>🔎 SEO sidekick</button>",
+          "<button type='button' data-question='Help me investigate why a marketing metric might be going up or down.'>📊 Metric detective</button>",
+        "</div>",
+      "</section>",
       "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
       "<p class='assistant-notice'>Your text messages are saved privately so Raihan can review chat history. Images and recordings are not saved. Text, images, and recordings may be sent to OpenAI to generate replies. A private alert may be sent to Raihan when you start chatting. Please don’t share sensitive information.</p>",
     "</div>",
@@ -106,6 +114,18 @@ if (footer && footerBottom) {
     assistant.querySelector(".assistant-expand").title = "পূর্ণপর্দা";
     const quickLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "যোগাযোগ"];
     quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
+    const miniSkillButtons = assistant.querySelectorAll(".assistant-skill-buttons button");
+    const miniSkillLabels = ["✨ আইডিয়া স্পার্ক", "🔎 SEO সহকারী", "📊 মেট্রিক গোয়েন্দা"];
+    const miniSkillPrompts = [
+      "এই সপ্তাহে একটি ছোট ব্যবসার প্রচারের জন্য তিনটি মজার আইডিয়া দিন।",
+      "আজই আমার পোর্টফোলিওর SEO উন্নত করার একটি দ্রুত উপায় বলুন।",
+      "মার্কেটিংয়ের কোনো মেট্রিক কেন বাড়তে বা কমতে পারে তা খুঁজে দেখতে সাহায্য করুন।",
+    ];
+    miniSkillButtons.forEach((button, index) => {
+      button.textContent = miniSkillLabels[index];
+      button.dataset.question = miniSkillPrompts[index];
+    });
+    assistant.querySelector(".assistant-skill-label").textContent = "মিনি স্কিল · শুধু মজার জন্য";
     assistant.querySelector('label[for="assistant-question"]').textContent = "আপনার প্রশ্ন লিখুন";
     assistant.querySelector("#assistant-question").placeholder = "আপনার ভাবনাটা বলুন…";
     assistant.querySelector(".assistant-attach").textContent = "＋ ছবি";
