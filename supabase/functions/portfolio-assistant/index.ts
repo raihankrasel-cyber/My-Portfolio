@@ -37,6 +37,40 @@ const parseTranslationResult = (text: string, expectedLength: number): string[] 
   }
 };
 
+
+
+async function saveChatExchange(conversationId: string, language: string, messages: Array<{ role: string; content: unknown }>, reply: string) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(conversationId)) return;
+  const lastUser = [...messages].reverse().find((message) => message.role === "user");
+  if (!lastUser) return;
+  const userText = typeof lastUser.content === "string"
+    ? lastUser.content
+    : Array.isArray(lastUser.content)
+      ? lastUser.content.filter((part: any) => part?.type === "input_text").map((part: any) => String(part.text || "")).join(" ") || "[Image sent]"
+      : "";
+  const content = userText.trim().slice(0, 4000) || "[Image sent]";
+  try {
+    const { createClient } = await import("npm:@supabase/supabase-js@2");
+    const url = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!url || !serviceKey) throw new Error("Storage configuration unavailable");
+    const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { error: conversationError } = await admin.from("chat_conversations").upsert({
+      id: conversationId,
+      language: language === "bn" ? "bn" : "en",
+      last_message_at: new Date().toISOString(),
+    }, { onConflict: "id" });
+    if (conversationError) throw conversationError;
+    const { error: messageError } = await admin.from("chat_messages").insert([
+      { conversation_id: conversationId, role: "user", content },
+      { conversation_id: conversationId, role: "assistant", content: reply.slice(0, 4000) },
+    ]);
+    if (messageError) throw messageError;
+  } catch (error) {
+    console.error("Chat history save failed", error instanceof Error ? error.message : "unknown storage error");
+  }
+}
+
 const instructions = `You are a friendly, thoughtful portfolio buddy for Raihan Kabir Rasel, a digital marketer in Bangladesh currently working at reply.bd. Sound natural, warm, relaxed, and attentive—like a helpful friend who listens and thinks things through with the visitor. Use the conversation history so replies feel connected; do not repeat a canned introduction on every turn. Answer portfolio questions from the verified facts below. You may also give general marketing guidance when asked, clearly distinguishing your advice from facts about Raihan:
 - Services and skills: SEO and search, social media, Google Ads, content strategy, CRM/email marketing, marketing automation; tools include GA4, Google Tag Manager, Search Console, HubSpot, Salesforce, Zoho, and Canva.
 - He also has garment quality inspection, production, and sales experience.
@@ -496,6 +530,8 @@ export default {
       return Response.json({ error: "The assistant could not reply right now. Please try again shortly." }, { status: 502, headers });
     }
     const reply = requestedLanguage === "bn" ? normalizeBanglaName(rawReply) : rawReply;
+    const conversationId = (body as { conversationId?: unknown })?.conversationId;
+    if (typeof conversationId === "string") await saveChatExchange(conversationId, requestedLanguage, messages, reply);
     return Response.json({ reply }, { headers });
   }),
 };
