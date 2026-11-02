@@ -70,6 +70,8 @@ function showChallenge(challenge, purpose) {
 }
 async function showAccount(user) {
   currentUser = user || null;
+  const historyLink = $("front-auth-chat-history-link");
+  if (historyLink) historyLink.hidden = currentUser?.email?.toLowerCase() !== "raihan.k.rasel@gmail.com";
   updateHeader();
   if (!currentUser) {
     account.hidden = true;

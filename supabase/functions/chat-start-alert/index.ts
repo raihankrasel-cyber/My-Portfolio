@@ -68,16 +68,26 @@ Deno.serve(async (request: Request) => {
   lastAlertByIp.set(forwardedIp, now);
   recentAlertTimes.push(now);
 
-  const telegramResponse = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: telegramChatId,
-      text: "Someone just opened the chat assistant on your portfolio."
-    })
-  });
+  let telegramResponse: Response;
+  try {
+    telegramResponse = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: telegramChatId,
+        text: "Someone just opened the chat assistant on your portfolio."
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
+  } catch {
+    console.error("Telegram alert request failed before a response was received.");
+    return Response.json({ error: "Telegram could not send the alert." }, { status: 502, headers });
+  }
 
   if (!telegramResponse.ok) {
+    const details = await telegramResponse.json().catch(() => ({}));
+    const description = typeof details.description === "string" ? details.description.slice(0, 160) : "No error description.";
+    console.error("Telegram alert rejected", JSON.stringify({ status: telegramResponse.status, description }));
     return Response.json({ error: "Telegram could not send the alert." }, { status: 502, headers });
   }
   return Response.json({ ok: true }, { status: 200, headers });

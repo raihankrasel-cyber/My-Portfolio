@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Private chat history · Raihan</title>
+<style>
+:root{color-scheme:dark;--bg:#090b0d;--panel:#121518;--line:#2b3035;--text:#f4f2ed;--muted:#aab1b8;--gold:#f6b928}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Inter,system-ui,sans-serif}main{max-width:980px;margin:0 auto;padding:48px 20px}a{color:var(--gold)}h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin:12px 0}.muted{color:var(--muted)}.panel,.conversation{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;margin:18px 0}.conversation header{display:flex;gap:16px;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px}.messages{display:grid;gap:10px;padding-top:14px}.message{white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;border-radius:8px;background:#1c2227}.message.user{border-left:3px solid var(--gold)}.message.assistant{border-left:3px solid #60717e}button{background:var(--gold);color:#141414;border:0;border-radius:6px;padding:10px 14px;font-weight:700;cursor:pointer}button.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}input{display:block;width:100%;margin:10px 0;padding:12px;background:#080a0c;border:1px solid var(--line);border-radius:6px;color:var(--text)}[hidden]{display:none!important}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px}
+</style></head>
+<body><main><div class="top"><a href="index.html">← Back to portfolio</a><button id="signout" class="secondary" hidden>Sign out</button></div>
+<p class="muted">OWNER ONLY · PRIVATE</p><h1>Visitor chat history</h1><p class="muted">Only the portfolio owner can open these saved conversations. Text messages are stored; uploaded images and recordings are not.</p>
+<section id="signin" class="panel" hidden><h2>Owner sign in</h2><p class="muted">Sign in from the portfolio using the owner account. Complete authenticator verification, then return here.</p><a href="index.html#home">Open portfolio and sign in</a></section>
+<section id="mfa" class="panel" hidden><h2>Authenticator verification required</h2><p>Use the portfolio account’s two-step verification in the account dialog, then reopen this page.</p><a href="index.html#home">Open portfolio account settings</a></section>
+<section id="history" hidden><p id="load-status" class="muted">Loading…</p><div id="conversations"></div></section></main>
+<script type="module">
+import { supabase } from "./auth.js";
+const ownerEmail="raihan.k.rasel@gmail.com", $=id=>document.getElementById(id);
+const list=$("conversations"), say=(id,text)=>$(id).textContent=text;
+function esc(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function render(){
+ const {data:{user}}=await supabase.auth.getUser();
+ if(!user){$("signin").hidden=false;$("history").hidden=true;$("signout").hidden=true;return;}
+ $("signout").hidden=false;
+ if(user.email?.toLowerCase()!==ownerEmail){$("history").hidden=false;say("load-status","This account is not allowed to view chat history.");return;}
+ const {data:assurance}=await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+ if(assurance?.currentLevel!=="aal2"){$("mfa").hidden=false;$("history").hidden=true;return;}
+ $("signin").hidden=true;$("mfa").hidden=true;$("history").hidden=false;
+ const {data,error}=await supabase.from("chat_conversations").select("id,language,created_at,last_message_at,chat_messages(id,role,content,created_at)").order("last_message_at",{ascending:false});
+ if(error){say("load-status","Could not load private history. Please sign in again.");return;}
+ $("load-status").textContent=data.length?data.length+" conversation(s)":"No saved conversations yet.";
+ list.innerHTML="";
+ for(const c of data){const article=document.createElement("article");article.className="conversation";
+ const header=document.createElement("header");const details=document.createElement("div");details.innerHTML="<strong>"+esc(c.language==="bn"?"বাংলা":"English")+"</strong><br><span class='muted'>"+esc(new Date(c.created_at).toLocaleString())+"</span>";
+ const remove=document.createElement("button");remove.className="secondary";remove.textContent="Delete";remove.addEventListener("click",async()=>{if(!confirm("Delete this conversation permanently?"))return;const {error}=await supabase.from("chat_conversations").delete().eq("id",c.id);if(error){alert("Could not delete this conversation.");return;}await render();});
+ header.append(details,remove);const messages=document.createElement("div");messages.className="messages";
+ for(const m of [...(c.chat_messages||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))){const node=document.createElement("div");node.className="message "+(m.role==="user"?"user":"assistant");node.textContent=(m.role==="user"?"Visitor":"Assistant")+": "+m.content;messages.append(node);}
+ article.append(header,messages);list.append(article);}
+}
+$("signin-form").addEventListener("submit",async e=>{e.preventDefault();say("status","Signing in…");const {error}=await supabase.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error){say("status",error.message);return;}await render();});
+$("signout").addEventListener("click",async()=>{await supabase.auth.signOut();location.reload();});
+await render();
+</script></body></html>
