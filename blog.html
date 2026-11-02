@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="blog.css">
+  <link rel="stylesheet" href="auth.css">
   <link rel="stylesheet" href="medium.css">
   <script>
     (() => {
@@ -110,11 +111,27 @@
               <button class="text-button" id="auth-mode-switch" type="button">Create an account instead</button>
               <p class="form-feedback" id="auth-feedback" role="status" aria-live="polite"></p>
             </form>
+            <form class="blog-form blog-mfa-challenge" id="blog-mfa-challenge" hidden>
+              <h3>Two-step verification</h3>
+              <p>Enter the 6-digit code from your authenticator app to finish signing in.</p>
+              <div class="form-field"><label for="blog-mfa-code">Authenticator code</label><input id="blog-mfa-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></div>
+              <button class="button button-primary form-submit" id="blog-mfa-submit" type="submit">Verify code</button>
+              <button class="text-button" id="blog-mfa-cancel" type="button">Cancel sign-in</button>
+              <p class="form-feedback" id="blog-mfa-feedback" role="status" aria-live="polite"></p>
+            </form>
             <div class="signed-in-card" id="signed-in-card" hidden>
               <p class="signed-in-note">You’re signed in as</p>
               <strong id="signed-in-name"></strong>
               <a class="button button-primary" href="#write">Write a post</a>
+              <a class="blog-security-link" href="/?auth=security">Manage two-step verification</a>
             </div>
+          </section>
+
+<section class="blog-panel blog-mfa-required" id="blog-mfa-required" hidden>
+            <p class="section-kicker"><span></span> ACCOUNT SECURITY</p>
+            <h3>Enable two-step verification to publish</h3>
+            <p>Blog publishing requires an authenticator app. Set it up once, then enter its code when you sign in.</p>
+            <a href="/?auth=security">Open security settings ↗</a>
           </section>
 
           <section class="blog-panel writer-panel" id="write" aria-labelledby="write-title" hidden>
@@ -139,7 +156,7 @@
         <span data-message="loadError">Something went wrong while loading posts.</span><span data-message="published">Your post is live.</span>
         <span data-message="updated">Your changes are saved.</span><span data-message="deleted">Post removed.</span>
         <span data-message="invalidPost">Check the title and story length, then try again.</span><span data-message="confirmDelete">Delete this post?</span>
-        <span data-message="signupSuccess">Account created. Check your email for a confirmation link, then sign in.</span>
+        <span data-message="signupSuccess">Account created. Confirm your email, then sign in and enable two-step verification before publishing.</span>
         <span data-message="signinSuccess">You’re signed in. You can write a post now.</span><span data-message="signoutSuccess">You’re signed out.</span>
         <span data-message="authError">We couldn’t complete that request. Check your details and try again.</span>
         <span data-message="passwordLength">Use a password with at least 8 characters.</span>
@@ -148,6 +165,12 @@
         <span data-message="signIn">Sign in</span><span data-message="signUp">Sign up</span><span data-message="createAccount">Create an account</span>
         <span data-message="existingAccount">I already have an account</span><span data-message="createInstead">Create an account instead</span>
         <span data-message="signInInstead">I already have an account</span><span data-message="author">By</span>
+        <span data-message="twoFactor">Two-step verification</span><span data-message="enterTwoFactor">Enter the 6-digit code from your authenticator app to finish signing in.</span>
+        <span data-message="authenticatorCode">Authenticator code</span><span data-message="verifyCode">Verify code</span><span data-message="cancelSignIn">Cancel sign-in</span>
+        <span data-message="mfaError">That code didn’t work. Check it and try again.</span><span data-message="mfaRequiredTitle">Enable two-step verification to publish</span>
+        <span data-message="mfaRequiredCopy">Blog publishing requires an authenticator app. Set it up once, then enter its code when you sign in.</span>
+        <span data-message="accountSecurity">ACCOUNT SECURITY</span><span data-message="openSecurity">Open security settings ↗</span>
+        <span data-message="mfaPleaseEnable">Enable two-step verification before publishing.</span>
       </div>
     </main>
 
