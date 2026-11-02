@@ -194,3 +194,24 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .status-dot{animation:status-glow 2.8s ease-in-out infinite}
 @keyframes status-glow{50%{box-shadow:0 0 18px #f5bd36b5}}
 @media(prefers-reduced-motion:reduce){.status-dot{animation:none}.service-card,.work-item{transition:none}.service-card:hover,.work-item:hover{transform:none}}
+
+/* Expanded language selector and on-demand translations. */
+.language-switch{appearance:none;background:transparent;cursor:pointer;gap:7px}
+.language-menu{position:relative}
+.language-menu-options{position:absolute;z-index:40;top:calc(100% + 9px);right:0;width:190px;max-height:min(64vh,430px);overflow:auto;padding:8px;border:1px solid rgba(245,189,54,.4);border-radius:10px;background:#101315;box-shadow:0 16px 42px #0009;display:grid;gap:5px}
+.language-menu-options[hidden]{display:none!important}
+.language-menu-options button,.language-options button{appearance:none;width:100%;display:flex;align-items:center;justify-content:flex-start;padding:10px 12px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--white);font:500 12px var(--font);text-align:start;cursor:pointer}
+.language-menu-options button:hover,.language-menu-options button:focus-visible,.language-options button:hover,.language-options button:focus-visible{border-color:rgba(245,189,54,.55);background:#f5bd3618;outline:none}
+.language-options{grid-template-columns:repeat(3,minmax(0,1fr));max-height:58vh;overflow:auto}
+.language-options button{justify-content:center;min-height:44px;border-color:rgba(245,189,54,.3);background:#101315}
+.language-card{width:min(620px,100%);max-height:94vh;overflow:auto}
+html.language-pending .site-shell{visibility:hidden}
+html.language-pending body:after{content:"Loading your translation…";position:fixed;z-index:2000;inset:0;display:grid;place-items:center;background:#090b0d;color:var(--gold);font:600 14px var(--font)}
+html[lang="ar"] body,html[lang="ur"] body{font-family:"Noto Sans Arabic","Outfit",sans-serif}
+html[lang="zh"] body{font-family:"Noto Sans SC","Outfit",sans-serif}
+html[lang="hi"] body{font-family:"Noto Sans Devanagari","Outfit",sans-serif}
+html[lang="ja"] body{font-family:"Noto Sans JP","Outfit",sans-serif}
+html[dir="rtl"] .topbar{direction:ltr}
+html[dir="rtl"] .nav-links{direction:rtl}
+html[dir="rtl"] .language-menu-options{right:auto;left:0}
+@media(max-width:640px){.language-options{grid-template-columns:repeat(2,minmax(0,1fr))}.language-menu-options{width:min(235px,calc(100vw - 36px));grid-template-columns:repeat(2,minmax(0,1fr))}}
