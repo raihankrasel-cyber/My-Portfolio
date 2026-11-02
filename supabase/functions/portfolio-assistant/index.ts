@@ -20,9 +20,8 @@ const corsHeaders = (origin: string | null) => ({
 const normalizeBanglaName = (reply: string) =>
   reply.replaceAll("রাইহান", "রায়হান").replaceAll("রায়হান", "রায়হান");
 const languageNames: Record<string, string> = {
-  en: "English", bn: "Bengali", ar: "Arabic", zh: "Simplified Chinese",
-  fr: "French", de: "German", hi: "Hindi", ja: "Japanese",
-  pt: "Portuguese", ru: "Russian", es: "Spanish", ur: "Urdu",
+  en: "English",
+  bn: "Bengali",
 };
 const parseTranslationResult = (text: string, expectedLength: number): string[] | null => {
   const start = text.indexOf("{");
