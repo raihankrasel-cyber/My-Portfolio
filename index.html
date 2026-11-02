@@ -26,6 +26,17 @@
         if (explicit) localStorage.setItem("portfolio-language-choice", selected);
       } catch {}
       if (!supported.has(selected)) selected = source;
+      const homePaths = ["/", "/index.html", "/bn.html"];
+      const targetPath = selected === "bn" ? "/bn.html" : "/";
+      if (homePaths.includes(window.location.pathname) && window.location.pathname !== targetPath) {
+        const destination = new URL(targetPath, window.location.origin);
+        const query = new URLSearchParams(window.location.search);
+        query.delete("lang");
+        query.forEach((value, key) => destination.searchParams.append(key, value));
+        destination.hash = window.location.hash;
+        window.location.replace(destination.toString());
+        return;
+      }
       const root = document.documentElement;
       root.dataset.baseLanguage = source;
       root.dataset.siteLanguage = selected;
