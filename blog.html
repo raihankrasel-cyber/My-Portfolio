@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="blog.css">
+  <link rel="stylesheet" href="medium.css">
   <script>
     (() => {
       const supported = new Set(["en","bn","ar","zh","fr","de","hi","ja","pt","ru","es","ur"]);
@@ -80,7 +81,12 @@
         <div class="blog-hero-art" aria-hidden="true"><span class="blog-orbit blog-orbit-one"></span><span class="blog-orbit blog-orbit-two"></span><span class="blog-art-mark">R.</span><span class="blog-art-caption">WRITE · LEARN · GROW</span></div>
       </section>
 
-      <div class="blog-layout">
+<section class="medium-blog-section" id="medium-stories">
+        <div class="medium-blog-heading"><div><p class="section-kicker"><span></span> WRITING ON MEDIUM</p><h2>Latest from Medium</h2><p>Read the original stories on <a class="medium-profile-link" href="https://medium.com/@raihan.k.rasel" target="_blank" rel="noreferrer">my Medium profile ↗</a></p></div></div>
+        <div class="medium-feed-grid medium-feed-grid-wide" data-medium-feed data-limit="9" aria-live="polite"><p class="medium-feed-status">Loading Medium stories…</p></div>
+        <div class="medium-feed-source" hidden><span data-medium-message="loading">Loading Medium stories…</span><span data-medium-message="error">Medium stories aren’t available right now. Visit my profile on Medium.</span><span data-medium-message="empty">No Medium stories are available yet. Visit my profile on Medium.</span><span data-medium-message="read">Read on Medium ↗</span></div>
+      </section>
+            <div class="blog-layout">
         <section class="blog-feed" id="posts" aria-labelledby="posts-title">
           <div class="blog-feed-heading"><div><p class="section-kicker"><span></span> THE COMMUNITY</p><h2 id="posts-title">Latest posts</h2></div><span class="post-count" id="post-count"></span></div>
           <div class="blog-posts" id="blog-posts" aria-live="polite"></div>
@@ -148,6 +154,7 @@
     <footer class="footer section-wrap blog-footer"><a class="brand" href="/"><span class="brand-mark">R</span><span>Raihan<span class="brand-dot">.</span></span></a><p>Thanks for sharing your story. <a href="/">Visit the portfolio ↗</a></p><div class="footer-bottom"><span>© <span id="year"></span> Raihan. All rights reserved.</span><a href="#blog">Back to top ↑</a></div></footer>
   </div>
   <script src="language.js"></script>
+  <script src="medium-feed.js"></script>
   <script type="module" src="blog.js"></script>
 </body>
 </html>
