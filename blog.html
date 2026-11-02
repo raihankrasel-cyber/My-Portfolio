@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0d">
+  <meta name="description" content="Read community stories and ideas from Raihan's portfolio. Sign in to share a post.">
+  <title>Blog — Raihan's Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="blog.css">
+  <script>
+    (() => {
+      const supported = new Set(["en","bn","ar","zh","fr","de","hi","ja","pt","ru","es","ur"]);
+      const source = "en";
+      let selected = null;
+      let explicit = false;
+      try {
+        const queryChoice = new URLSearchParams(window.location.search).get("lang");
+        selected = queryChoice || localStorage.getItem("portfolio-language-choice") || sessionStorage.getItem("portfolio-language-choice");
+        explicit = supported.has(selected);
+        if (explicit) localStorage.setItem("portfolio-language-choice", selected);
+      } catch {}
+      if (!supported.has(selected)) selected = source;
+      const root = document.documentElement;
+      root.dataset.baseLanguage = source;
+      root.dataset.siteLanguage = selected;
+      root.dataset.hasLanguageChoice = explicit ? "true" : "false";
+      root.lang = selected;
+      root.dir = selected === "ar" || selected === "ur" ? "rtl" : "ltr";
+      if (selected !== source) root.classList.add("language-pending");
+    })();
+  </script>
+</head>
+<body>
+  <div class="language-dialog" id="language-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="language-title">
+    <div class="language-backdrop"></div>
+    <div class="language-card">
+      <span class="language-mark">R.</span>
+      <p class="language-eyebrow">WELCOME · স্বাগতম</p>
+      <h2 id="language-title">Choose your language</h2>
+      <p>Explore Raihan’s portfolio in your preferred language.</p>
+      <div class="language-options" id="language-dialog-options"></div>
+      <small>Your choice is saved on this device.</small>
+    </div>
+  </div>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Raihan's Portfolio home"><span class="brand-mark">R</span><span>Raihan<span class="brand-dot">.</span></span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/">Home</a><a href="#blog">Blog</a><a href="#write">Write a post</a>
+      </nav>
+      <div class="header-actions blog-header-actions">
+        <div class="blog-header-auth" id="header-auth-options">
+          <button class="auth-link" id="show-signin" type="button">Sign in</button>
+          <button class="auth-link auth-link-primary" id="show-signup" type="button">Sign up</button>
+        </div>
+        <div class="blog-header-user" id="header-user-status" hidden>
+          <span id="header-user-name"></span>
+          <button class="auth-link" id="header-signout" type="button">Sign out</button>
+        </div>
+        <div class="language-menu">
+          <button class="language-switch" id="language-toggle" type="button" aria-label="Choose language" aria-expanded="false"><span id="current-language-label" data-no-translate>English</span><span aria-hidden="true">⌄</span></button>
+          <div class="language-menu-options" id="language-menu-options" hidden></div>
+        </div>
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+      </div>
+    </header>
+
+    <main class="blog-page" id="blog">
+      <section class="blog-hero">
+        <div class="blog-hero-copy">
+          <p class="section-kicker"><span></span> COMMUNITY NOTES</p>
+          <h1>Ideas grow <span>when shared.</span></h1>
+          <p>Read stories from visitors and share what you’ve learned. Anyone can read; sign in to publish a post.</p>
+          <a class="blog-hero-link" href="#posts">Explore the posts <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="blog-hero-art" aria-hidden="true"><span class="blog-orbit blog-orbit-one"></span><span class="blog-orbit blog-orbit-two"></span><span class="blog-art-mark">R.</span><span class="blog-art-caption">WRITE · LEARN · GROW</span></div>
+      </section>
+
+      <div class="blog-layout">
+        <section class="blog-feed" id="posts" aria-labelledby="posts-title">
+          <div class="blog-feed-heading"><div><p class="section-kicker"><span></span> THE COMMUNITY</p><h2 id="posts-title">Latest posts</h2></div><span class="post-count" id="post-count"></span></div>
+          <div class="blog-posts" id="blog-posts" aria-live="polite"></div>
+        </section>
+
+        <aside class="blog-sidebar">
+          <section class="blog-panel account-panel" aria-labelledby="account-title">
+            <p class="section-kicker"><span></span> YOUR SPACE</p>
+            <h2 id="account-title">Join the conversation</h2>
+            <p class="account-intro">Create a free account to publish your own story and manage your posts.</p>
+            <div class="account-actions" id="account-actions">
+              <button class="button button-primary" id="account-signup" type="button">Create an account</button>
+              <button class="button button-quiet" id="account-signin" type="button">I already have an account</button>
+            </div>
+            <form class="blog-form auth-form" id="auth-form" hidden>
+              <h3 id="auth-form-title">Sign in</h3>
+              <div class="form-field signup-only" id="signup-name-field" hidden><label for="signup-name">Name</label><input id="signup-name" name="name" type="text" autocomplete="name" maxlength="50"></div>
+              <div class="form-field"><label for="auth-email">Email</label><input id="auth-email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
+              <div class="form-field"><label for="auth-password">Password</label><input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"></div>
+              <button class="button button-primary form-submit" id="auth-submit" type="submit">Sign in</button>
+              <button class="text-button" id="auth-mode-switch" type="button">Create an account instead</button>
+              <p class="form-feedback" id="auth-feedback" role="status" aria-live="polite"></p>
+            </form>
+            <div class="signed-in-card" id="signed-in-card" hidden>
+              <p class="signed-in-note">You’re signed in as</p>
+              <strong id="signed-in-name"></strong>
+              <a class="button button-primary" href="#write">Write a post</a>
+            </div>
+          </section>
+
+          <section class="blog-panel writer-panel" id="write" aria-labelledby="write-title" hidden>
+            <p class="section-kicker"><span></span> YOUR STORY</p>
+            <h2 id="write-title">Write a post</h2>
+            <p class="writer-hint">Your post will be visible to everyone after publishing.</p>
+            <form class="blog-form" id="post-form">
+              <input type="hidden" id="post-id">
+              <div class="form-field"><label for="post-author">Display name</label><input id="post-author" name="author" type="text" required minlength="2" maxlength="50" autocomplete="nickname"></div>
+              <div class="form-field"><label for="post-title">Title</label><input id="post-title" name="title" type="text" required minlength="5" maxlength="160"></div>
+              <div class="form-field"><label for="post-body">Your story</label><textarea id="post-body" name="body" required minlength="20" maxlength="12000" rows="8"></textarea><small class="character-count" id="character-count">0 / 12,000</small></div>
+              <button class="button button-primary form-submit" id="post-submit" type="submit">Publish post</button>
+              <button class="text-button" id="cancel-edit" type="button" hidden>Cancel editing</button>
+              <p class="form-feedback" id="post-feedback" role="status" aria-live="polite"></p>
+            </form>
+          </section>
+        </aside>
+      </div>
+
+      <div class="blog-translation-source" hidden>
+        <span data-message="loading">Loading posts…</span><span data-message="empty">No posts yet. Start the conversation.</span>
+        <span data-message="loadError">Something went wrong while loading posts.</span><span data-message="published">Your post is live.</span>
+        <span data-message="updated">Your changes are saved.</span><span data-message="deleted">Post removed.</span>
+        <span data-message="invalidPost">Check the title and story length, then try again.</span><span data-message="confirmDelete">Delete this post?</span>
+        <span data-message="signupSuccess">Account created. Check your email for a confirmation link, then sign in.</span>
+        <span data-message="signinSuccess">You’re signed in. You can write a post now.</span><span data-message="signoutSuccess">You’re signed out.</span>
+        <span data-message="authError">We couldn’t complete that request. Check your details and try again.</span>
+        <span data-message="passwordLength">Use a password with at least 8 characters.</span>
+        <span data-message="signedInAs">You’re signed in as</span><span data-message="edit">Edit</span><span data-message="delete">Delete</span>
+        <span data-message="publish">Publish post</span><span data-message="saveChanges">Save changes</span>
+        <span data-message="signIn">Sign in</span><span data-message="signUp">Sign up</span><span data-message="createAccount">Create an account</span>
+        <span data-message="existingAccount">I already have an account</span><span data-message="createInstead">Create an account instead</span>
+        <span data-message="signInInstead">I already have an account</span><span data-message="author">By</span>
+      </div>
+    </main>
+
+    <footer class="footer section-wrap blog-footer"><a class="brand" href="/"><span class="brand-mark">R</span><span>Raihan<span class="brand-dot">.</span></span></a><p>Thanks for sharing your story. <a href="/">Visit the portfolio ↗</a></p><div class="footer-bottom"><span>© <span id="year"></span> Raihan. All rights reserved.</span><a href="#blog">Back to top ↑</a></div></footer>
+  </div>
+  <script src="language.js"></script>
+  <script type="module" src="blog.js"></script>
+</body>
+</html>
