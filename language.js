@@ -82,8 +82,15 @@
       try { localStorage.setItem(choiceKey, language.code); } catch {}
       try { sessionStorage.setItem(choiceKey, language.code); } catch {}
       const url = new URL(window.location.href);
-      if (language.code === sourceLanguage) url.searchParams.delete("lang");
-      else url.searchParams.set("lang", language.code);
+      const isPortfolioHome = ["/", "/index.html", "/bn.html"].includes(url.pathname);
+      if (isPortfolioHome) {
+        url.pathname = language.code === "bn" ? "/bn.html" : "/";
+        url.searchParams.delete("lang");
+      } else if (language.code === sourceLanguage) {
+        url.searchParams.delete("lang");
+      } else {
+        url.searchParams.set("lang", language.code);
+      }
       window.location.assign(url.toString());
     });
     return button;
