@@ -206,11 +206,4 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .language-options button{justify-content:center;min-height:44px;border-color:rgba(245,189,54,.3);background:#101315}
 .language-card{width:min(620px,100%);max-height:94vh;overflow:auto}
 /* Keep the source page visible while an optional translation is loading. */
-
-
-
-
-html[dir="rtl"] .topbar{direction:ltr}
-html[dir="rtl"] .nav-links{direction:rtl}
-
 @media(max-width:640px){.language-options{grid-template-columns:repeat(2,minmax(0,1fr))}.language-menu-options{width:min(235px,calc(100vw - 36px));grid-template-columns:repeat(2,minmax(0,1fr))}}
