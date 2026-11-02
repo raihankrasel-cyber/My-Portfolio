@@ -217,3 +217,32 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .assistant-skill-buttons button:hover{transform:translateY(-1px);border-color:rgba(245,189,54,.62);background:rgba(245,189,54,.09)}
 .assistant-skill-buttons button:focus-visible{outline:2px solid var(--assistant-gold);outline-offset:2px}
 @media(max-width:600px){.assistant-skill-picks{padding:9px}.assistant-skill-buttons{gap:5px}.assistant-skill-buttons button{font-size:8px}}
+
+
+/* Slightly roomier section rhythm across the portfolio */
+@media(min-width:641px){
+  .intro{padding-top:132px}
+  .intro-grid{gap:90px;padding:64px 0 88px}
+  .experience{padding:112px 0 120px}
+  .experience-grid{gap:50px;margin-top:46px}
+  .services,.work{padding-top:132px}
+  .section-heading{margin:48px 0 50px}
+  .service-card{padding:32px 24px 36px}
+  .reply-widget{padding-top:48px;padding-bottom:116px}
+  .reply-widget .section-heading{margin-bottom:36px}
+  .contact{padding:62px 56px 66px}
+  .contact-grid{gap:76px;margin-top:50px}
+  .contact-direct{margin-top:40px}
+}
+@media(max-width:640px){
+  .intro{padding-top:104px}
+  .intro-grid{gap:34px;padding:42px 0 62px}
+  .experience{padding:86px 0 92px}
+  .services,.work{padding-top:94px}
+  .section-heading{margin:34px 0 36px}
+  .service-card{padding:24px 18px 28px}
+  .reply-widget{padding-top:30px;padding-bottom:88px}
+  .contact{padding:38px 24px 42px}
+  .contact-grid{gap:40px;margin-top:34px}
+  .contact-direct{margin-top:28px}
+}
