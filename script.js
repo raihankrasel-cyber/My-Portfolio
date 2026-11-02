@@ -5,17 +5,31 @@ const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only,
 document.getElementById("year").textContent = new Date().getFullYear();
 
 const isBangla = document.documentElement.lang === "bn";
+const languageChoiceKey = "portfolio-language-choice";
 const languageDialog = document.getElementById("language-dialog");
-if (languageDialog) {
-  let languageChoice = null;
-  try { languageChoice = sessionStorage.getItem("portfolio-language-choice"); } catch {}
-  if (!languageChoice) languageDialog.hidden = false;
-  languageDialog.querySelectorAll("[data-language-choice]").forEach((link) => {
-    link.addEventListener("click", () => {
-      try { sessionStorage.setItem("portfolio-language-choice", link.dataset.languageChoice); } catch {}
-    });
-  });
+let languageChoice = null;
+try {
+  languageChoice = localStorage.getItem(languageChoiceKey);
+  if (!languageChoice) {
+    languageChoice = sessionStorage.getItem(languageChoiceKey);
+    if (languageChoice === "en" || languageChoice === "bn") localStorage.setItem(languageChoiceKey, languageChoice);
+  }
+} catch {}
+if (languageChoice !== "en" && languageChoice !== "bn") languageChoice = null;
+if (languageChoice && languageChoice !== (isBangla ? "bn" : "en")) {
+  window.location.replace(languageChoice === "bn" ? "/bn.html" : "/");
 }
+if (languageDialog && !languageChoice) languageDialog.hidden = false;
+document.querySelectorAll("[data-language-choice]").forEach((link) => {
+  link.addEventListener("click", () => {
+    const choice = link.dataset.languageChoice;
+    if (choice !== "en" && choice !== "bn") return;
+    try {
+      localStorage.setItem(languageChoiceKey, choice);
+      sessionStorage.setItem(languageChoiceKey, choice);
+    } catch {}
+  });
+});
 
 const emailLink = document.getElementById("email-link");
 const emailLabel = document.getElementById("email-label");
