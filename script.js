@@ -81,7 +81,7 @@ if (footer && footerBottom) {
       "<div class='assistant-typing' role='status' aria-live='polite' hidden><span class='assistant-typing-dots' aria-hidden='true'><i></i><i></i><i></i></span><span class='assistant-typing-label'>Writing a reply…</span></div>",
       "<div class='assistant-quick-questions' aria-label='Suggested questions'><button type='button' data-question='What services do you offer?'>Services & skills</button><button type='button' data-question='Can I see your work?'>Selected work</button><button type='button' data-question='How can I contact you?'>Contact</button></div>",
       "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
-      "<p class='assistant-notice'>Messages, images, and recordings may be sent to OpenAI to generate replies. Raihan is notified after your first message. Please don’t share sensitive information.</p>",
+      "<p class='assistant-notice'>Your text messages are saved privately so Raihan can review chat history. Images and recordings are not saved. Text, images, and recordings may be sent to OpenAI to generate replies. Raihan is notified when you start chatting. Please don’t share sensitive information.</p>",
     "</div>",
   ].join("");
   footer.insertBefore(assistant, footerBottom);
@@ -115,7 +115,7 @@ if (footer && footerBottom) {
     assistant.querySelector(".assistant-image-remove").setAttribute("aria-label", "ছবি সরান");
     assistant.querySelector(".assistant-submit-label").textContent = "পাঠান";
     assistant.querySelector(".assistant-submit").setAttribute("aria-label", "বার্তা পাঠান");
-    assistant.querySelector(".assistant-notice").textContent = "আপনার বার্তা, ছবি বা রেকর্ডিং উত্তর তৈরির জন্য OpenAI-তে পাঠানো হতে পারে। প্রথম বার্তার পর Raihan-কে জানানো হবে। সংবেদনশীল তথ্য দেবেন না।";
+    assistant.querySelector(".assistant-notice").textContent = "আপনার টেক্সট বার্তা ব্যক্তিগতভাবে সংরক্ষিত হয়, যাতে Raihan চ্যাটের ইতিহাস দেখতে পারেন। ছবি ও রেকর্ডিং সংরক্ষণ করা হয় না। উত্তর তৈরির জন্য বার্তা, ছবি বা রেকর্ডিং OpenAI-তে পাঠানো হতে পারে। চ্যাট শুরু হলে Raihan-কে জানানো হবে। সংবেদনশীল তথ্য দেবেন না।";
     assistant.querySelector(".assistant-typing-label").textContent = "উত্তর তৈরি হচ্ছে…";
   }
 
@@ -146,6 +146,7 @@ if (footer && footerBottom) {
   const sendLabel = assistant.querySelector(".assistant-submit-label");
   const quickButtons = Array.from(quickQuestionLabels);
   const conversation = [];
+  const conversationId = crypto.randomUUID();
   let isSending = false;
 
   const addAssistantMessage = (text, sender = "bot", imageData = null) => {
@@ -312,7 +313,7 @@ if (footer && footerBottom) {
       const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversation.slice(-8), language: assistantLanguage }),
+        body: JSON.stringify({ messages: conversation.slice(-8), language: assistantLanguage, conversationId }),
         signal: controller.signal,
       });
       const data = await response.json().catch(() => ({}));
