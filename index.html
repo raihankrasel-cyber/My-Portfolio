@@ -9,14 +9,13 @@
   <title>Raihan's Portfolio — Digital Marketer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="medium.css">
   <link rel="stylesheet" href="auth.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Hebrew:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500,600;700&display=swap" rel="stylesheet">
   <script>
     (() => {
-      const supported = new Set(["en","bn","ar","zh","fr","de","hi","ja","pt","ru","es","ur"]);
+      const supported = new Set(["en","bn"]);
       const source = document.documentElement.lang === "bn" ? "bn" : "en";
       let selected = null;
       let explicit = false;
@@ -32,21 +31,11 @@
       root.dataset.siteLanguage = selected;
       root.dataset.hasLanguageChoice = explicit ? "true" : "false";
       root.lang = selected;
-      root.dir = selected === "ar" || selected === "ur" ? "rtl" : "ltr";
+      root.dir = "ltr";
       if (selected !== source) root.classList.add("language-pending");
     })();
   </script>
   <link rel="alternate" hreflang="en" href="/?lang=en">
   <link rel="alternate" hreflang="bn" href="/bn.html?lang=bn">
-  <link rel="alternate" hreflang="ar" href="/?lang=ar">
-  <link rel="alternate" hreflang="zh-Hans" href="/?lang=zh">
-  <link rel="alternate" hreflang="fr" href="/?lang=fr">
-  <link rel="alternate" hreflang="de" href="/?lang=de">
-  <link rel="alternate" hreflang="hi" href="/?lang=hi">
-  <link rel="alternate" hreflang="ja" href="/?lang=ja">
-  <link rel="alternate" hreflang="pt" href="/?lang=pt">
-  <link rel="alternate" hreflang="ru" href="/?lang=ru">
-  <link rel="alternate" hreflang="es" href="/?lang=es">
-  <link rel="alternate" hreflang="ur" href="/?lang=ur">
 </head>
 <body><div class="language-dialog" id="language-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="language-title"><div class="language-backdrop"></div><div class="language-card"><spa[...]
