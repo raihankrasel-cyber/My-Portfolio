@@ -5,31 +5,7 @@ const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only,
 document.getElementById("year").textContent = new Date().getFullYear();
 
 const isBangla = document.documentElement.lang === "bn";
-const languageChoiceKey = "portfolio-language-choice";
-const languageDialog = document.getElementById("language-dialog");
-let languageChoice = null;
-try {
-  languageChoice = localStorage.getItem(languageChoiceKey);
-  if (!languageChoice) {
-    languageChoice = sessionStorage.getItem(languageChoiceKey);
-    if (languageChoice === "en" || languageChoice === "bn") localStorage.setItem(languageChoiceKey, languageChoice);
-  }
-} catch {}
-if (languageChoice !== "en" && languageChoice !== "bn") languageChoice = null;
-if (languageChoice && languageChoice !== (isBangla ? "bn" : "en")) {
-  window.location.replace(languageChoice === "bn" ? "/bn.html" : "/");
-}
-if (languageDialog && !languageChoice) languageDialog.hidden = false;
-document.querySelectorAll("[data-language-choice]").forEach((link) => {
-  link.addEventListener("click", () => {
-    const choice = link.dataset.languageChoice;
-    if (choice !== "en" && choice !== "bn") return;
-    try {
-      localStorage.setItem(languageChoiceKey, choice);
-      sessionStorage.setItem(languageChoiceKey, choice);
-    } catch {}
-  });
-});
+const assistantLanguage = document.documentElement.dataset.siteLanguage || document.documentElement.lang || "en";
 
 const emailLink = document.getElementById("email-link");
 const emailLabel = document.getElementById("email-label");
@@ -186,7 +162,7 @@ if (footer && footerBottom) {
       speak.setAttribute("aria-label", isBangla ? "উত্তরটি পড়ে শোনান" : "Read this reply aloud");
       speak.addEventListener("click", () => {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = isBangla ? "bn-BD" : "en-US";
+        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = ({ en: "en-US", bn: "bn-BD", ar: "ar-SA", zh: "zh-CN", fr: "fr-FR", de: "de-DE", hi: "hi-IN", ja: "ja-JP", pt: "pt-PT", ru: "ru-RU", es: "es-ES", ur: "ur-PK" })[assistantLanguage] || "en-US";
         window.speechSynthesis.speak(utterance);
       });
       message.append(speak);
@@ -336,7 +312,7 @@ if (footer && footerBottom) {
       const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversation.slice(-8), language: isBangla ? "bn" : "en" }),
+        body: JSON.stringify({ messages: conversation.slice(-8), language: assistantLanguage }),
         signal: controller.signal,
       });
       const data = await response.json().catch(() => ({}));
@@ -434,7 +410,7 @@ if (footer && footerBottom) {
         try {
           const formData = new FormData();
           formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
-          formData.append("language", isBangla ? "bn" : "en");
+          formData.append("language", assistantLanguage);
           const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", { method: "POST", body: formData });
           const data = await response.json().catch(() => ({}));
           if (response.status === 429) {
