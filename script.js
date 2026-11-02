@@ -162,7 +162,7 @@ if (footer && footerBottom) {
       speak.setAttribute("aria-label", isBangla ? "উত্তরটি পড়ে শোনান" : "Read this reply aloud");
       speak.addEventListener("click", () => {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = ({ en: "en-US", bn: "bn-BD", ar: "ar-SA", zh: "zh-CN", fr: "fr-FR", de: "de-DE", hi: "hi-IN", ja: "ja-JP", pt: "pt-PT", ru: "ru-RU", es: "es-ES", ur: "ur-PK" })[assistantLanguage] || "en-US";
+        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = ({ en: "en-US", bn: "bn-BD" })[assistantLanguage] || "en-US";
         window.speechSynthesis.speak(utterance);
       });
       message.append(speak);
