@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="medium.css">
+  <link rel="stylesheet" href="auth.css">
   <script>
     (() => {
       const supported = new Set(["en","bn"]);
@@ -48,14 +50,83 @@
   <link rel="alternate" hreflang="bn" href="/bn.html?lang=bn">
 </head>
 <body><div class="language-dialog" id="language-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="language-title"><div class="language-backdrop"></div><div class="language-card"><span class="language-mark">R.</span><p class="language-eyebrow">WELCOME · স্বাগতম</p><h2 id="language-title">Choose your language</h2><p>Explore Raihan’s portfolio in English or Bangla.</p><div class="language-options" id="language-dialog-options"></div><small>Your choice is saved on this device.</small></div></div>
-  <div class="site-shell">
+<div class="front-auth-dialog" id="front-auth-dialog" hidden>
+    <div class="front-auth-backdrop" data-front-auth-close></div>
+    <section class="front-auth-card" role="dialog" aria-modal="true" aria-labelledby="front-auth-title">
+      <button class="front-auth-close" id="front-auth-close" type="button" aria-label="Close">×</button>
+      <p class="front-auth-kicker">YOUR ACCOUNT</p>
+      <h2 id="front-auth-title">Sign in</h2>
+      <div id="front-auth-guest">
+        <div class="front-auth-tabs" role="tablist" aria-label="Account access"><button type="button" data-front-auth-mode="signin" class="is-active">Sign in</button><button type="button" data-front-auth-mode="signup">Sign up</button></div>
+        <form class="front-auth-form" id="front-auth-form">
+          <label class="front-auth-name" id="front-auth-name-wrap" hidden>Name<input id="front-auth-name" type="text" autocomplete="name" maxlength="50"></label>
+          <label>Email<input id="front-auth-email" type="email" autocomplete="email" required maxlength="254"></label>
+          <label>Password<input id="front-auth-password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"></label>
+          <button class="button button-gold front-auth-submit" id="front-auth-submit" type="submit">Sign in</button>
+          <p class="front-auth-feedback" id="front-auth-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <form class="front-auth-form front-auth-code-form" id="front-auth-code-form" hidden>
+        <p id="front-auth-code-instructions">Enter the 6-digit code from your authenticator app.</p>
+        <label>Authenticator code<input id="front-auth-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
+        <button class="button button-gold front-auth-submit" id="front-auth-code-submit" type="submit">Verify code</button>
+        <button class="front-auth-secondary" id="front-auth-code-cancel" type="button">Cancel</button>
+        <p class="front-auth-feedback" id="front-auth-code-feedback" role="status" aria-live="polite"></p>
+      </form>
+      <section id="front-auth-account" hidden>
+        <p class="front-auth-signed-as">Signed in as <strong id="front-auth-user-email"></strong></p>
+        <div class="front-auth-security">
+          <h3>Two-step verification</h3>
+          <p id="front-auth-mfa-status">Checking your authenticator settings…</p>
+          <p class="front-auth-required-note" id="front-auth-mfa-required">Enable an authenticator before publishing posts on the blog.</p>
+          <button class="button button-gold" id="front-auth-mfa-setup-button" type="button">Set up authenticator</button>
+          <button class="front-auth-secondary" id="front-auth-mfa-disable-button" type="button" hidden>Turn off two-step verification</button>
+          <form class="front-auth-enroll" id="front-auth-enroll-form" hidden>
+            <p>Scan this QR code with an authenticator app, then enter the 6-digit code it generates.</p>
+            <img id="front-auth-qr" alt="Authenticator setup QR code">
+            <p class="front-auth-secret-label">Can’t scan it? Enter this setup key manually:</p>
+            <code id="front-auth-secret"></code>
+            <label>Authenticator code<input id="front-auth-enroll-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
+            <button class="button button-gold front-auth-submit" id="front-auth-enroll-submit" type="submit">Enable two-step verification</button>
+            <button class="front-auth-secondary" id="front-auth-enroll-cancel" type="button">Cancel setup</button>
+          </form>
+          <p class="front-auth-feedback" id="front-auth-security-feedback" role="status" aria-live="polite"></p>
+        </div>
+        <button class="front-auth-secondary front-auth-signout" id="front-auth-signout" type="button">Sign out</button>
+      </section>
+      <div class="front-auth-messages" hidden>
+        <span data-auth-message="account">Account</span><span data-auth-message="signIn">Sign in</span><span data-auth-message="signUp">Sign up</span>
+        <span data-auth-message="name">Name</span><span data-auth-message="email">Email</span><span data-auth-message="password">Password</span>
+        <span data-auth-message="createAccount">Create account</span><span data-auth-message="close">Close</span>
+        <span data-auth-message="authError">We couldn’t complete sign-in. Check your details and try again.</span>
+        <span data-auth-message="signupSent">Your account is ready. Check your email to confirm it, then sign in.</span>
+        <span data-auth-message="signedIn">You’re signed in.</span><span data-auth-message="signedOut">You’re signed out.</span>
+        <span data-auth-message="passwordLength">Use a password with at least 8 characters.</span>
+        <span data-auth-message="twoFactor">Two-step verification</span><span data-auth-message="checkingMfa">Checking your authenticator settings…</span>
+        <span data-auth-message="mfaEnabled">Authenticator is enabled. You’ll enter a code when you sign in.</span>
+        <span data-auth-message="mfaDisabled">Authenticator is not enabled.</span><span data-auth-message="mfaRequired">Enable an authenticator before publishing posts on the blog.</span>
+        <span data-auth-message="setupAuthenticator">Set up authenticator</span><span data-auth-message="disableMfa">Turn off two-step verification</span>
+        <span data-auth-message="codeInstructions">Enter the 6-digit code from your authenticator app.</span><span data-auth-message="disableCodeInstructions">Enter your current 6-digit authenticator code to turn off two-step verification.</span>
+        <span data-auth-message="enrollInstructions">Scan this QR code with an authenticator app, then enter the 6-digit code it generates.</span>
+        <span data-auth-message="manualSecret">Can’t scan it? Enter this setup key manually:</span>
+        <span data-auth-message="verifyCode">Verify code</span><span data-auth-message="enableMfa">Enable two-step verification</span><span data-auth-message="cancel">Cancel</span>
+        <span data-auth-message="cancelSetup">Cancel setup</span><span data-auth-message="mfaSetupFailed">Couldn’t start setup. Please try again.</span>
+        <span data-auth-message="mfaVerifyFailed">That code didn’t work. Check the code and try again.</span>
+        <span data-auth-message="mfaNowEnabled">Two-step verification is enabled.</span><span data-auth-message="mfaNowDisabled">Two-step verification is off.</span>
+        <span data-auth-message="mfaDisableFailed">Couldn’t turn it off. Verify your authenticator code and try again.</span>
+        <span data-auth-message="mfaDisableConfirm">Turn off two-step verification? You’ll need to set it up again before publishing.</span>
+        <span data-auth-message="sessionMfa">Enter a code to finish signing in.</span>
+        <span data-auth-message="signedInMfa">Sign-in requires an authenticator code.</span>
+      </div>
+    </section>
+  </div>  <div class="site-shell">
     <header class="topbar">
       <a class="brand" href="#home" aria-label="Raihan's Portfolio home"><span class="brand-mark">R</span><span>Raihan<span class="brand-dot">.</span></span></a>
       <nav class="nav-links" aria-label="Main navigation">
-        <a href="#about">About</a><a href="#experience">Experience</a><a href="#services">Services</a><a href="#work">Selected work</a><a href="#reply-bd">Reply BD</a><a href="#bslend">BS Lend</a>
+        <a href="#about">About</a><a href="#experience">Experience</a><a href="#services">Services</a><a href="#work">Selected work</a><a href="#reply-bd">Reply BD</a><a href="#bslend">BS Lend</a><a href="/blog.html">Blog</a>
         <a class="nav-contact" href="#contact">Let's talk <span>↗</span></a>
       </nav>
-            <div class="header-actions"><div class="language-menu"><button class="language-switch" id="language-toggle" type="button" aria-label="Choose language" aria-expanded="false"><span id="current-language-label" data-no-translate>English</span><span aria-hidden="true">⌄</span></button><div class="language-menu-options" id="language-menu-options" hidden></div></div><button class="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button></div>
+            <div class="header-actions"><div class="front-auth-actions" id="front-auth-actions"><button class="front-auth-top-button" id="front-auth-signin" type="button">Sign in</button><button class="front-auth-top-button front-auth-top-primary" id="front-auth-signup" type="button">Sign up</button></div><button class="front-auth-top-button" id="front-auth-account-button" type="button" hidden>Account</button><div class="language-menu"><button class="language-switch" id="language-toggle" type="button" aria-label="Choose language" aria-expanded="false"><span id="current-language-label" data-no-translate>English</span><span aria-hidden="true">⌄</span></button><div class="language-menu-options" id="language-menu-options" hidden></div></div><button class="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button></div>
     </header>
 
     <main>
@@ -166,7 +237,14 @@
         <p class="reply-widget-note">Scroll inside the preview to explore the storefront, or <a href="https://bslend.com/" target="_blank" rel="noreferrer">open bslend.com in a new tab ↗</a>.</p>
       </section>
 
-<section class="contact section-wrap" id="contact">
+<section class="medium-section section-wrap" id="medium-stories">
+        <div class="section-kicker"><span>06</span><span class="gold-line"></span><span>WRITING ON MEDIUM</span></div>
+        <div class="section-heading"><h2>Ideas worth sharing.<br><em>From Medium.</em></h2><p>Latest stories and notes from my Medium profile.<br><a class="medium-profile-link" href="https://medium.com/@raihan.k.rasel" target="_blank" rel="noreferrer">Visit my Medium profile ↗</a></p></div>
+        <div class="medium-feed-grid" data-medium-feed data-limit="3" aria-live="polite"><p class="medium-feed-status">Loading Medium stories…</p></div>
+        <div class="medium-feed-source" hidden><span data-medium-message="loading">Loading Medium stories…</span><span data-medium-message="error">Medium stories aren’t available right now. Visit my profile on Medium.</span><span data-medium-message="empty">No Medium stories are available yet. Visit my profile on Medium.</span><span data-medium-message="read">Read on Medium ↗</span></div>
+      </section>
+
+      <section class="contact section-wrap" id="contact">
         <div class="contact-glow"></div>
         <div class="section-kicker"><span>07</span><span class="gold-line"></span><span>THE NEXT GOOD THING STARTS HERE</span></div>
         <div class="contact-grid"><div><p class="eyebrow">HAVE A PROJECT?</p><h2>Let's make<br>something <em>grow.</em></h2><p class="contact-intro">Tell me what you're working on. I'll get back to you and we can take it from there.</p><div class="contact-direct"><a class="contact-option" id="email-link" href="#contact"><span class="contact-option-icon">✉</span><span><small>EMAIL</small><b id="email-label">Add your email in the setup</b></span><span>↗</span></a><a class="contact-option" id="whatsapp-link" href="#contact"><span class="contact-option-icon">◉</span><span><small>WHATSAPP</small><b id="whatsapp-label">Add your number in the setup</b></span><span>↗</span></a></div></div>
@@ -179,5 +257,7 @@
   </div>
   <script src="script.js"></script>
   <script src="language.js"></script>
+  <script type="module" src="front-auth.js"></script>
+  <script src="medium-feed.js"></script>
 </body>
 </html>
