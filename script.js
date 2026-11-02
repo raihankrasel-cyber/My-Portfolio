@@ -86,6 +86,12 @@ if (footer && footerBottom) {
           "<button type='button' data-question='Give me three playful marketing ideas for a small business this week.'>✨ Idea spark</button>",
           "<button type='button' data-question='Give me one quick SEO improvement I can make to my portfolio today.'>🔎 SEO sidekick</button>",
           "<button type='button' data-question='Help me investigate why a marketing metric might be going up or down.'>📊 Metric detective</button>",
+          "<button type='button' data-question='Write a friendly, catchy social media caption for a small business.'>✍️ Caption chef</button>",
+          "<button type='button' data-question='Suggest a likely target audience for a digital marketing campaign for a small business.'>🎯 Audience finder</button>",
+          "<button type='button' data-question='Give me two headline or ad variations I could A/B test, and what to compare.'>🧪 A/B idea lab</button>",
+          "<button type='button' data-question='Polish a sentence to make it clearer and punchier. Ask me to paste the sentence.'>🧹 Copy polisher</button>",
+          "<button type='button' data-question='Suggest a simple seven-day social content plan for a small business.'>🗓️ Content planner</button>",
+          "<button type='button' data-question='Give me a checklist for reviewing competitors’ marketing without making unsupported claims.'>🕵️ Competitor scout</button>",
         "</div>",
       "</section>",
       "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
@@ -115,11 +121,21 @@ if (footer && footerBottom) {
     const quickLabels = ["সেবা ও দক্ষতা", "নির্বাচিত কাজ", "যোগাযোগ"];
     quickQuestionLabels.forEach((button, index) => { button.textContent = quickLabels[index]; });
     const miniSkillButtons = assistant.querySelectorAll(".assistant-skill-buttons button");
-    const miniSkillLabels = ["✨ আইডিয়া স্পার্ক", "🔎 SEO সহকারী", "📊 মেট্রিক গোয়েন্দা"];
+    const miniSkillLabels = [
+      "✨ আইডিয়া স্পার্ক", "🔎 SEO সহকারী", "📊 মেট্রিক গোয়েন্দা",
+      "✍️ ক্যাপশন শেফ", "🎯 অডিয়েন্স খোঁজক", "🧪 A/B আইডিয়া ল্যাব",
+      "🧹 কপি পালিশার", "🗓️ কনটেন্ট প্ল্যানার", "🕵️ প্রতিদ্বন্দ্বী স্কাউট",
+    ];
     const miniSkillPrompts = [
       "এই সপ্তাহে একটি ছোট ব্যবসার প্রচারের জন্য তিনটি মজার আইডিয়া দিন।",
       "আজই আমার পোর্টফোলিওর SEO উন্নত করার একটি দ্রুত উপায় বলুন।",
       "মার্কেটিংয়ের কোনো মেট্রিক কেন বাড়তে বা কমতে পারে তা খুঁজে দেখতে সাহায্য করুন।",
+      "একটি ছোট ব্যবসার জন্য বন্ধুত্বপূর্ণ ও আকর্ষণীয় সোশ্যাল মিডিয়া ক্যাপশন লিখুন।",
+      "একটি ছোট ব্যবসার ডিজিটাল মার্কেটিং ক্যাম্পেইনের সম্ভাব্য লক্ষ্য-দর্শক কারা হতে পারে বলুন।",
+      "A/B টেস্টের জন্য দুটি বিজ্ঞাপন বা শিরোনামের বিকল্প দিন এবং কী তুলনা করব বলুন।",
+      "একটি বাক্য পরিষ্কার ও জোরালো করে লিখতে সাহায্য করুন। বাক্যটি দিতে বলুন।",
+      "একটি ছোট ব্যবসার জন্য সাত দিনের সোশ্যাল কনটেন্ট পরিকল্পনা দিন।",
+      "প্রতিদ্বন্দ্বীদের মার্কেটিং পর্যালোচনার একটি চেকলিস্ট দিন, যেন ভিত্তিহীন দাবি না হয়।",
     ];
     miniSkillButtons.forEach((button, index) => {
       button.textContent = miniSkillLabels[index];
