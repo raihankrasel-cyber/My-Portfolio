@@ -205,8 +205,7 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .language-options{grid-template-columns:repeat(3,minmax(0,1fr));max-height:58vh;overflow:auto}
 .language-options button{justify-content:center;min-height:44px;border-color:rgba(245,189,54,.3);background:#101315}
 .language-card{width:min(620px,100%);max-height:94vh;overflow:auto}
-html.language-pending .site-shell{visibility:hidden}
-html.language-pending body:after{content:"Loading your translation…";position:fixed;z-index:2000;inset:0;display:grid;place-items:center;background:#090b0d;color:var(--gold);font:600 14px var(--font)}
+/* Keep the source page visible while an optional translation is loading. */
 html[lang="ar"] body,html[lang="ur"] body{font-family:"Noto Sans Arabic","Outfit",sans-serif}
 html[lang="zh"] body{font-family:"Noto Sans SC","Outfit",sans-serif}
 html[lang="hi"] body{font-family:"Noto Sans Devanagari","Outfit",sans-serif}
