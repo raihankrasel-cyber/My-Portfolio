@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090b0d">
   <meta name="description" content="রায়হানের ডিজিটাল মার্কেটিংয়ের পাশাপাশি পোশাক উৎপাদন, গুণগত মান যাচাই ও বিক্রয়ে বাস্তব অভিজ্ঞতা রয়েছে।">
+  <script defer src="/_vercel/insights/script.js"></script>
   <title>রায়হানের পোর্টফোলিও — ডিজিটাল মার্কেটার</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +13,9 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="medium.css">
   <link rel="stylesheet" href="auth.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     (() => {
-      const supported = new Set(["en","bn","ar","zh","fr","de","hi","ja","pt","ru","es","ur"]);
+      const supported = new Set(["en","bn"]);
       const source = document.documentElement.lang === "bn" ? "bn" : "en";
       let selected = null;
       let explicit = false;
@@ -26,27 +26,28 @@
         if (explicit) localStorage.setItem("portfolio-language-choice", selected);
       } catch {}
       if (!supported.has(selected)) selected = source;
+      const homePaths = ["/", "/index.html", "/bn.html"];
+      const targetPath = selected === "bn" ? "/bn.html" : "/";
+      if (homePaths.includes(window.location.pathname) && window.location.pathname !== targetPath) {
+        const destination = new URL(targetPath, window.location.origin);
+        const query = new URLSearchParams(window.location.search);
+        query.delete("lang");
+        query.forEach((value, key) => destination.searchParams.append(key, value));
+        destination.hash = window.location.hash;
+        window.location.replace(destination.toString());
+        return;
+      }
       const root = document.documentElement;
       root.dataset.baseLanguage = source;
       root.dataset.siteLanguage = selected;
       root.dataset.hasLanguageChoice = explicit ? "true" : "false";
       root.lang = selected;
-      root.dir = selected === "ar" || selected === "ur" ? "rtl" : "ltr";
+      root.dir = "ltr";
       if (selected !== source) root.classList.add("language-pending");
     })();
   </script>
   <link rel="alternate" hreflang="en" href="/?lang=en">
   <link rel="alternate" hreflang="bn" href="/bn.html?lang=bn">
-  <link rel="alternate" hreflang="ar" href="/?lang=ar">
-  <link rel="alternate" hreflang="zh-Hans" href="/?lang=zh">
-  <link rel="alternate" hreflang="fr" href="/?lang=fr">
-  <link rel="alternate" hreflang="de" href="/?lang=de">
-  <link rel="alternate" hreflang="hi" href="/?lang=hi">
-  <link rel="alternate" hreflang="ja" href="/?lang=ja">
-  <link rel="alternate" hreflang="pt" href="/?lang=pt">
-  <link rel="alternate" hreflang="ru" href="/?lang=ru">
-  <link rel="alternate" hreflang="es" href="/?lang=es">
-  <link rel="alternate" hreflang="ur" href="/?lang=ur">
 </head>
 <body><div class="language-dialog" id="language-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="language-title"><div class="language-backdrop"></div><div class="language-card"><span class="language-mark">R.</span><p class="language-eyebrow">স্বাগতম · WELCOME</p><h2 id="language-title">আপনার ভাষা বেছে নিন</h2><p>রায়হানের পোর্টফোলিও ইংরেজি অথবা বাংলায় দেখুন।</p><div class="language-options" id="language-dialog-options"></div><small>এই ডিভাইসে আপনার পছন্দ সংরক্ষিত থাকবে।</small></div></div>
 <div class="front-auth-dialog" id="front-auth-dialog" hidden>

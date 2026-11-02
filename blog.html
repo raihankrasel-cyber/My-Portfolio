@@ -8,14 +8,14 @@
   <title>Blog — Raihan's Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="blog.css">
   <link rel="stylesheet" href="auth.css">
   <link rel="stylesheet" href="medium.css">
   <script>
     (() => {
-      const supported = new Set(["en","bn","ar","zh","fr","de","hi","ja","pt","ru","es","ur"]);
+      const supported = new Set(["en","bn"]);
       const source = "en";
       let selected = null;
       let explicit = false;
@@ -31,7 +31,7 @@
       root.dataset.siteLanguage = selected;
       root.dataset.hasLanguageChoice = explicit ? "true" : "false";
       root.lang = selected;
-      root.dir = selected === "ar" || selected === "ur" ? "rtl" : "ltr";
+      root.dir = "ltr";
       if (selected !== source) root.classList.add("language-pending");
     })();
   </script>

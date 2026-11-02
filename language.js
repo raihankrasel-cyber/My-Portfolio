@@ -3,22 +3,11 @@
 
   const languages = [
     { code: "en", label: "English", name: "English" },
-    { code: "bn", label: "বাংলা", name: "Bengali" },
-    { code: "ar", label: "العربية", name: "Arabic" },
-    { code: "zh", label: "中文", name: "Simplified Chinese" },
-    { code: "fr", label: "Français", name: "French" },
-    { code: "de", label: "Deutsch", name: "German" },
-    { code: "hi", label: "हिन्दी", name: "Hindi" },
-    { code: "ja", label: "日本語", name: "Japanese" },
-    { code: "pt", label: "Português", name: "Portuguese" },
-    { code: "ru", label: "Русский", name: "Russian" },
-    { code: "es", label: "Español", name: "Spanish" },
-    { code: "ur", label: "اردو", name: "Urdu" }
+    { code: "bn", label: "বাংলা", name: "Bengali" }
   ];
   const languageByCode = new Map(languages.map((item) => [item.code, item]));
   const sourceLanguage = document.documentElement.dataset.baseLanguage || "en";
   const currentLanguage = document.documentElement.dataset.siteLanguage || sourceLanguage;
-  const rtlLanguages = new Set(["ar", "ur"]);
   const dialog = document.getElementById("language-dialog");
   const dialogOptions = document.getElementById("language-dialog-options");
   const menu = document.getElementById("language-menu-options");
@@ -86,15 +75,22 @@
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = language.label;
-    button.lang = language.code === "zh" ? "zh-Hans" : language.code;
+    button.lang = language.code;
     button.dataset.languageChoice = language.code;
     button.dataset.noTranslate = "";
     button.addEventListener("click", () => {
       try { localStorage.setItem(choiceKey, language.code); } catch {}
       try { sessionStorage.setItem(choiceKey, language.code); } catch {}
       const url = new URL(window.location.href);
-      if (language.code === sourceLanguage) url.searchParams.delete("lang");
-      else url.searchParams.set("lang", language.code);
+      const isPortfolioHome = ["/", "/index.html", "/bn.html"].includes(url.pathname);
+      if (isPortfolioHome) {
+        url.pathname = language.code === "bn" ? "/bn.html" : "/";
+        url.searchParams.delete("lang");
+      } else if (language.code === sourceLanguage) {
+        url.searchParams.delete("lang");
+      } else {
+        url.searchParams.set("lang", language.code);
+      }
       window.location.assign(url.toString());
     });
     return button;
