@@ -50,6 +50,7 @@ export default {
     }
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY");
     const currentDate = new Date();
     const dhakaDate = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Dhaka",
@@ -146,6 +147,9 @@ export default {
       return Response.json({ error: "Invalid request body." }, { status: 400, headers });
     }
     if ((body as { voiceStatusCheck?: unknown })?.voiceStatusCheck === true) {
+      if (!apiKey) {
+        return Response.json({ available: false, retryAfterSeconds: 1800 }, { headers: { ...headers, "Cache-Control": "no-store" } });
+      }
       const sampleRate = 8_000;
       const sampleCount = sampleRate;
       const dataSize = sampleCount * 2;
@@ -233,7 +237,7 @@ export default {
       return Response.json({ reply }, { headers: { ...headers, "Cache-Control": "no-store" } });
     }
 
-    if (!apiKey) {
+    if (!apiKey && !anthropicApiKey) {
       const lastContent = (messages[messages.length - 1] as { content: string | Array<{ type: string; text?: string }> }).content;
       const question = (typeof lastContent === "string" ? lastContent : lastContent.find((part) => part.type === "input_text")?.text || "").toLowerCase();
       if (requestedLanguage === "bn") {
@@ -288,53 +292,109 @@ export default {
       return Response.json({ reply }, { headers: { ...headers, "Cache-Control": "no-store" } });
     }
 
-    try {
-      const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "gpt-6-luna",
-          reasoning: { effort: "medium" },
-          instructions: requestedLanguage === "bn"
-            ? instructions + "\\n\\nRespond in natural Bangla. Keep product and platform names as written, and follow the same verified-facts and privacy rules.\\n\\nCurrent date in Bangladesh (Asia/Dhaka): " + banglaDhakaDate + ". Bangladesh local time (Asia/Dhaka): " + banglaDhakaTime + " (UTC+6). If asked for today’s date or time, answer using these values."
-            : instructions + "\\n\\nCurrent date in Bangladesh (Asia/Dhaka): " + dhakaDate + ". Current time in Bangladesh (Asia/Dhaka): " + dhakaTime + " (UTC+6). If asked for today’s date or time, answer using these values.",
-          input: messages.map((message: { role: "user" | "assistant"; content: string | Array<Record<string, string>> }) => ({
-            role: message.role,
-            content: typeof message.content === "string"
-              ? [{ type: message.role === "assistant" ? "output_text" : "input_text", text: message.content }]
-              : message.content,
-          })),
-          max_output_tokens: 800,
-          store: false,
-        }),
-      });
-      const result = await openaiResponse.json().catch(() => ({}));
-      if (!openaiResponse.ok) {
-        console.error("OpenAI request failed", openaiResponse.status, JSON.stringify(result.error || result).slice(0, 500));
-        return Response.json({ error: "The assistant could not reply right now. Please try again shortly." }, { status: 502, headers });
+    const chatSystemInstruction = requestedLanguage === "bn"
+      ? instructions + "\n\nRespond in natural Bangla. Keep product and platform names as written, and follow the same verified-facts and privacy rules.\n\nCurrent date in Bangladesh (Asia/Dhaka): " + banglaDhakaDate + ". Bangladesh local time (Asia/Dhaka): " + banglaDhakaTime + " (UTC+6). If asked for today’s date or time, answer using these values."
+      : instructions + "\n\nCurrent date in Bangladesh (Asia/Dhaka): " + dhakaDate + ". Current time in Bangladesh (Asia/Dhaka): " + dhakaTime + " (UTC+6). If asked for today’s date or time, answer using these values.";
+    let rawReply = "";
+
+    if (apiKey) {
+      try {
+        const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-6-luna",
+            reasoning: { effort: "medium" },
+            instructions: chatSystemInstruction,
+            input: messages.map((message: { role: "user" | "assistant"; content: string | Array<Record<string, string>> }) => ({
+              role: message.role,
+              content: typeof message.content === "string"
+                ? [{ type: message.role === "assistant" ? "output_text" : "input_text", text: message.content }]
+                : message.content,
+            })),
+            max_output_tokens: 800,
+            store: false,
+          }),
+          signal: AbortSignal.timeout(8_000),
+        });
+        const result = await openaiResponse.json().catch(() => ({}));
+        if (!openaiResponse.ok) {
+          console.error("OpenAI request failed", openaiResponse.status, JSON.stringify(result.error || result).slice(0, 500));
+        } else {
+          rawReply = typeof result.output_text === "string"
+            ? result.output_text.trim()
+            : Array.isArray(result.output)
+              ? result.output.flatMap((item: { type?: string; content?: Array<{ type?: string; text?: string }> }) =>
+                  item.type === "message" && Array.isArray(item.content)
+                    ? item.content.filter((part) => part.type === "output_text" || part.type === "refusal").map((part) => part.text || "")
+                    : []
+                ).join("").trim()
+              : "";
+          if (!rawReply) {
+            console.error("OpenAI returned no assistant text", JSON.stringify({
+              status: result.status,
+              incompleteReason: result.incomplete_details?.reason,
+              outputTypes: Array.isArray(result.output) ? result.output.map((item: { type?: string }) => item.type) : [],
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("OpenAI request error; trying Anthropic fallback", error);
       }
-      const rawReply = typeof result.output_text === "string"
-        ? result.output_text.trim()
-        : Array.isArray(result.output)
-          ? result.output.flatMap((item: { type?: string; content?: Array<{ type?: string; text?: string }> }) =>
-              item.type === "message" && Array.isArray(item.content)
-                ? item.content.filter((part) => part.type === "output_text" || part.type === "refusal").map((part) => part.text || "")
-                : []
-            ).join("").trim()
-          : "";
-      if (!rawReply) {
-        console.error("OpenAI returned no assistant text", JSON.stringify({
-          status: result.status,
-          incompleteReason: result.incomplete_details?.reason,
-          outputTypes: Array.isArray(result.output) ? result.output.map((item: { type?: string }) => item.type) : [],
-        }));
-      }
-      const reply = requestedLanguage === "bn" ? normalizeBanglaName(rawReply) : rawReply;
-      if (!reply) return Response.json({ error: "The assistant returned an empty reply. Please try again." }, { status: 502, headers });
-      return Response.json({ reply }, { headers });
-    } catch (error) {
-      console.error("Assistant request error", error);
-      return Response.json({ error: "The assistant could not connect right now. Please try again." }, { status: 502, headers });
     }
+
+    if (!rawReply && anthropicApiKey) {
+      try {
+        const anthropicMessages = messages.map((message: {
+          role: "user" | "assistant";
+          content: string | Array<{ type: string; text?: string; image_url?: string }>;
+        }) => ({
+          role: message.role,
+          content: typeof message.content === "string"
+            ? [{ type: "text", text: message.content }]
+            : message.content.map((part) => {
+                if (part.type === "input_text") return { type: "text", text: part.text || "" };
+                const match = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/]+={0,2})$/.exec(part.image_url || "");
+                if (!match) throw new Error("Invalid image data for Anthropic");
+                return {
+                  type: "image",
+                  source: { type: "base64", media_type: match[1], data: match[2] },
+                };
+              }),
+        }));
+        const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "x-api-key": anthropicApiKey,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-5",
+            max_tokens: 800,
+            system: chatSystemInstruction,
+            messages: anthropicMessages,
+          }),
+          signal: AbortSignal.timeout(12_000),
+        });
+        const result = await anthropicResponse.json().catch(() => ({}));
+        if (!anthropicResponse.ok) {
+          console.error("Anthropic fallback failed", anthropicResponse.status, JSON.stringify(result.error || result).slice(0, 500));
+        } else {
+          rawReply = Array.isArray(result.content)
+            ? result.content.filter((part: { type?: string; text?: string }) => part.type === "text").map((part: { text?: string }) => part.text || "").join("").trim()
+            : "";
+          if (!rawReply) console.error("Anthropic returned no assistant text", JSON.stringify({ stopReason: result.stop_reason }));
+        }
+      } catch (error) {
+        console.error("Anthropic fallback error", error);
+      }
+    }
+
+    if (!rawReply) {
+      return Response.json({ error: "The assistant could not reply right now. Please try again shortly." }, { status: 502, headers });
+    }
+    const reply = requestedLanguage === "bn" ? normalizeBanglaName(rawReply) : rawReply;
+    return Response.json({ reply }, { headers });
   }),
 };
