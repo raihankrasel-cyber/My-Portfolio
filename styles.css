@@ -207,3 +207,13 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .language-card{width:min(620px,100%);max-height:94vh;overflow:auto}
 /* Keep the source page visible while an optional translation is loading. */
 @media(max-width:640px){.language-options{grid-template-columns:repeat(2,minmax(0,1fr))}.language-menu-options{width:min(235px,calc(100vw - 36px));grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Playful one-tap skills in the footer assistant */
+.assistant-skill-picks{margin:0 0 12px;padding:10px 11px;border:1px solid rgba(245,189,54,.14);border-radius:9px;background:rgba(245,189,54,.035)}
+.assistant-skill-label{display:block;margin-bottom:8px;color:#b8a46f;font:700 8px/1.4 var(--font);letter-spacing:.12em}
+.assistant-skill-buttons{display:flex;flex-wrap:wrap;gap:6px}
+.assistant-skill-buttons button{padding:6px 8px;border:1px solid rgba(245,189,54,.22);border-radius:999px;background:#151819;color:#e8e6de;font:500 9px/1.4 var(--font);cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.assistant-skill-buttons button:hover{transform:translateY(-1px);border-color:rgba(245,189,54,.62);background:rgba(245,189,54,.09)}
+.assistant-skill-buttons button:focus-visible{outline:2px solid var(--assistant-gold);outline-offset:2px}
+@media(max-width:600px){.assistant-skill-picks{padding:9px}.assistant-skill-buttons{gap:5px}.assistant-skill-buttons button{font-size:8px}}
