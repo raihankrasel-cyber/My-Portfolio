@@ -1,10 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const SUPABASE_URL = "https://qnmdmsxxcxwzddomwkea.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2bGIWYXcOTSi_jveUCkaFw_jAXly3Z9";
-const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-});
+import { supabase, signInWithPassword, verifyFactorChallenge, challengeExistingSessionIfNeeded, cancelPendingSignIn, isMfaPending } from "./auth.js";
 
 const byId = (id) => document.getElementById(id);
 const strings = document.querySelector(".blog-translation-source");
@@ -12,6 +6,9 @@ const message = (id) => strings?.querySelector('[data-message="' + id + '"]')?.t
 const authForm = byId("auth-form");
 const authSubmit = byId("auth-submit");
 const authFeedback = byId("auth-feedback");
+const challengeForm = byId("blog-mfa-challenge");
+const challengeFeedback = byId("blog-mfa-feedback");
+const mfaRequiredPanel = byId("blog-mfa-required");
 const authTitle = byId("auth-form-title");
 const authModeSwitch = byId("auth-mode-switch");
 const signupNameField = byId("signup-name-field");
@@ -29,6 +26,8 @@ const blogPosts = byId("blog-posts");
 const countLabel = byId("post-count");
 let authMode = "signin";
 let currentUser = null;
+let hasAal2 = false;
+let pendingMfa = null;
 let posts = [];
 
 function setFeedback(element, text, state) {
@@ -86,7 +85,7 @@ function renderPosts() {
     body.className = "blog-post-body";
     body.textContent = post.body;
     article.append(title, meta, body);
-    if (currentUser && post.author_id === currentUser.id) {
+    if (currentUser && hasAal2 && post.author_id === currentUser.id) {
       const actions = document.createElement("div");
       actions.className = "blog-post-actions";
       const edit = document.createElement("button");
@@ -152,12 +151,15 @@ async function deletePost(post) {
 async function setSignedInUser(user) {
   currentUser = user || null;
   if (!currentUser) {
+    hasAal2 = false;
     headerAuthOptions.hidden = false;
     headerUserStatus.hidden = true;
     accountActions.hidden = false;
     authForm.hidden = true;
+    challengeForm.hidden = true;
     signedInCard.hidden = true;
     writerPanel.hidden = true;
+    mfaRequiredPanel.hidden = true;
     renderPosts();
     return;
   }
@@ -167,9 +169,17 @@ async function setSignedInUser(user) {
   byId("header-user-name").textContent = displayName;
   accountActions.hidden = true;
   authForm.hidden = true;
+  challengeForm.hidden = true;
   signedInCard.hidden = false;
   byId("signed-in-name").textContent = currentUser.email || displayName;
-  writerPanel.hidden = false;
+  try {
+    const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    hasAal2 = !error && assurance.currentLevel === "aal2";
+  } catch {
+    hasAal2 = false;
+  }
+  writerPanel.hidden = !hasAal2;
+  mfaRequiredPanel.hidden = hasAal2;
   const { data } = await supabase.from("blog_posts").select("author_name").eq("author_id", currentUser.id).order("created_at", { ascending: false }).limit(1);
   byId("post-author").value = data?.[0]?.author_name || displayName;
   renderPosts();
@@ -189,6 +199,11 @@ byId("post-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!currentUser) {
     showAuth("signin");
+    return;
+  }
+  if (!hasAal2) {
+    setFeedback(postFeedback, message("mfaPleaseEnable"), "error");
+    mfaRequiredPanel.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
   const authorName = byId("post-author").value.trim();
@@ -221,31 +236,71 @@ authForm.addEventListener("submit", async (event) => {
     return;
   }
   authSubmit.disabled = true;
-  let result;
   if (authMode === "signup") {
-    result = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { display_name: byId("signup-name").value.trim() } }
     });
-  } else {
-    result = await supabase.auth.signInWithPassword({ email, password });
+    authSubmit.disabled = false;
+    if (error) {
+      setFeedback(authFeedback, message("authError"), "error");
+      return;
+    }
+    if (!data.session) {
+      setFeedback(authFeedback, message("signupSuccess"), "success");
+      return;
+    }
+    setFeedback(authFeedback, message("signinSuccess"), "success");
+    await setSignedInUser(data.user || data.session.user);
+    await loadPosts();
+    return;
   }
-  authSubmit.disabled = false;
-  if (result.error) {
+  try {
+    const result = await signInWithPassword(email, password);
+    authSubmit.disabled = false;
+    if (result.requiresMfa) {
+      pendingMfa = result;
+      authForm.hidden = true;
+      challengeForm.hidden = false;
+      byId("blog-mfa-code").focus({ preventScroll: true });
+      return;
+    }
+    setFeedback(authFeedback, message("signinSuccess"), "success");
+    await setSignedInUser(result.user);
+    await loadPosts();
+  } catch {
+    authSubmit.disabled = false;
     setFeedback(authFeedback, message("authError"), "error");
-    return;
   }
-  if (authMode === "signup" && !result.data.session) {
-    setFeedback(authFeedback, message("signupSuccess"), "success");
-    return;
+});
+challengeForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!pendingMfa) return;
+  byId("blog-mfa-submit").disabled = true;
+  try {
+    await verifyFactorChallenge(pendingMfa.factorId, pendingMfa.challengeId, byId("blog-mfa-code").value);
+    pendingMfa = null;
+    challengeForm.hidden = true;
+    const { data } = await supabase.auth.getUser();
+    await setSignedInUser(data.user || null);
+    await loadPosts();
+  } catch {
+    setFeedback(challengeFeedback, message("mfaError"), "error");
   }
-  setFeedback(authFeedback, message("signinSuccess"), "success");
-  await setSignedInUser(result.data.user || result.data.session?.user);
-  await loadPosts();
+  byId("blog-mfa-submit").disabled = false;
+});
+byId("blog-mfa-cancel").addEventListener("click", async () => {
+  await cancelPendingSignIn();
+  pendingMfa = null;
+  challengeForm.hidden = true;
+  await setSignedInUser(null);
 });
 supabase.auth.onAuthStateChange((_event, session) => {
-  window.setTimeout(() => { void setSignedInUser(session?.user || null); }, 0);
+  window.setTimeout(() => {
+    if (isMfaPending()) return;
+    void setSignedInUser(session?.user || null);
+  }, 0);
 });
 const mobileMenuButton = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".nav-links");
@@ -277,5 +332,22 @@ function waitForLanguage() {
 await waitForLanguage();
 authTitle.textContent = message("signIn");
 authSubmit.textContent = message("signIn");
-await supabase.auth.getSession().then(({ data }) => setSignedInUser(data.session?.user || null));
+const { data: sessionData } = await supabase.auth.getSession();
+if (sessionData.session?.user) {
+  try {
+    const challenge = await challengeExistingSessionIfNeeded();
+    if (challenge.requiresMfa) {
+      pendingMfa = challenge;
+      authForm.hidden = true;
+      challengeForm.hidden = false;
+    } else {
+      await setSignedInUser(sessionData.session.user);
+    }
+  } catch {
+    await setSignedInUser(sessionData.session.user);
+    setFeedback(authFeedback, message("authError"), "error");
+  }
+} else {
+  await setSignedInUser(null);
+}
 await loadPosts();
