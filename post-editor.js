@@ -103,7 +103,7 @@ function allowedUrl(value) {
 }
 function sanitizeEditor(html = editor.innerHTML) {
   const source = new DOMParser().parseFromString(html || "", "text/html").body;
-  const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE"]);
+  const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE","TABLE","THEAD","TBODY","TR","TH","TD"]);
   const forbidden = new Set(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","FORM","INPUT"]);
   function clean(node) {
     if (node.nodeType === Node.TEXT_NODE) return document.createTextNode(node.nodeValue || "");
@@ -227,6 +227,22 @@ byId("format-block").addEventListener("change", (event) => {
   captureSelection();
   editor.focus();
   updateCount();
+});
+byId("insert-table").addEventListener("mousedown", (event) => event.preventDefault());
+byId("insert-table").addEventListener("click", () => {
+  const table = document.createElement("table");
+  const body = document.createElement("tbody");
+  for (let rowIndex = 0; rowIndex < 3; rowIndex += 1) {
+    const row = document.createElement("tr");
+    for (let columnIndex = 0; columnIndex < 3; columnIndex += 1) {
+      const cell = document.createElement(rowIndex === 0 ? "th" : "td");
+      cell.textContent = rowIndex === 0 ? "Heading" : "Text";
+      row.append(cell);
+    }
+    body.append(row);
+  }
+  table.append(body);
+  insertNode(table);
 });
 byId("insert-link").addEventListener("mousedown", (event) => event.preventDefault());
 byId("insert-link").addEventListener("click", () => {
