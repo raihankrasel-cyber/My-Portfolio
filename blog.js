@@ -37,7 +37,6 @@ function setFeedback(element, text, state) {
 function setAuthMode(mode) {
   authMode = mode;
   authForm.hidden = false;
-  byId("forgot-password-form").hidden = true;
   byId("password-recovery-form").hidden = true;
   byId("forgot-password").hidden = mode !== "signin";
   accountActions.hidden = true;
@@ -230,20 +229,17 @@ byId("post-form").addEventListener("submit", async (event) => {
   resetPostForm();
   await loadPosts();
 });
-byId("forgot-password").addEventListener("click", () => {
-  byId("forgot-email").value = byId("auth-email").value.trim();
-  authForm.hidden = true;
-  byId("forgot-password-form").hidden = false;
-  setFeedback(byId("forgot-feedback"), "");
-});
-byId("forgot-back").addEventListener("click", () => setAuthMode("signin"));
-byId("forgot-password-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const button = event.currentTarget.querySelector('[type="submit"]');
-  button.disabled = true;
-  const { error } = await supabase.auth.resetPasswordForEmail(byId("forgot-email").value.trim(), { redirectTo: window.location.origin + "/" });
-  button.disabled = false;
-  setFeedback(byId("forgot-feedback"), error ? "We couldn’t send the reset email. Please try again." : "If an account exists for this email, password reset instructions have been sent.", error ? "error" : "success");
+byId("forgot-password").addEventListener("click", async () => {
+  const email = byId("auth-email").value.trim();
+  if (!email) {
+    setFeedback(authFeedback, "Enter the email address you use to sign in first.", "error");
+    byId("auth-email").focus();
+    return;
+  }
+  byId("forgot-password").disabled = true;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/" });
+  byId("forgot-password").disabled = false;
+  setFeedback(authFeedback, error ? "We couldn’t send the reset email. Please try again." : "If an account exists for this sign-in email, password reset instructions have been sent.", error ? "error" : "success");
 });
 byId("password-recovery-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -350,7 +346,6 @@ supabase.auth.onAuthStateChange((event, session) => {
       accountActions.hidden = true;
       authForm.hidden = true;
       challengeForm.hidden = true;
-      byId("forgot-password-form").hidden = true;
       byId("password-recovery-form").hidden = false;
       byId("account-title").textContent = "Set a new password";
       byId("new-password").focus({ preventScroll: true });
