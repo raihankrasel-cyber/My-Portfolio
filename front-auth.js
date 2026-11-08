@@ -42,12 +42,14 @@ function showGuest(mode) {
   guest.hidden = false;
   account.hidden = true;
   codeForm.hidden = true;
+  $("front-auth-recovery-form").hidden = true;
   authForm.hidden = false;
   $("front-auth-title").textContent = msg(authMode === "signup" ? "signUp" : "signIn");
   $("front-auth-name-wrap").hidden = authMode !== "signup";
   $("front-auth-name").required = authMode === "signup";
   $("front-auth-password").autocomplete = authMode === "signup" ? "new-password" : "current-password";
   $("front-auth-submit").textContent = msg(authMode === "signup" ? "createAccount" : "signIn");
+  $("front-auth-forgot").hidden = authMode !== "signin";
   document.querySelectorAll("[data-front-auth-mode]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.frontAuthMode === authMode);
     button.setAttribute("aria-selected", String(button.dataset.frontAuthMode === authMode));
@@ -195,6 +197,52 @@ authForm.addEventListener("submit", async (event) => {
     feedback($("front-auth-feedback"), msg("authError"), "error");
   }
 });
+$("front-auth-forgot").addEventListener("click", async () => {
+  const email = $("front-auth-email").value.trim();
+  if (!email) {
+    feedback($("front-auth-feedback"), document.documentElement.lang === "bn" ? "আগে আপনার ইমেইল লিখুন।" : "Enter your email address first.", "error");
+    $("front-auth-email").focus();
+    return;
+  }
+  const button = $("front-auth-forgot");
+  button.disabled = true;
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/" });
+  button.disabled = false;
+  feedback($("front-auth-feedback"), error
+    ? (document.documentElement.lang === "bn" ? "রিসেট ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন।" : "We couldn’t send the reset email. Please try again.")
+    : (document.documentElement.lang === "bn" ? "যদি এই ইমেইলে অ্যাকাউন্ট থাকে, পাসওয়ার্ড রিসেটের নির্দেশনা পাঠানো হয়েছে।" : "If an account exists for this email, password reset instructions have been sent."), error ? "error" : "success");
+});
+$("front-auth-recovery-back").addEventListener("click", () => {
+  $("front-auth-recovery-form").hidden = true;
+  guest.hidden = false;
+  showGuest("signin");
+});
+$("front-auth-recovery-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const password = $("front-auth-new-password").value;
+  const feedbackNode = $("front-auth-recovery-feedback");
+  if (password.length < 8) {
+    feedback(feedbackNode, msg("passwordLength") || "Use at least 8 characters.", "error");
+    return;
+  }
+  const submit = event.currentTarget.querySelector('[type="submit"]');
+  submit.disabled = true;
+  const { error } = await supabase.auth.updateUser({ password });
+  submit.disabled = false;
+  if (error) {
+    feedback(feedbackNode, document.documentElement.lang === "bn" ? "লিংকটি মেয়াদোত্তীর্ণ হতে পারে। নতুন রিসেট ইমেইল নিন।" : "This reset link may have expired. Request a new reset email.", "error");
+    return;
+  }
+  feedback(feedbackNode, document.documentElement.lang === "bn" ? "পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে।" : "Your password has been updated.", "success");
+  window.setTimeout(() => { void supabase.auth.signOut(); closeModal(); }, 1200);
+});
+document.querySelectorAll("[data-password-toggle]").forEach((button) => button.addEventListener("click", () => {
+  const input = $(button.dataset.passwordToggle);
+  const visible = input.type === "password";
+  input.type = visible ? "text" : "password";
+  button.textContent = visible ? (document.documentElement.lang === "bn" ? "লুকান" : "Hide") : (document.documentElement.lang === "bn" ? "দেখান" : "Show");
+  button.setAttribute("aria-pressed", String(visible));
+}));
 codeForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!pendingAction) return;
@@ -287,7 +335,19 @@ $("front-auth-signout").addEventListener("click", async () => {
   updateHeader();
   showGuest("signin");
 });
-supabase.auth.onAuthStateChange((_event, session) => {
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY") {
+    window.setTimeout(() => {
+      modal.hidden = false;
+      guest.hidden = true;
+      account.hidden = true;
+      codeForm.hidden = true;
+      $("front-auth-recovery-form").hidden = false;
+      $("front-auth-title").textContent = document.documentElement.lang === "bn" ? "নতুন পাসওয়ার্ড সেট করুন" : "Set a new password";
+      $("front-auth-new-password").focus({ preventScroll: true });
+    }, 0);
+    return;
+  }
   window.setTimeout(() => {
     if (isMfaPending()) return;
     const user = session?.user || null;
