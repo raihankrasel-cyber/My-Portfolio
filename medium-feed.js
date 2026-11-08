@@ -1,3 +1,4 @@
+import { supabase } from "./auth.js";
 (function () {
   "use strict";
   const SUPABASE_URL = "https://qnmdmsxxcxwzddomwkea.supabase.co";
@@ -16,12 +17,12 @@
   };
   const makeStory = (story) => {
     const card = document.createElement("article");
-    card.className = "medium-story-card";
+    card.className = story.localPost ? "medium-story-card medium-story-card-local" : "medium-story-card";
     if (story.image) {
       const imageLink = document.createElement("a");
       imageLink.className = "medium-story-image-link";
       imageLink.href = story.url;
-      imageLink.target = "_blank";
+      if (!story.localPost) imageLink.target = "_blank";
       imageLink.rel = "noreferrer";
       imageLink.setAttribute("aria-label", story.title);
       const image = document.createElement("img");
@@ -41,7 +42,7 @@
     const title = document.createElement("a");
     title.className = "medium-story-title";
     title.href = story.url;
-    title.target = "_blank";
+    if (!story.localPost) title.target = "_blank";
     title.rel = "noreferrer";
     title.textContent = story.title;
     content.append(meta, title);
@@ -54,9 +55,9 @@
     const readLink = document.createElement("a");
     readLink.className = "medium-story-read";
     readLink.href = story.url;
-    readLink.target = "_blank";
+    if (!story.localPost) readLink.target = "_blank";
     readLink.rel = "noreferrer";
-    readLink.textContent = localized("read");
+    readLink.textContent = localized(story.localPost ? "readBlog" : "read");
     content.append(readLink);
     card.append(content);
     return card;
@@ -80,31 +81,55 @@
       window.setTimeout(() => { observer.disconnect(); resolve(); }, 38000);
     });
   }
+  function newestPostImage(markup) {
+    try {
+      const parsed = new DOMParser().parseFromString(markup || "", "text/html");
+      const src = parsed.querySelector("img")?.getAttribute("src") || "";
+      const url = new URL(src);
+      if (url.origin === "https://qnmdmsxxcxwzddomwkea.supabase.co" && url.pathname.startsWith("/storage/v1/object/public/blog-images/")) return url.href;
+    } catch {}
+    return "";
+  }
   async function loadFeed() {
     await waitForLanguage();
     containers.forEach((container) => showNotice(container, "loading", localized("loading")));
-    try {
-      const response = await fetch(feedEndpoint, { headers: { "Accept": "application/json" } });
-      if (!response.ok) throw new Error("Medium feed request failed.");
-      const result = await response.json();
-      const items = Array.isArray(result.items) ? result.items : [];
-      containers.forEach((container) => {
-        const limit = Number.parseInt(container.dataset.limit || "3", 10);
-        const newestFirst = [...items].sort((a, b) => {
-          const dateA = Date.parse(a.publishedAt || "") || 0;
-          const dateB = Date.parse(b.publishedAt || "") || 0;
-          return dateB - dateA;
-        });
-        const stories = newestFirst.slice(0, Number.isFinite(limit) ? limit : 3);
-        if (!stories.length) {
-          showNotice(container, "empty", localized("empty"));
-          return;
-        }
-        container.replaceChildren(...stories.map(makeStory));
-      });
-    } catch {
-      containers.forEach((container) => showNotice(container, "error", localized("error")));
-    }
+    const [mediumResult, postResult] = await Promise.allSettled([
+      fetch(feedEndpoint, { headers: { "Accept": "application/json" } }).then(async (response) => {
+        if (!response.ok) throw new Error("Medium feed request failed.");
+        return response.json();
+      }),
+      supabase.from("blog_posts").select("author_name,title,body,rich_content,created_at").order("created_at", { ascending: false }).limit(1)
+    ]);
+    const mediumFailed = mediumResult.status === "rejected";
+    const items = mediumResult.status === "fulfilled" && Array.isArray(mediumResult.value.items) ? mediumResult.value.items : [];
+    const latestPost = postResult.status === "fulfilled" && !postResult.value.error ? postResult.value.data?.[0] : null;
+    const newestFirst = [...items].sort((a, b) => {
+      const dateA = Date.parse(a.publishedAt || "") || 0;
+      const dateB = Date.parse(b.publishedAt || "") || 0;
+      return dateB - dateA;
+    });
+    containers.forEach((container) => {
+      const limitValue = Number.parseInt(container.dataset.limit || "3", 10);
+      const limit = Number.isFinite(limitValue) ? limitValue : 3;
+      const cards = [];
+      if (latestPost && limit > 0) {
+        cards.push(makeStory({
+          localPost: true,
+          author: latestPost.author_name,
+          publishedAt: latestPost.created_at,
+          title: latestPost.title,
+          excerpt: latestPost.body,
+          image: newestPostImage(latestPost.rich_content),
+          url: "/blog.html#posts"
+        }));
+      }
+      cards.push(...newestFirst.slice(0, Math.max(0, limit - cards.length)).map(makeStory));
+      if (cards.length) {
+        container.replaceChildren(...cards);
+        return;
+      }
+      showNotice(container, mediumFailed ? "error" : "empty", localized(mediumFailed ? "error" : "empty"));
+    });
   }
   loadFeed();
 })();
