@@ -37,6 +37,9 @@ function setFeedback(element, text, state) {
 function setAuthMode(mode) {
   authMode = mode;
   authForm.hidden = false;
+  byId("forgot-password-form").hidden = true;
+  byId("password-recovery-form").hidden = true;
+  byId("forgot-password").hidden = mode !== "signin";
   accountActions.hidden = true;
   signupNameField.hidden = mode !== "signup";
   byId("signup-name").required = mode === "signup";
@@ -227,6 +230,51 @@ byId("post-form").addEventListener("submit", async (event) => {
   resetPostForm();
   await loadPosts();
 });
+byId("forgot-password").addEventListener("click", () => {
+  byId("forgot-email").value = byId("auth-email").value.trim();
+  authForm.hidden = true;
+  byId("forgot-password-form").hidden = false;
+  setFeedback(byId("forgot-feedback"), "");
+});
+byId("forgot-back").addEventListener("click", () => setAuthMode("signin"));
+byId("forgot-password-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = event.currentTarget.querySelector('[type="submit"]');
+  button.disabled = true;
+  const { error } = await supabase.auth.resetPasswordForEmail(byId("forgot-email").value.trim(), { redirectTo: window.location.origin + "/" });
+  button.disabled = false;
+  setFeedback(byId("forgot-feedback"), error ? "We couldn’t send the reset email. Please try again." : "If an account exists for this email, password reset instructions have been sent.", error ? "error" : "success");
+});
+byId("password-recovery-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const password = byId("new-password").value;
+  if (password.length < 8) {
+    setFeedback(byId("recovery-feedback"), message("passwordLength"), "error");
+    return;
+  }
+  const button = event.currentTarget.querySelector('[type="submit"]');
+  button.disabled = true;
+  const { error } = await supabase.auth.updateUser({ password });
+  button.disabled = false;
+  if (error) {
+    setFeedback(byId("recovery-feedback"), "This reset link may have expired. Request a new reset email.", "error");
+    return;
+  }
+  setFeedback(byId("recovery-feedback"), "Your password has been updated.", "success");
+  window.setTimeout(async () => {
+    await supabase.auth.signOut();
+    byId("password-recovery-form").hidden = true;
+    await setSignedInUser(null);
+    setAuthMode("signin");
+  }, 1200);
+});
+document.querySelectorAll("[data-password-toggle]").forEach((button) => button.addEventListener("click", () => {
+  const input = byId(button.dataset.passwordToggle);
+  const visible = input.type === "password";
+  input.type = visible ? "text" : "password";
+  button.textContent = visible ? "Hide" : "Show";
+  button.setAttribute("aria-pressed", String(visible));
+}));
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const email = byId("auth-email").value.trim();
@@ -296,7 +344,19 @@ byId("blog-mfa-cancel").addEventListener("click", async () => {
   challengeForm.hidden = true;
   await setSignedInUser(null);
 });
-supabase.auth.onAuthStateChange((_event, session) => {
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY") {
+    window.setTimeout(() => {
+      accountActions.hidden = true;
+      authForm.hidden = true;
+      challengeForm.hidden = true;
+      byId("forgot-password-form").hidden = true;
+      byId("password-recovery-form").hidden = false;
+      byId("account-title").textContent = "Set a new password";
+      byId("new-password").focus({ preventScroll: true });
+    }, 0);
+    return;
+  }
   window.setTimeout(() => {
     if (isMfaPending()) return;
     void setSignedInUser(session?.user || null);
