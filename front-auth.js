@@ -146,8 +146,9 @@ function waitForLanguage() {
 document.querySelectorAll("[data-front-auth-mode]").forEach((button) => {
   button.addEventListener("click", () => showGuest(button.dataset.frontAuthMode));
 });
-$("front-auth-signin").addEventListener("click", () => openModal("signin"));
-$("front-auth-signup").addEventListener("click", () => openModal("signup"));
+const loginDestination = (mode) => "/login.html?mode=" + mode + "&next=" + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+$("front-auth-signin").addEventListener("click", () => window.location.assign(loginDestination("signin")));
+$("front-auth-signup").addEventListener("click", () => window.location.assign(loginDestination("signup")));
 $("front-auth-account-button").addEventListener("click", () => openModal("security"));
 $("front-auth-close").addEventListener("click", closeModal);
 document.querySelectorAll("[data-front-auth-close]").forEach((element) => element.addEventListener("click", closeModal));
