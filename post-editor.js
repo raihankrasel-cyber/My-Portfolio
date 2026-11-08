@@ -320,7 +320,8 @@ else if (currentUser.email?.toLowerCase() !== "raihan.k.rasel@gmail.com") {
       else {
         byId("editor-title").value = post.title;
         byId("editor-author").value = post.author_name;
-        editor.innerHTML = post.rich_content || post.body.split("\n").map((line) => "<p>" + line.replace(/[&<>]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[char])) + "</p>").join("");
+        const fallbackHtml = post.body.split("\\n").map((line) => "<p>" + line.replace(/[&<>]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[char])) + "</p>").join("");
+        editor.replaceChildren(...sanitizeEditor(post.rich_content || fallbackHtml));
         byId("editor-heading").textContent = "Edit your post";
         byId("editor-mode-label").textContent = "Edit post";
         document.title = "Edit post — Raihan's Portfolio";
