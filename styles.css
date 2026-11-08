@@ -196,7 +196,7 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 @media(prefers-reduced-motion:reduce){.status-dot{animation:none}.service-card,.work-item{transition:none}.service-card:hover,.work-item:hover{transform:none}}
 
 /* Expanded language selector and on-demand translations. */
-.language-switch{appearance:none;background:transparent;cursor:pointer;gap:7px}.language-chevron{display:inline-block;width:6px;height:6px;flex:0 0 6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .18s ease}.language-switch[aria-expanded="true"] .language-chevron{transform:translateY(2px) rotate(225deg)}
+.language-switch{appearance:none;background:transparent;cursor:pointer;gap:7px}
 .language-menu{position:relative}
 .language-menu-options{position:absolute;z-index:40;top:calc(100% + 9px);right:0;width:190px;max-height:min(64vh,430px);overflow:auto;padding:8px;border:1px solid rgba(85,214,190,.4);border-radius:10px;background:#101315;box-shadow:0 16px 42px #0009;display:grid;gap:5px}
 .language-menu-options[hidden]{display:none!important}
