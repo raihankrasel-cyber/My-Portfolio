@@ -12,6 +12,7 @@ const safeNext = (() => {
 })();
 let challenge = null;
 let recoveryInProgress = false;
+let manualAuthInProgress = false;
 const messages = {
   signIn: "Sign in", signup: "Create account", welcome: "Welcome back", signupTitle: "Create your account",
   signInIntro: "Sign in to continue to your account.", signupIntro: "Create an account to join the portfolio community.",
@@ -83,6 +84,7 @@ byId("login-form").addEventListener("submit", async (event) => {
   if (password.length < 8) return setMessage(byId("login-message"), messages.passwordLength, "error");
   const button = byId("submit-button");
   button.disabled = true;
+  manualAuthInProgress = true;
   try {
     if (mode.value === "signup") {
       const { data, error } = await supabase.auth.signUp({
@@ -99,7 +101,7 @@ byId("login-form").addEventListener("submit", async (event) => {
     }
   } catch {
     setMessage(byId("login-message"), messages.invalid, "error");
-  } finally { button.disabled = false; }
+  } finally { button.disabled = false; manualAuthInProgress = false; }
 });
 byId("forgot-password").addEventListener("click", async () => {
   const email = byId("email").value.trim();
@@ -168,7 +170,7 @@ supabase.auth.onAuthStateChange((event, session) => {
     return;
   }
   window.setTimeout(async () => {
-    if (isMfaPending() || recoveryInProgress || event === "SIGNED_OUT") return;
+    if (isMfaPending() || recoveryInProgress || manualAuthInProgress || event === "SIGNED_OUT") return;
     if (event === "SIGNED_IN" && session?.user && !challenge) {
       try {
         const result = await challengeExistingSessionIfNeeded();
