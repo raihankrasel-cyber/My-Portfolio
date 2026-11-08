@@ -63,6 +63,24 @@ function displayDate(value) {
     return new Date(value).toLocaleDateString();
   }
 }
+function appendSafeRichContent(container, markup) {
+  const template = document.createElement("template");
+  template.innerHTML = markup || "";
+  template.content.querySelectorAll("script,style,iframe,object,embed,form,input").forEach((node) => node.remove());
+  const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE"]);
+  const prefix = "https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-media/";
+  template.content.querySelectorAll("*").forEach((node) => {
+    if (!allowed.has(node.tagName)) { node.replaceWith(...node.childNodes); return; }
+    Array.from(node.attributes).forEach((attr) => {
+      if (node.tagName === "A" && attr.name === "href") { try { const url = new URL(attr.value); if (url.protocol === "https:" || url.protocol === "http:") { node.target="_blank"; node.rel="noopener noreferrer"; return; } } catch {} }
+      if ((node.tagName === "IMG" || node.tagName === "SOURCE") && attr.name === "src" && attr.value.startsWith(prefix)) return;
+      if (node.tagName === "IMG" && attr.name === "alt") return;
+      node.removeAttribute(attr.name);
+    });
+    if (node.tagName === "VIDEO") { node.controls=true; node.preload="metadata"; node.playsInline=true; }
+  });
+  container.append(template.content.cloneNode(true));
+}
 function renderPosts() {
   blogPosts.replaceChildren();
   countLabel.textContent = posts.length ? posts.length.toLocaleString(document.documentElement.lang) : "";
@@ -83,9 +101,10 @@ function renderPosts() {
     const author = document.createElement("span");
     author.textContent = post.author_name;
     meta.append(document.createTextNode(message("author") + " "), author, document.createTextNode(" · " + displayDate(post.created_at)));
-    const body = document.createElement("p");
+    const body = document.createElement("div");
     body.className = "blog-post-body";
-    body.textContent = post.body;
+    if (post.rich_content) appendSafeRichContent(body, post.rich_content);
+    else body.textContent = post.body;
     article.append(title, meta, body);
     if (currentUser && hasAal2 && post.author_id === currentUser.id) {
       const actions = document.createElement("div");
@@ -121,17 +140,7 @@ async function loadPosts() {
   posts = data || [];
   renderPosts();
 }
-function editPost(post) {
-  postId.value = post.id;
-  byId("post-author").value = post.author_name;
-  byId("post-title").value = post.title;
-  postBody.value = post.body;
-  postSubmit.textContent = message("saveChanges");
-  byId("cancel-edit").hidden = false;
-  updateCount();
-  writerPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-  byId("post-title").focus({ preventScroll: true });
-}
+function editPost(post) { window.location.assign("/post-editor.html?edit=" + encodeURIComponent(post.id)); }
 function resetPostForm() {
   postForm.reset();
   postId.value = "";
