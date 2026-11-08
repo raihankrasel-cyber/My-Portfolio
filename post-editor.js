@@ -101,7 +101,8 @@ function allowedUrl(value) {
     return ["https:", "http:"].includes(url.protocol) ? url.href : "";
   } catch { return ""; }
 }
-function sanitizeEditor() {
+function sanitizeEditor(html = editor.innerHTML) {
+  const source = new DOMParser().parseFromString(html || "", "text/html").body;
   const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE"]);
   const forbidden = new Set(["SCRIPT","STYLE","IFRAME","OBJECT","EMBED","FORM","INPUT"]);
   function clean(node) {
@@ -146,7 +147,7 @@ function sanitizeEditor() {
     }
     return element;
   }
-  return Array.from(editor.childNodes).map(clean);
+  return Array.from(source.childNodes).map(clean);
 }
 async function uploadMedia(file, kind) {
   if (!file || !currentUser) return;
@@ -259,7 +260,7 @@ byId("editor-form").addEventListener("submit", async (event) => {
   if (!currentUser || mediaBusy) return;
   const title = byId("editor-title").value.trim();
   const authorName = byId("editor-author").value.trim();
-  const cleanNodes = sanitizeEditor();
+  const cleanNodes = sanitizeEditor(editor.innerHTML);
   const cleanContainer = document.createElement("div");
   cleanNodes.forEach((node) => cleanContainer.append(node));
   const richContent = cleanContainer.innerHTML;
