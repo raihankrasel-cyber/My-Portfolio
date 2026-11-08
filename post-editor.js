@@ -283,8 +283,8 @@ byId("editor-form").addEventListener("submit", async (event) => {
   cleanNodes.forEach((node) => cleanContainer.append(node));
   const richContent = cleanContainer.innerHTML;
   const body = textContentOf(richContent);
-  if (authorName.length < 2 || authorName.length > 50 || title.length < 5 || title.length > 160 || body.length < 20 || body.length > 12000) {
-    feedback("Add a title (5–160 characters) and at least 20 characters of story text (up to 12,000).", "error");
+  if (authorName.length < 2 || authorName.length > 50 || title.length < 5 || title.length > 300 || body.length < 20 || body.length > 50000) {
+    feedback("Add a title (5–300 characters) and at least 20 characters of story text (up to 50,000).", "error");
     return;
   }
   const button = byId("publish-post");
