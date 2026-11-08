@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Sign in or create an account for Raihan's portfolio.">
+  <title>Sign in — Raihan's Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/login.css">
+</head>
+<body class="login-page">
+  <header class="login-topbar">
+    <a class="brand" href="/" aria-label="Raihan's Portfolio home"><img class="brand-logo" src="/assets/raihan-logo-full.png" alt=""><span>Raihan<span class="brand-dot">.</span></span></a>
+    <a class="login-home-link" href="/">Back to portfolio <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-card-mark" aria-hidden="true">R.</div>
+      <p class="login-eyebrow">RAIHAN'S PORTFOLIO</p>
+      <h1 id="login-title">Welcome back</h1>
+      <p class="login-intro" id="login-intro">Sign in to continue to your account.</p>
+      <div class="login-tabs" role="tablist" aria-label="Account access">
+        <button type="button" id="tab-signin" role="tab" aria-selected="true">Sign in</button>
+        <button type="button" id="tab-signup" role="tab" aria-selected="false">Create account</button>
+      </div>
+      <form id="login-form" class="login-form">
+        <label id="name-wrap" hidden>Your name
+          <input id="name" type="text" autocomplete="name" maxlength="50">
+        </label>
+        <label>Email address
+          <input id="email" type="email" autocomplete="email" required maxlength="254">
+        </label>
+        <label>Password
+          <span class="login-password-wrap"><input id="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"><button type="button" class="login-show-password" data-toggle-password="password" aria-pressed="false">Show</button></span>
+        </label>
+        <button type="button" id="forgot-password" class="login-text-button">Forgot password?</button>
+        <button type="submit" id="submit-button" class="button button-gold login-submit">Sign in <span aria-hidden="true">↗</span></button>
+        <p id="login-message" class="login-message" role="status" aria-live="polite"></p>
+      </form>
+      <form id="mfa-form" class="login-form" hidden>
+        <p class="login-step-copy">Enter the 6-digit code from your authenticator app.</p>
+        <label>Authenticator code
+          <input id="mfa-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+        </label>
+        <button type="submit" id="mfa-submit" class="button button-gold login-submit">Verify and continue <span aria-hidden="true">↗</span></button>
+        <button type="button" id="mfa-cancel" class="login-text-button">Cancel sign in</button>
+        <p id="mfa-message" class="login-message" role="status" aria-live="polite"></p>
+      </form>
+      <form id="recovery-form" class="login-form" hidden>
+        <label>New password
+          <span class="login-password-wrap"><input id="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required><button type="button" class="login-show-password" data-toggle-password="new-password" aria-pressed="false">Show</button></span>
+        </label>
+        <button type="submit" id="recovery-submit" class="button button-gold login-submit">Update password <span aria-hidden="true">↗</span></button>
+        <p id="recovery-message" class="login-message" role="status" aria-live="polite"></p>
+      </form>
+      <div id="signed-in-panel" class="login-signed-in" hidden>
+        <p class="login-signed-label">Signed in as</p>
+        <strong id="signed-in-email"></strong>
+        <a id="continue-link" class="button button-gold login-submit" href="/">Continue to portfolio <span aria-hidden="true">↗</span></a>
+        <button id="signout-button" type="button" class="login-text-button">Sign out</button>
+      </div>
+      <p class="login-privacy">Your account is protected by your password and, if enabled, authenticator verification.</p>
+    </section>
+  </main>
+  <script type="module" src="/login-page.js"></script>
+</body>
+</html>
