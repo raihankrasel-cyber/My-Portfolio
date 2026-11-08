@@ -90,7 +90,12 @@
       const items = Array.isArray(result.items) ? result.items : [];
       containers.forEach((container) => {
         const limit = Number.parseInt(container.dataset.limit || "3", 10);
-        const stories = items.slice(0, Number.isFinite(limit) ? limit : 3);
+        const newestFirst = [...items].sort((a, b) => {
+          const dateA = Date.parse(a.publishedAt || "") || 0;
+          const dateB = Date.parse(b.publishedAt || "") || 0;
+          return dateB - dateA;
+        });
+        const stories = newestFirst.slice(0, Number.isFinite(limit) ? limit : 3);
         if (!stories.length) {
           showNotice(container, "empty", localized("empty"));
           return;
