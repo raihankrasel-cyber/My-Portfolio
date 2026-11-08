@@ -73,11 +73,19 @@
         <form class="front-auth-form" id="front-auth-form">
           <label class="front-auth-name" id="front-auth-name-wrap" hidden>Name<input id="front-auth-name" type="text" autocomplete="name" maxlength="50"></label>
           <label>Email<input id="front-auth-email" type="email" autocomplete="email" required maxlength="254"></label>
-          <label>Password<input id="front-auth-password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"></label>
+          <label>Password<input id="front-auth-password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"><button class="password-toggle" type="button" data-password-toggle="front-auth-password" aria-pressed="false">Show</button></label>
+          <button class="text-button front-auth-forgot" id="front-auth-forgot" type="button">Forgot password?</button>
           <button class="button button-gold front-auth-submit" id="front-auth-submit" type="submit">Sign in</button>
           <p class="front-auth-feedback" id="front-auth-feedback" role="status" aria-live="polite"></p>
         </form>
       </div>
+      <form class="front-auth-form" id="front-auth-recovery-form" hidden>
+        <h3>Set a new password</h3>
+        <label>Password<input id="front-auth-new-password" type="password" autocomplete="new-password" required minlength="8" maxlength="128"><button class="password-toggle" type="button" data-password-toggle="front-auth-new-password" aria-pressed="false">Show</button></label>
+        <button class="button button-gold front-auth-submit" type="submit">Update password</button>
+        <button class="text-button" id="front-auth-recovery-back" type="button">Back to sign in</button>
+        <p class="front-auth-feedback" id="front-auth-recovery-feedback" role="status" aria-live="polite"></p>
+      </form>
       <form class="front-auth-form front-auth-code-form" id="front-auth-code-form" hidden>
         <p id="front-auth-code-instructions">Enter the 6-digit code from your authenticator app.</p>
         <label>Authenticator code<input id="front-auth-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
