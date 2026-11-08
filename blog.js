@@ -54,7 +54,7 @@ function showAuth(mode) {
   byId("account-title").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 function updateCount() {
-  byId("character-count").textContent = postBody.value.length.toLocaleString(document.documentElement.lang) + " / 12,000";
+  byId("character-count").textContent = postBody.value.length.toLocaleString(document.documentElement.lang) + " / 50,000";
 }
 function displayDate(value) {
   try {
@@ -223,7 +223,7 @@ byId("post-form").addEventListener("submit", async (event) => {
   const authorName = byId("post-author").value.trim();
   const title = byId("post-title").value.trim();
   const body = postBody.value.trim();
-  if (authorName.length < 2 || authorName.length > 50 || title.length < 5 || title.length > 160 || body.length < 20 || body.length > 12000) {
+  if (authorName.length < 2 || authorName.length > 50 || title.length < 5 || title.length > 300 || body.length < 20 || body.length > 50000) {
     setFeedback(postFeedback, message("invalidPost"), "error");
     return;
   }
