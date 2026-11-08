@@ -253,3 +253,5 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 
 /* Shared office palette: NextClicker violet + Reply.bd blue */
 .button-gold{background:linear-gradient(110deg,var(--office-violet),var(--office-blue));color:#fff;box-shadow:0 10px 28px rgba(0,79,252,.2)}.button-gold:hover{background:linear-gradient(110deg,var(--office-blue),var(--office-violet));color:#fff}.hero h1 em,.section-heading em,.contact h2 em{background:linear-gradient(100deg,var(--office-violet),var(--office-blue));background-clip:text;-webkit-background-clip:text;color:transparent}.nav-links .nav-contact{border-color:rgba(108,67,227,.65);box-shadow:inset 0 0 0 1px rgba(0,79,252,.18)}.section-kicker .gold-line{background:linear-gradient(90deg,var(--office-violet),var(--office-blue))}.workstation-card:nth-child(2){border-color:rgba(0,79,252,.4)}.workstation-card:nth-child(2) .workstation-label{color:#6f9cff}.workstation-card:nth-child(2):hover{border-color:rgba(0,79,252,.8)}.workstation-card:nth-child(1){border-color:rgba(108,67,227,.42)}
+
+@media(max-width:900px){.workstation-grid{grid-template-columns:1fr}.workstation-preview iframe{height:560px}}
