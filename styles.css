@@ -246,3 +246,5 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .contact-grid{gap:40px;margin-top:34px}
   .contact-direct{margin-top:28px}
 }
+
+.workstation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.workstation-card{min-height:190px;display:flex;flex-direction:column;justify-content:space-between;padding:26px;border:1px solid rgba(85,214,190,.24);border-radius:10px;background:radial-gradient(ellipse at 90% 0,rgba(85,214,190,.09),transparent 55%),linear-gradient(135deg,#141819,#0e1112);color:var(--white);text-decoration:none;transition:border-color .2s,transform .2s}.workstation-card:hover{transform:translateY(-3px);border-color:rgba(85,214,190,.65)}.workstation-label{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.15em}.workstation-card strong{font-size:clamp(23px,3vw,36px);letter-spacing:-.04em}.workstation-card>span:last-child{color:var(--muted);font-size:11px}.workstation-card:hover>span:last-child{color:var(--gold)}@media(max-width:640px){.workstation-grid{grid-template-columns:1fr}.workstation-card{min-height:160px}}
