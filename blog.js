@@ -68,12 +68,14 @@ function appendSafeRichContent(container, markup) {
   template.innerHTML = markup || "";
   template.content.querySelectorAll("script,style,iframe,object,embed,form,input").forEach((node) => node.remove());
   const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE","TABLE","THEAD","TBODY","TR","TH","TD"]);
-  const prefix = "https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-media/";
+  const imagePrefix = "https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-images/";
+  const videoPrefix = "https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-media/";
   template.content.querySelectorAll("*").forEach((node) => {
     if (!allowed.has(node.tagName)) { node.replaceWith(...node.childNodes); return; }
     Array.from(node.attributes).forEach((attr) => {
       if (node.tagName === "A" && attr.name === "href") { try { const url = new URL(attr.value); if (url.protocol === "https:" || url.protocol === "http:") { node.target="_blank"; node.rel="noopener noreferrer"; return; } } catch {} }
-      if ((node.tagName === "IMG" || node.tagName === "SOURCE") && attr.name === "src" && attr.value.startsWith(prefix)) return;
+      if (node.tagName === "IMG" && attr.name === "src" && attr.value.startsWith(imagePrefix)) return;
+      if (node.tagName === "SOURCE" && attr.name === "src" && attr.value.startsWith(videoPrefix)) return;
       if (node.tagName === "IMG" && attr.name === "alt") return;
       node.removeAttribute(attr.name);
     });
