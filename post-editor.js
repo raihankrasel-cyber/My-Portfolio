@@ -128,7 +128,7 @@ function sanitizeEditor(html = editor.innerHTML) {
     }
     if (tag === "IMG") {
       const src = node.getAttribute("src") || "";
-      if (!src.startsWith("https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-media/")) return document.createDocumentFragment();
+      if (!src.startsWith("https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-images/")) return document.createDocumentFragment();
       element.src = src;
       element.alt = (node.getAttribute("alt") || "").slice(0, 240);
       element.loading = "lazy";
@@ -155,7 +155,8 @@ async function uploadMedia(file, kind) {
   const videoTypes = ["video/mp4","video/webm","video/quicktime"];
   const valid = (kind === "image" ? imageTypes : videoTypes).includes(file.type);
   if (!valid) return mediaStatus("Choose a supported " + kind + " file.", "error");
-  if (file.size > 6 * 1024 * 1024) return mediaStatus("Each attachment must be 6 MB or smaller.", "error");
+  const maxBytes = kind === "image" ? 1024 * 1024 : 6 * 1024 * 1024;
+  if (file.size > maxBytes) return mediaStatus(kind === "image" ? "Each image must be 1 MB or smaller." : "Each video must be 6 MB or smaller.", "error");
   if (mediaBusy) return;
   mediaBusy = true;
   captureSelection();
@@ -165,13 +166,14 @@ async function uploadMedia(file, kind) {
   try {
     const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-90) || "media";
     const path = currentUser.id + "/" + crypto.randomUUID() + "-" + safeName;
-    const { error } = await supabase.storage.from("blog-media").upload(path, file, {
+    const bucket = kind === "image" ? "blog-images" : "blog-media";
+    const { error } = await supabase.storage.from(bucket).upload(path, file, {
       contentType: file.type,
       cacheControl: "31536000",
       upsert: false
     });
     if (error) throw error;
-    const { data } = supabase.storage.from("blog-media").getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     const url = data.publicUrl;
     let node;
     if (kind === "image") {
@@ -311,11 +313,7 @@ function redirectForSignIn() {
 const { data: authData } = await supabase.auth.getSession();
 currentUser = authData.session?.user || null;
 if (!currentUser) redirectForSignIn();
-else if (currentUser.email?.toLowerCase() !== "raihan.k.rasel@gmail.com") {
-  feedback("Post publishing is available to the portfolio owner only.", "error");
-  byId("publish-post").disabled = true;
-  document.querySelector(".editor-eyebrow").textContent = "READ ONLY · PORTFOLIO OWNER ACCESS";
-} else {
+else {
   const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
   if (error || assurance.currentLevel !== "aal2") {
     feedback("Two-step verification is required to publish. Set it up or sign in again to complete verification.", "error");
