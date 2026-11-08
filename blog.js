@@ -67,7 +67,7 @@ function appendSafeRichContent(container, markup) {
   const template = document.createElement("template");
   template.innerHTML = markup || "";
   template.content.querySelectorAll("script,style,iframe,object,embed,form,input").forEach((node) => node.remove());
-  const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE"]);
+  const allowed = new Set(["P","DIV","BR","STRONG","B","EM","I","U","S","UL","OL","LI","BLOCKQUOTE","H2","H3","A","FIGURE","FIGCAPTION","IMG","VIDEO","SOURCE","TABLE","THEAD","TBODY","TR","TH","TD"]);
   const prefix = "https://qnmdmsxxcxwzddomwkea.supabase.co/storage/v1/object/public/blog-media/";
   template.content.querySelectorAll("*").forEach((node) => {
     if (!allowed.has(node.tagName)) { node.replaceWith(...node.childNodes); return; }
