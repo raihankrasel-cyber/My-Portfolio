@@ -23,15 +23,27 @@ create policy "Anyone can read blog posts"
 create policy "Signed-in users can create blog posts as themselves"
   on public.blog_posts for insert
   to authenticated
-  with check ((select auth.uid()) = author_id);
+  with check (
+    (select auth.uid()) = author_id
+    and lower(coalesce((select auth.jwt() ->> 'email'), '')) = 'raihan.k.rasel@gmail.com'
+  );
 
 create policy "Authors can edit their own blog posts"
   on public.blog_posts for update
   to authenticated
-  using ((select auth.uid()) = author_id)
-  with check ((select auth.uid()) = author_id);
+  using (
+    (select auth.uid()) = author_id
+    and lower(coalesce((select auth.jwt() ->> 'email'), '')) = 'raihan.k.rasel@gmail.com'
+  )
+  with check (
+    (select auth.uid()) = author_id
+    and lower(coalesce((select auth.jwt() ->> 'email'), '')) = 'raihan.k.rasel@gmail.com'
+  );
 
 create policy "Authors can delete their own blog posts"
   on public.blog_posts for delete
   to authenticated
-  using ((select auth.uid()) = author_id);
+  using (
+    (select auth.uid()) = author_id
+    and lower(coalesce((select auth.jwt() ->> 'email'), '')) = 'raihan.k.rasel@gmail.com'
+  );
