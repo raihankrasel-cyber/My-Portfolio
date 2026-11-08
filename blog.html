@@ -53,7 +53,7 @@
     <header class="topbar">
       <a class="brand" href="/" aria-label="Raihan's Portfolio home"><img class="brand-logo" src="/assets/raihan-logo-full.png" alt=""><span>Raihan<span class="brand-dot">.</span></span></a>
       <nav class="nav-links" aria-label="Main navigation">
-        <a href="/">Home</a><a href="#blog">Blog</a><a href="#write">Write a post</a>
+        <a href="/">Home</a><a href="#blog">Blog</a><a href="/post-editor.html">Write a post</a>
       </nav>
       <div class="header-actions blog-header-actions">
         <div class="blog-header-auth" id="header-auth-options">
@@ -130,7 +130,7 @@
             <div class="signed-in-card" id="signed-in-card" hidden>
               <p class="signed-in-note">You’re signed in as</p>
               <strong id="signed-in-name"></strong>
-              <a class="button button-primary" href="#write">Write a post</a>
+              <a class="button button-primary" href="/post-editor.html">Write a post</a>
               <a class="blog-security-link" href="/?auth=security">Manage two-step verification</a>
             </div>
           </section>
@@ -145,8 +145,9 @@
           <section class="blog-panel writer-panel" id="write" aria-labelledby="write-title" hidden>
             <p class="section-kicker"><span></span> YOUR STORY</p>
             <h2 id="write-title">Write a post</h2>
-            <p class="writer-hint">Your post will be visible to everyone after publishing.</p>
-            <form class="blog-form" id="post-form">
+            <p class="writer-hint">Open the full writing workspace to format, save and publish your story.</p>
+            <a class="button button-primary form-submit" href="/post-editor.html">Open post editor ↗</a>
+            <form class="blog-form" id="post-form" hidden>
               <input type="hidden" id="post-id">
               <div class="form-field"><label for="post-author">Display name</label><input id="post-author" name="author" type="text" required minlength="2" maxlength="50" autocomplete="nickname"></div>
               <div class="form-field"><label for="post-title">Title</label><input id="post-title" name="title" type="text" required minlength="5" maxlength="160"></div>
