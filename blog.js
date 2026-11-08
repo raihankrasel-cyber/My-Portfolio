@@ -110,7 +110,7 @@ async function loadPosts() {
   loading.className = "blog-loading";
   loading.textContent = message("loading");
   blogPosts.append(loading);
-  const { data, error } = await supabase.from("blog_posts").select("id,author_id,author_name,title,body,created_at").order("created_at", { ascending: false }).limit(50);
+  const { data, error } = await supabase.from("blog_posts").select("id,author_id,author_name,title,body,rich_content,created_at").order("created_at", { ascending: false }).limit(50);
   if (error) {
     const notice = document.createElement("p");
     notice.className = "blog-error";
