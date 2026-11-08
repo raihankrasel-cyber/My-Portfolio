@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Write and publish a story on Raihan's community blog.">
+  <title>Write a post — Raihan's Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/post-editor.css">
+</head>
+<body class="post-editor-page">
+  <header class="editor-topbar">
+    <a class="editor-brand" href="/blog.html"><span class="editor-brand-mark">R.</span><span>Community <b>editor</b></span></a>
+    <div class="editor-top-actions"><span id="editor-save-state" class="editor-save-state">Draft saved on this device</span><a href="/blog.html" class="editor-close" aria-label="Close editor">×</a></div>
+  </header>
+  <main class="editor-layout">
+    <section class="editor-workspace" aria-label="Post editor">
+      <div class="editor-breadcrumb"><a href="/blog.html">Community</a><span>/</span><span id="editor-mode-label">New post</span></div>
+      <div class="editor-heading"><div><p class="editor-eyebrow">YOUR STORY · <span>PUBLIC POST</span></p><h1 id="editor-heading">Create a post</h1></div><span class="editor-lock" aria-label="Secure verified account">⌑</span></div>
+      <form id="editor-form">
+        <label class="editor-label" for="editor-author">Byline</label>
+        <input id="editor-author" class="editor-byline" type="text" maxlength="50" minlength="2" placeholder="Your display name" required>
+        <label class="editor-label" for="editor-title">Title</label>
+        <input id="editor-title" class="editor-title-input" type="text" maxlength="160" minlength="5" placeholder="Give your story a title…" required>
+        <div class="editor-toolbar" role="toolbar" aria-label="Text formatting">
+          <select id="format-block" aria-label="Text style"><option value="p">Normal text</option><option value="h2">Heading</option><option value="h3">Subheading</option><option value="blockquote">Quote</option></select>
+          <span class="toolbar-divider"></span>
+          <button type="button" data-command="bold" aria-label="Bold"><b>B</b></button><button type="button" data-command="italic" aria-label="Italic"><i>I</i></button><button type="button" data-command="underline" aria-label="Underline"><u>U</u></button>
+          <span class="toolbar-divider"></span>
+          <button type="button" data-command="insertUnorderedList" aria-label="Bulleted list">☷</button><button type="button" data-command="insertOrderedList" aria-label="Numbered list">1.</button><button type="button" id="insert-link" aria-label="Insert link">↗</button>
+          <span class="toolbar-divider"></span>
+          <button type="button" data-command="undo" aria-label="Undo">↶</button><button type="button" data-command="redo" aria-label="Redo">↷</button>
+          <span class="toolbar-spacer"></span><span class="editor-toolbar-hint">Formatting</span>
+        </div>
+        <div id="editor-content" class="editor-content" contenteditable="true" role="textbox" aria-label="Story content" aria-multiline="true" data-placeholder="Start writing your story…"></div>
+        <div id="editor-media-status" class="editor-media-status" role="status" aria-live="polite"></div>
+        <div class="editor-meta-row"><span id="editor-word-count">0 words · 0 characters</span><span>Autosaved locally</span></div>
+        <div id="editor-feedback" class="editor-feedback" role="status" aria-live="polite"></div>
+        <div class="editor-publish-row"><button type="button" id="save-draft" class="editor-draft-button">Save draft</button><button type="submit" id="publish-post" class="editor-publish-button">Publish post <span aria-hidden="true">↗</span></button></div>
+      </form>
+    </section>
+    <aside class="editor-side">
+      <div class="editor-side-art"><span class="side-orbit"></span><span class="side-orbit side-orbit-two"></span><div class="side-art-card"><i>✦</i><b>Ideas<br>become impact.</b><small>WRITE · LEARN · GROW</small></div></div>
+      <h2>Make it yours.</h2><p>Tell a clear story. Use headings, quotes and lists to make it easy to read.</p>
+      <div class="editor-side-divider"></div>
+      <h3>Add media</h3><p>Attach an image or a short video. Files are limited to 6 MB each.</p>
+      <div class="editor-attach-actions"><button type="button" id="attach-image" class="editor-attach-button"><span>▧</span><b>Image</b><small>JPG, PNG, WebP, GIF</small></button><button type="button" id="attach-video" class="editor-attach-button"><span>▷</span><b>Video</b><small>MP4, WebM, MOV</small></button></div>
+      <input id="image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden><input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime" hidden>
+      <p class="editor-safety"><span>⌑</span> Posts are public after you publish. Only publish media you have permission to share.</p>
+      <a class="editor-back-link" href="/blog.html">← Back to the community</a>
+    </aside>
+  </main>
+  <script type="module" src="/post-editor.js"></script>
+</body>
+</html>
