@@ -1,6 +1,10 @@
 import { supabase, signInWithPassword, challengeExistingSessionIfNeeded, verifyFactorChallenge, cancelPendingSignIn, isMfaPending } from "./auth.js";
 
 const byId = (id) => document.getElementById(id);
+
+const loginCard = document.querySelector(".login-card");
+if (loginCard) loginCard.insertAdjacentHTML("beforebegin", "<section class=\"login-showcase\" aria-label=\"Interactive digital marketing artwork\">\n  <div class=\"showcase-topline\"><span class=\"showcase-status\"><i></i> DIGITAL MARKETING</span><span>01 / 03</span></div>\n  <div class=\"showcase-copy\"><p>Strategy in motion</p><h2>Turn good ideas<br>into <em>real growth.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>\n  <div class=\"login-art\" id=\"login-art\">\n    <div class=\"art-halo art-halo-one\"></div><div class=\"art-halo art-halo-two\"></div><div class=\"art-grid\"></div>\n    <div class=\"art-chart-card\"><div class=\"art-chart-head\"><span>Campaign growth</span><span class=\"art-chart-period\">● LIVE</span></div>\n      <div class=\"art-chart-summary\"><strong id=\"art-value\">+38.6%</strong><span>this quarter <b>↗</b></span></div>\n      <svg class=\"growth-chart\" viewBox=\"0 0 520 190\" role=\"img\" aria-label=\"Illustrated upward growth chart\">\n        <defs><linearGradient id=\"area-fill\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7c67f3\" stop-opacity=\".42\"/><stop offset=\"1\" stop-color=\"#4268f1\" stop-opacity=\"0\"/></linearGradient><linearGradient id=\"line-fill\" x1=\"0\" x2=\"1\"><stop stop-color=\"#a593ff\"/><stop offset=\"1\" stop-color=\"#45d6c8\"/></linearGradient></defs>\n        <path class=\"chart-gridline\" d=\"M20 30H500M20 75H500M20 120H500M20 165H500\"/>\n        <path class=\"chart-area\" id=\"chart-area\" d=\"M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25 V180 H20Z\"/>\n        <path class=\"chart-line\" id=\"chart-line\" d=\"M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25\"/>\n        <circle class=\"chart-point\" cx=\"500\" cy=\"25\" r=\"5\"/>\n      </svg><div class=\"chart-axis\"><span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span></div>\n    </div>\n    <div class=\"float-card float-traffic\"><span class=\"float-icon\">↗</span><span><small>QUALIFIED REACH</small><b>24.8K</b></span><i>+18%</i></div>\n    <div class=\"float-card float-conversion\"><span class=\"conversion-donut\"><i></i></span><span><small>CONVERSION</small><b>4.82%</b></span></div>\n    <div class=\"art-spark spark-one\">✳</div><div class=\"art-spark spark-two\">✦</div>\n  </div>\n  <div class=\"showcase-footer\"><div class=\"showcase-dots\" aria-hidden=\"true\"><i class=\"active\"></i><i></i><i></i></div><button id=\"art-next\" class=\"art-next\" type=\"button\" aria-label=\"Show another campaign insight\">Explore insights <span aria-hidden=\"true\">↗</span></button></div>\n</section>");
+
 const params = new URLSearchParams(location.search);
 const mode = { value: params.get("mode") === "signup" ? "signup" : "signin" };
 const safeNext = (() => {
@@ -189,4 +193,37 @@ if (sessionData.session?.user) {
     if (result.requiresMfa) showMfa(result);
     else showSignedIn(sessionData.session.user.email);
   } catch { showSignedIn(sessionData.session.user.email); }
+}
+const artNext = byId("art-next");
+if (artNext) {
+  const insights = [
+    { value: "+38.6%", line: "M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25" },
+    { value: "+24.2%", line: "M20 158 C65 145 93 152 126 117 S193 131 232 85 S303 91 344 60 S421 58 500 20" },
+    { value: "+51.8%", line: "M20 163 C69 150 93 123 126 138 S190 102 232 110 S300 65 344 78 S423 49 500 15" }
+  ];
+  let index = 0;
+  artNext.addEventListener("click", () => {
+    index = (index + 1) % insights.length;
+    const insight = insights[index];
+    byId("art-value").textContent = insight.value;
+    byId("chart-line").setAttribute("d", insight.line);
+    byId("chart-area").setAttribute("d", insight.line + " V180 H20Z");
+    document.querySelectorAll(".showcase-dots i").forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === index));
+    const art = byId("login-art");
+    art.classList.remove("art-refresh");
+    void art.offsetWidth;
+    art.classList.add("art-refresh");
+  });
+}
+const art = byId("login-art");
+if (art && matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  art.addEventListener("pointermove", (event) => {
+    const rect = art.getBoundingClientRect();
+    art.style.setProperty("--tilt-x", (((event.clientX - rect.left) / rect.width - .5) * 3).toFixed(2) + "deg");
+    art.style.setProperty("--tilt-y", -(((event.clientY - rect.top) / rect.height - .5) * 3).toFixed(2) + "deg");
+  });
+  art.addEventListener("pointerleave", () => {
+    art.style.setProperty("--tilt-x", "0deg");
+    art.style.setProperty("--tilt-y", "0deg");
+  });
 }
