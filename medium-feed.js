@@ -98,12 +98,22 @@ import { supabase } from "./auth.js";
         if (!response.ok) throw new Error("Medium feed request failed.");
         return response.json();
       }),
-      supabase.from("blog_posts").select("author_name,title,body,rich_content,created_at").order("created_at", { ascending: false }).limit(1)
+      supabase.from("blog_posts").select("author_name,title,body,rich_content,created_at").order("created_at", { ascending: false }).limit(12)
     ]);
     const mediumFailed = mediumResult.status === "rejected";
     const items = mediumResult.status === "fulfilled" && Array.isArray(mediumResult.value.items) ? mediumResult.value.items : [];
-    const latestPost = postResult.status === "fulfilled" && !postResult.value.error ? postResult.value.data?.[0] : null;
-    const newestFirst = [...items].sort((a, b) => {
+    const localPosts = postResult.status === "fulfilled" && !postResult.value.error && Array.isArray(postResult.value.data)
+      ? postResult.value.data.map((post) => ({
+        localPost: true,
+        author: post.author_name,
+        publishedAt: post.created_at,
+        title: post.title,
+        excerpt: post.body,
+        image: newestPostImage(post.rich_content),
+        url: "/blog.html#posts"
+      }))
+      : [];
+    const newestFirst = [...localPosts, ...items].sort((a, b) => {
       const dateA = Date.parse(a.publishedAt || "") || 0;
       const dateB = Date.parse(b.publishedAt || "") || 0;
       return dateB - dateA;
@@ -111,19 +121,7 @@ import { supabase } from "./auth.js";
     containers.forEach((container) => {
       const limitValue = Number.parseInt(container.dataset.limit || "3", 10);
       const limit = Number.isFinite(limitValue) ? limitValue : 3;
-      const cards = [];
-      if (latestPost && limit > 0) {
-        cards.push(makeStory({
-          localPost: true,
-          author: latestPost.author_name,
-          publishedAt: latestPost.created_at,
-          title: latestPost.title,
-          excerpt: latestPost.body,
-          image: newestPostImage(latestPost.rich_content),
-          url: "/blog.html#posts"
-        }));
-      }
-      cards.push(...newestFirst.slice(0, Math.max(0, limit - cards.length)).map(makeStory));
+      const cards = newestFirst.slice(0, Math.max(0, limit)).map(makeStory);
       if (cards.length) {
         container.replaceChildren(...cards);
         return;
