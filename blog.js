@@ -186,8 +186,9 @@ async function setSignedInUser(user) {
   byId("post-author").value = data?.[0]?.author_name || displayName;
   renderPosts();
 }
-byId("show-signin").addEventListener("click", () => showAuth("signin"));
-byId("show-signup").addEventListener("click", () => showAuth("signup"));
+const loginDestination = (mode) => "/login.html?mode=" + mode + "&next=" + encodeURIComponent("/blog.html");
+byId("show-signin").addEventListener("click", () => window.location.assign(loginDestination("signin")));
+byId("show-signup").addEventListener("click", () => window.location.assign(loginDestination("signup")));
 byId("account-signin").addEventListener("click", () => setAuthMode("signin"));
 byId("account-signup").addEventListener("click", () => setAuthMode("signup"));
 authModeSwitch.addEventListener("click", () => setAuthMode(authMode === "signin" ? "signup" : "signin"));
