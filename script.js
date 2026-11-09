@@ -26,22 +26,27 @@ if (WHATSAPP_NUMBER.trim()) {
 }
 
 const contactForm = document.getElementById("contact-form");
-contactForm.addEventListener("submit", (event) => {
+const CONTACT_SUBMISSION_URL = "https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/contact-submit";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2bGIWYXcOTSi_jveUCkaFw_jAXly3Z9";
+contactForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!CONTACT_EMAIL.trim()) {
-    formNote.textContent = "Contact form is ready. Add CONTACT_EMAIL in script.js to receive submissions.";
-    formNote.classList.add("form-error");
-    return;
-  }
-  const formData = new FormData(contactForm);
-  const name = formData.get("name").toString().trim();
-  const sender = formData.get("email").toString().trim();
-  const message = formData.get("message").toString().trim();
-  const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
-  const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${sender}`);
-  window.location.href = `mailto:${CONTACT_EMAIL.trim()}?subject=${subject}&body=${body}`;
-  formNote.textContent = "Your email app is opening with your message ready to send.";
+  const button = contactForm.querySelector('button[type="submit"]');
+  const buttonHtml = button.innerHTML;
+  const data = new FormData(contactForm);
+  const submission = { name:String(data.get("name")||"").trim(), email:String(data.get("email")||"").trim(), message:String(data.get("message")||"").trim(), website:String(data.get("website")||"").trim() };
+  button.disabled = true;
+  formNote.textContent = isBangla ? "পাঠানো হচ্ছে…" : "Sending…";
   formNote.classList.remove("form-error");
+  try {
+    const response = await fetch(CONTACT_SUBMISSION_URL, { method:"POST", headers:{"Content-Type":"application/json",apikey:SUPABASE_PUBLISHABLE_KEY}, body:JSON.stringify(submission) });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.ok !== true) throw new Error("Submit failed");
+    contactForm.reset();
+    formNote.textContent = isBangla ? "ধন্যবাদ—আপনার বার্তা পেয়েছি। শিগগিরই যোগাযোগ করব।" : "Thanks—your message has been received. I’ll be in touch soon.";
+  } catch {
+    formNote.textContent = isBangla ? "বার্তাটি পাঠানো যায়নি। দয়া করে " + CONTACT_EMAIL + " ঠিকানায় ইমেইল করুন।" : "Your message couldn’t be sent. Please email " + CONTACT_EMAIL + ".";
+    formNote.classList.add("form-error");
+  } finally { button.disabled = false; button.innerHTML = buttonHtml; }
 });
 
 const menuButton = document.querySelector(".menu-toggle");
