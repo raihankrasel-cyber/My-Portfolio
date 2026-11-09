@@ -26,7 +26,7 @@ Deno.serve(async (request:Request) => {
  const recent=(recentByIp.get(ip)??[]).filter(t=>now-t<600000);
  if(recent.length>=3) return reply({error:"Please wait before sending another message."},429,h);
  recent.push(now); if(recentByIp.size>5000) recentByIp.clear(); recentByIp.set(ip,recent);
- const projectUrl=Deno.env.get("SUPABASE_URL")??"", serviceKey=keyValue("SUPABASE_SECRET_KEYS")||keyValue("SUPABASE_SERVICE_ROLE_KEY");
+ const projectUrl=Deno.env.get("SUPABASE_URL")??"", serviceKey=keyValue("SUPABASE_SERVICE_ROLE_KEY")||keyValue("SUPABASE_SECRET_KEYS");
  if(!projectUrl||!serviceKey) return reply({error:"Contact storage is not configured."},503,h);
  const supabase=createClient(projectUrl,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
  const {error}=await supabase.from("contact_submissions").insert({name,email,message});
