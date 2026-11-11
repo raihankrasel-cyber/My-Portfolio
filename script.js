@@ -99,8 +99,8 @@ if (footer && footerBottom) {
           "<button type='button' data-question='Give me a checklist for reviewing competitors’ marketing without making unsupported claims.'>🕵️ Competitor scout</button>",
         "</div>",
       "</section>",
-      "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
-      "<p class='assistant-notice'>Voice recordings are transcribed in your browser and are not uploaded. The resulting text and any images you send may be sent to OpenAI when you submit your message. Text messages are saved privately so Raihan can review chat history; images and recordings are not saved. A private alert may be sent to Raihan when you start chatting. Please don’t share sensitive information.</p>",
+      "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><span class='assistant-media-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
+      "<p class='assistant-notice'>Images you send may be sent to OpenAI when you submit your message. Text messages are saved privately so Raihan can review chat history; images are not saved. A private alert may be sent to Raihan when you start chatting. Please don’t share sensitive information.</p>",
     "</div>",
   ].join("");
   footer.insertBefore(assistant, footerBottom);
@@ -152,12 +152,10 @@ if (footer && footerBottom) {
     assistant.querySelector("#assistant-question").placeholder = "আপনার ভাবনাটা বলুন…";
     assistant.querySelector(".assistant-attach").textContent = "＋ ছবি";
     assistant.querySelector(".assistant-attach").setAttribute("aria-label", "ছবি যোগ করুন");
-    assistant.querySelector(".assistant-mic").textContent = "🎙 ভয়েস";
-    assistant.querySelector(".assistant-mic").setAttribute("aria-label", "ভয়েস বার্তা রেকর্ড করুন");
     assistant.querySelector(".assistant-image-remove").setAttribute("aria-label", "ছবি সরান");
     assistant.querySelector(".assistant-submit-label").textContent = "পাঠান";
     assistant.querySelector(".assistant-submit").setAttribute("aria-label", "বার্তা পাঠান");
-    assistant.querySelector(".assistant-notice").textContent = "ভয়েস রেকর্ডিং আপনার ব্রাউজারেই লিখে নেওয়া হয়, কোথাও আপলোড করা হয় না। পাঠালে লেখা বার্তা ও ছবি উত্তর তৈরির জন্য OpenAI-তে যেতে পারে। Raihan চ্যাটের ইতিহাস দেখতে পারেন বলে টেক্সট বার্তা ব্যক্তিগতভাবে সংরক্ষিত হয়; ছবি ও রেকর্ডিং সংরক্ষণ করা হয় না। চ্যাট শুরু হলে Raihan-কে ব্যক্তিগত নোটিফিকেশন পাঠানো হতে পারে। সংবেদনশীল তথ্য দেবেন না।";
+    assistant.querySelector(".assistant-notice").textContent = "পাঠালে লেখা বার্তা ও ছবি উত্তর তৈরির জন্য OpenAI-তে যেতে পারে। Raihan চ্যাটের ইতিহাস দেখতে পারেন বলে টেক্সট বার্তা ব্যক্তিগতভাবে সংরক্ষিত হয়; ছবি সংরক্ষণ করা হয় না। চ্যাট শুরু হলে Raihan-কে ব্যক্তিগত নোটিফিকেশন পাঠানো হতে পারে। সংবেদনশীল তথ্য দেবেন না.";
     assistant.querySelector(".assistant-typing-label").textContent = "উত্তর তৈরি হচ্ছে…";
   }
 
@@ -173,13 +171,8 @@ if (footer && footerBottom) {
   const imageInput = assistant.querySelector(".assistant-image-input");
   const imagePreview = assistant.querySelector(".assistant-image-preview");
   const previewImage = imagePreview.querySelector("img");
-  const voiceStatus = assistant.querySelector(".assistant-voice-status");
-  const micButton = assistant.querySelector(".assistant-mic");
+  const mediaStatus = assistant.querySelector(".assistant-media-status");
   let selectedImage = null;
-  let recorder = null;
-  let audioChunks = [];
-  let recordingTimer = null;
-  let voiceTranscriberPromise = null;
   const sendButton = assistant.querySelector(".assistant-submit");
   const sendLabel = assistant.querySelector(".assistant-submit-label");
   const quickButtons = Array.from(quickQuestionLabels);
@@ -261,43 +254,12 @@ if (footer && footerBottom) {
   const setSending = (sending) => {
     isSending = sending;
     questionInput.disabled = sending;
-    micButton.disabled = sending;
     sendButton.disabled = sending;
     messages.setAttribute("aria-busy", String(sending));
     typing.hidden = !sending;
     quickButtons.forEach((button) => { button.disabled = sending; });
     sendLabel.textContent = sending ? (isBangla ? "অপেক্ষা করুন" : "Replying…") : (isBangla ? "পাঠান" : "Send");
     sendButton.setAttribute("aria-label", sending ? (isBangla ? "উত্তরের অপেক্ষায়" : "Waiting for reply") : (isBangla ? "বার্তা পাঠান" : "Send message"));
-  };
-
-  try {
-    localStorage.removeItem("portfolio-assistant-voice-paused-until");
-    localStorage.removeItem("portfolio-assistant-voice-retry-seconds");
-    localStorage.removeItem("portfolio-assistant-voice-last-check");
-  } catch {}
-
-  const getVoiceTranscriber = async () => {
-    if (!voiceTranscriberPromise) {
-      voiceTranscriberPromise = import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2")
-        .then(({ pipeline }) => pipeline(
-          "automatic-speech-recognition",
-          "onnx-community/whisper-tiny",
-          {
-            progress_callback: (progress) => {
-              if (progress.status !== "progress" || !Number.isFinite(progress.progress)) return;
-              const percent = Math.round(progress.progress);
-              voiceStatus.textContent = isBangla
-                ? `ভয়েস মডেল ডাউনলোড হচ্ছে: ${percent}%`
-                : `Downloading voice model: ${percent}%`;
-            },
-          },
-        ))
-        .catch((error) => {
-          voiceTranscriberPromise = null;
-          throw error;
-        });
-    }
-    return voiceTranscriberPromise;
   };
 
   const sendQuestion = async (question) => {
@@ -389,69 +351,11 @@ if (footer && footerBottom) {
   assistant.querySelector(".assistant-attach").addEventListener("click", () => imageInput.click());
   imageInput.addEventListener("change", async () => {
     const file = imageInput.files?.[0]; if (!file) return;
-    try { selectedImage = await prepareImage(file); previewImage.src = selectedImage; imagePreview.hidden = false; voiceStatus.textContent = ""; questionInput.focus(); }
-    catch (error) { imageInput.value = ""; voiceStatus.textContent = error.message; }
+    try { selectedImage = await prepareImage(file); previewImage.src = selectedImage; imagePreview.hidden = false; mediaStatus.textContent = ""; questionInput.focus(); }
+    catch (error) { imageInput.value = ""; mediaStatus.textContent = error.message; }
   });
   assistant.querySelector(".assistant-image-remove").addEventListener("click", () => {
     selectedImage = null; imageInput.value = ""; previewImage.removeAttribute("src"); imagePreview.hidden = true;
-  });
-  micButton.addEventListener("click", async () => {
-    if (isSending) return;
-    if (recorder?.state === "recording") { recorder.stop(); window.clearTimeout(recordingTimer); micButton.textContent = isBangla ? "🎙 ভয়েস" : "🎙 Voice"; return; }
-    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-      voiceStatus.textContent = isBangla ? "এই ব্রাউজারে ভয়েস রেকর্ডিং সমর্থিত নয়।" : "Voice recording isn’t supported in this browser."; return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) => MediaRecorder.isTypeSupported(type));
-      recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined); audioChunks = [];
-      recorder.ondataavailable = (event) => { if (event.data.size) audioChunks.push(event.data); };
-      recorder.onerror = () => { stream.getTracks().forEach((track) => track.stop()); voiceStatus.textContent = isBangla ? "রেকর্ডিং ব্যর্থ হয়েছে।" : "Recording failed."; };
-      recorder.onstop = async () => {
-        micButton.textContent = isBangla ? "🎙 ভয়েস" : "🎙 Voice";
-        stream.getTracks().forEach((track) => track.stop());
-        const blob = new Blob(audioChunks, { type: recorder.mimeType || "audio/webm" });
-        if (!blob.size) return;
-        if (blob.size > 10 * 1024 * 1024) { voiceStatus.textContent = isBangla ? "রেকর্ডিংটি ১০ MB-এর বেশি। ছোট করে বলুন।" : "Recording is over 10 MB. Please record a shorter message."; return; }
-        voiceStatus.textContent = isBangla
-          ? "প্রথমবার ভয়েস মডেল ডাউনলোড হতে সময় লাগতে পারে; অডিও এই ডিভাইসেই থাকবে।"
-          : "First use may take a while to download the speech model; your audio stays on this device.";
-        setSending(true);
-        try {
-          const transcriber = await getVoiceTranscriber();
-          voiceStatus.textContent = isBangla ? "এই ডিভাইসেই কথাটি লিখে নেওয়া হচ্ছে…" : "Transcribing on this device…";
-          const audioUrl = URL.createObjectURL(blob);
-          let result;
-          try {
-            result = await transcriber(audioUrl, {
-              language: assistantLanguage === "bn" ? "bengali" : "english",
-              task: "transcribe",
-            });
-          } finally {
-            URL.revokeObjectURL(audioUrl);
-          }
-          const transcript = typeof result?.text === "string" ? result.text.trim() : "";
-          if (!transcript) throw new Error("No speech detected");
-          questionInput.value = transcript.slice(0, 300);
-          voiceStatus.textContent = isBangla ? "কথাটি লিখে দেওয়া হয়েছে—পাঠানোর আগে সম্পাদনা করুন।" : "Transcribed—edit it if you like, then send.";
-          questionInput.focus();
-        } catch (error) {
-          const detail = error instanceof Error ? error.message : "";
-          if (detail.toLowerCase().includes("no speech detected")) {
-            voiceStatus.textContent = isBangla ? "কোনো কথা শনাক্ত হয়নি। আবার চেষ্টা করুন।" : "No speech was detected. Please try again.";
-          } else if (detail && detail !== "Transcription failed") {
-            voiceStatus.textContent = isBangla
-              ? "ভয়েস লেখা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
-              : "Voice transcription failed. Check your connection and try again.";
-          } else {
-            voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again.";
-          }
-        } finally { setSending(false); }
-      };
-      recorder.start(); micButton.textContent = isBangla ? "■ থামান" : "■ Stop";
-      voiceStatus.textContent = isBangla ? "রেকর্ড হচ্ছে… সর্বোচ্চ ১৫ সেকেন্ড" : "Recording… up to 15 seconds";
-      recordingTimer = window.setTimeout(() => { if (recorder?.state === "recording") recorder.stop(); }, 15000);
-    } catch { voiceStatus.textContent = isBangla ? "মাইক্রোফোন ব্যবহারের অনুমতি দিন।" : "Allow microphone access to record a message."; }
   });
   toggle.addEventListener("click", () => setPanelOpen(panel.hidden));
   assistant.addEventListener("keydown", (event) => {
