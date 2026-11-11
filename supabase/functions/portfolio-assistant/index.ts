@@ -1,4 +1,5 @@
 import { withSupabase } from "npm:@supabase/server@1";
+import { Agent, OpenAIProvider, run } from "npm:@openai/agents@0.21.0";
 
 const portfolioOrigins = [
   "https://raihan-my-portfolio.vercel.app",
@@ -434,47 +435,50 @@ export default {
 
     if (apiKey) {
       try {
-        const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-6-luna",
+        const portfolioAgent = new Agent({
+          name: "Raihan's portfolio assistant",
+          instructions: chatSystemInstruction,
+          model: "gpt-6-luna",
+          modelSettings: {
             reasoning: { effort: "medium" },
-            instructions: chatSystemInstruction,
-            input: messages.map((message: { role: "user" | "assistant"; content: string | Array<Record<string, string>> }) => ({
-              role: message.role,
-              content: typeof message.content === "string"
-                ? [{ type: message.role === "assistant" ? "output_text" : "input_text", text: message.content }]
-                : message.content,
-            })),
-            max_output_tokens: 800,
+            maxTokens: 800,
             store: false,
-          }),
-          signal: AbortSignal.timeout(8_000),
+            timeoutMs: 8_000,
+          },
         });
-        const result = await openaiResponse.json().catch(() => ({}));
-        if (!openaiResponse.ok) {
-          console.error("OpenAI request failed", openaiResponse.status, JSON.stringify(result.error || result).slice(0, 500));
-        } else {
-          rawReply = typeof result.output_text === "string"
-            ? result.output_text.trim()
-            : Array.isArray(result.output)
-              ? result.output.flatMap((item: { type?: string; content?: Array<{ type?: string; text?: string }> }) =>
-                  item.type === "message" && Array.isArray(item.content)
-                    ? item.content.filter((part) => part.type === "output_text" || part.type === "refusal").map((part) => part.text || "")
-                    : []
-                ).join("").trim()
-              : "";
-          if (!rawReply) {
-            console.error("OpenAI returned no assistant text", JSON.stringify({
-              status: result.status,
-              incompleteReason: result.incomplete_details?.reason,
-              outputTypes: Array.isArray(result.output) ? result.output.map((item: { type?: string }) => item.type) : [],
-            }));
+        const agentMessages = messages.map((message: {
+          role: "user" | "assistant";
+          content: string | Array<{ type: string; text?: string; image_url?: string }>;
+        }) => {
+          if (message.role === "assistant") {
+            const text = typeof message.content === "string"
+              ? message.content
+              : message.content.filter((part) => part.type === "output_text").map((part) => part.text || "").join("");
+            return {
+              role: "assistant" as const,
+              status: "completed" as const,
+              content: [{ type: "output_text" as const, text }],
+            };
           }
-        }
+          if (typeof message.content === "string") {
+            return { role: "user" as const, content: message.content };
+          }
+          return {
+            role: "user" as const,
+            content: message.content.map((part) => part.type === "input_image"
+              ? { type: "input_image" as const, image: part.image_url || "" }
+              : { type: "input_text" as const, text: part.text || "" }),
+          };
+        });
+        const result = await run(portfolioAgent, agentMessages, {
+          modelProvider: new OpenAIProvider({ apiKey }),
+          tracingDisabled: true,
+          traceIncludeSensitiveData: false,
+        });
+        rawReply = typeof result.finalOutput === "string" ? result.finalOutput.trim() : "";
+        if (!rawReply) console.error("OpenAI Agents SDK returned no assistant text");
       } catch (error) {
-        console.error("OpenAI request error; trying Anthropic fallback", error);
+        console.error("OpenAI Agents SDK request error; trying Anthropic fallback", error);
       }
     }
 
@@ -535,3 +539,4 @@ export default {
     return Response.json({ reply }, { headers });
   }),
 };
+
