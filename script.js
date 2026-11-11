@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 9547)
-Total output lines: 543
-
 // Add Raihan's contact details here to activate the contact buttons.
 const CONTACT_EMAIL = "raihan.k.rasel@gmail.com";
 const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only, e.g. 8801XXXXXXXXX
@@ -176,7 +173,45 @@ if (footer && footerBottom) {
   const imageInput = assistant.querySelector(".assistant-image-input");
   const imagePreview = assistant.querySelector(".assistant-image-preview");
   const previewImage = imagePreview.querySelector("img");
-  const voiceStatus = assistant.querySelector(".assistant-voice-st…547 tokens truncated…র মধ্যে দিন।" : "Choose a JPG, PNG, or WebP image under 8 MB.")); return;
+  const voiceStatus = assistant.querySelector(".assistant-voice-status");
+  const micButton = assistant.querySelector(".assistant-mic");
+  let selectedImage = null;
+  let recorder = null;
+  let audioChunks = [];
+  let recordingTimer = null;
+  let voiceTranscriberPromise = null;
+  const sendButton = assistant.querySelector(".assistant-submit");
+  const sendLabel = assistant.querySelector(".assistant-submit-label");
+  const quickButtons = Array.from(quickQuestionLabels);
+  const conversation = [];
+  const conversationId = crypto.randomUUID();
+  let isSending = false;
+
+  const addAssistantMessage = (text, sender = "bot", imageData = null) => {
+    const message = document.createElement("div");
+    message.className = "assistant-message assistant-message-" + sender;
+    if (text) { const copy = document.createElement("div"); copy.textContent = text; message.append(copy); }
+    if (imageData && sender === "user") {
+      const image = document.createElement("img"); image.className = "assistant-message-image";
+      image.src = imageData; image.alt = isBangla ? "আপনার পাঠানো ছবি" : "Image you sent"; message.append(image);
+    }
+    if (sender === "bot" && text && "speechSynthesis" in window) {
+      const speak = document.createElement("button"); speak.type = "button"; speak.className = "assistant-speak";
+      speak.textContent = isBangla ? "🔊 শুনুন" : "🔊 Listen";
+      speak.setAttribute("aria-label", isBangla ? "উত্তরটি পড়ে শোনান" : "Read this reply aloud");
+      speak.addEventListener("click", () => {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = ({ en: "en-US", bn: "bn-BD" })[assistantLanguage] || "en-US";
+        window.speechSynthesis.speak(utterance);
+      });
+      message.append(speak);
+    }
+    messages.append(message); messages.scrollTop = messages.scrollHeight;
+  };
+
+  const prepareImage = (file) => new Promise((resolve, reject) => {
+    if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {
+      reject(new Error(isBangla ? "JPG, PNG বা WebP ছবি ৮ MB-এর মধ্যে দিন।" : "Choose a JPG, PNG, or WebP image under 8 MB.")); return;
     }
     const reader = new FileReader();
     reader.onerror = () => reject(new Error(isBangla ? "ছবিটি পড়া যায়নি।" : "Could not read that image."));
