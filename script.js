@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 9547)
+Total output lines: 543
+
 // Add Raihan's contact details here to activate the contact buttons.
 const CONTACT_EMAIL = "raihan.k.rasel@gmail.com";
 const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only, e.g. 8801XXXXXXXXX
@@ -100,7 +103,7 @@ if (footer && footerBottom) {
         "</div>",
       "</section>",
       "<div class='assistant-media-tools'><button class='assistant-tool assistant-attach' type='button' aria-label='Add an image'>＋ Image</button><input class='sr-only assistant-image-input' type='file' accept='image/jpeg,image/png,image/webp'><button class='assistant-tool assistant-mic' type='button' aria-label='Record a voice message'>🎙 Voice</button><span class='assistant-voice-status' role='status' aria-live='polite'></span></div><div class='assistant-image-preview' hidden><img alt='Selected image preview'><button class='assistant-image-remove' type='button' aria-label='Remove image'>×</button></div><form class='assistant-form'><label class='sr-only' for='assistant-question'>Ask a question</label><input id='assistant-question' name='question' maxlength='300' placeholder='What’s on your mind?…' autocomplete='off'><button class='assistant-submit' type='submit' aria-label='Send message'><span class='assistant-submit-label'>Send</span><span aria-hidden='true'>↗</span></button></form>",
-      "<p class='assistant-notice'>Your text messages are saved privately so Raihan can review chat history. Images and recordings are not saved. Text, images, and recordings may be sent to OpenAI to generate replies. A private alert may be sent to Raihan when you start chatting. Please don’t share sensitive information.</p>",
+      "<p class='assistant-notice'>Voice recordings are transcribed in your browser and are not uploaded. The resulting text and any images you send may be sent to OpenAI when you submit your message. Text messages are saved privately so Raihan can review chat history; images and recordings are not saved. A private alert may be sent to Raihan when you start chatting. Please don’t share sensitive information.</p>",
     "</div>",
   ].join("");
   footer.insertBefore(assistant, footerBottom);
@@ -156,7 +159,7 @@ if (footer && footerBottom) {
     assistant.querySelector(".assistant-image-remove").setAttribute("aria-label", "ছবি সরান");
     assistant.querySelector(".assistant-submit-label").textContent = "পাঠান";
     assistant.querySelector(".assistant-submit").setAttribute("aria-label", "বার্তা পাঠান");
-    assistant.querySelector(".assistant-notice").textContent = "আপনার টেক্সট বার্তা ব্যক্তিগতভাবে সংরক্ষিত হয়, যাতে Raihan চ্যাটের ইতিহাস দেখতে পারেন। ছবি ও রেকর্ডিং সংরক্ষণ করা হয় না। উত্তর তৈরির জন্য বার্তা, ছবি বা রেকর্ডিং OpenAI-তে পাঠানো হতে পারে। চ্যাট শুরু হলে Raihan-কে ব্যক্তিগত নোটিফিকেশন পাঠানো হতে পারে। সংবেদনশীল তথ্য দেবেন না।";
+    assistant.querySelector(".assistant-notice").textContent = "ভয়েস রেকর্ডিং আপনার ব্রাউজারেই লিখে নেওয়া হয়, কোথাও আপলোড করা হয় না। পাঠালে লেখা বার্তা ও ছবি উত্তর তৈরির জন্য OpenAI-তে যেতে পারে। Raihan চ্যাটের ইতিহাস দেখতে পারেন বলে টেক্সট বার্তা ব্যক্তিগতভাবে সংরক্ষিত হয়; ছবি ও রেকর্ডিং সংরক্ষণ করা হয় না। চ্যাট শুরু হলে Raihan-কে ব্যক্তিগত নোটিফিকেশন পাঠানো হতে পারে। সংবেদনশীল তথ্য দেবেন না।";
     assistant.querySelector(".assistant-typing-label").textContent = "উত্তর তৈরি হচ্ছে…";
   }
 
@@ -172,49 +175,7 @@ if (footer && footerBottom) {
   const imageInput = assistant.querySelector(".assistant-image-input");
   const imagePreview = assistant.querySelector(".assistant-image-preview");
   const previewImage = imagePreview.querySelector("img");
-  const voiceStatus = assistant.querySelector(".assistant-voice-status");
-  const micButton = assistant.querySelector(".assistant-mic");
-  let selectedImage = null;
-  let recorder = null;
-  let audioChunks = [];
-  let recordingTimer = null;
-  const voicePauseKey = "portfolio-assistant-voice-paused-until";
-  const voiceRetryKey = "portfolio-assistant-voice-retry-seconds";
-  const voiceLastCheckKey = "portfolio-assistant-voice-last-check";
-  let voiceCheckTimer = null;
-  let voiceRetrySeconds = 900;
-  const sendButton = assistant.querySelector(".assistant-submit");
-  const sendLabel = assistant.querySelector(".assistant-submit-label");
-  const quickButtons = Array.from(quickQuestionLabels);
-  const conversation = [];
-  const conversationId = crypto.randomUUID();
-  let isSending = false;
-
-  const addAssistantMessage = (text, sender = "bot", imageData = null) => {
-    const message = document.createElement("div");
-    message.className = "assistant-message assistant-message-" + sender;
-    if (text) { const copy = document.createElement("div"); copy.textContent = text; message.append(copy); }
-    if (imageData && sender === "user") {
-      const image = document.createElement("img"); image.className = "assistant-message-image";
-      image.src = imageData; image.alt = isBangla ? "আপনার পাঠানো ছবি" : "Image you sent"; message.append(image);
-    }
-    if (sender === "bot" && text && "speechSynthesis" in window) {
-      const speak = document.createElement("button"); speak.type = "button"; speak.className = "assistant-speak";
-      speak.textContent = isBangla ? "🔊 শুনুন" : "🔊 Listen";
-      speak.setAttribute("aria-label", isBangla ? "উত্তরটি পড়ে শোনান" : "Read this reply aloud");
-      speak.addEventListener("click", () => {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text); utterance.lang = ({ en: "en-US", bn: "bn-BD" })[assistantLanguage] || "en-US";
-        window.speechSynthesis.speak(utterance);
-      });
-      message.append(speak);
-    }
-    messages.append(message); messages.scrollTop = messages.scrollHeight;
-  };
-
-  const prepareImage = (file) => new Promise((resolve, reject) => {
-    if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {
-      reject(new Error(isBangla ? "JPG, PNG বা WebP ছবি ৮ MB-এর মধ্যে দিন।" : "Choose a JPG, PNG, or WebP image under 8 MB.")); return;
+  const voiceStatus = assistant.querySelector(".assistant-voice-st…547 tokens truncated…র মধ্যে দিন।" : "Choose a JPG, PNG, or WebP image under 8 MB.")); return;
     }
     const reader = new FileReader();
     reader.onerror = () => reject(new Error(isBangla ? "ছবিটি পড়া যায়নি।" : "Could not read that image."));
@@ -273,62 +234,35 @@ if (footer && footerBottom) {
     sendButton.setAttribute("aria-label", sending ? (isBangla ? "উত্তরের অপেক্ষায়" : "Waiting for reply") : (isBangla ? "বার্তা পাঠান" : "Send message"));
   };
 
-  const voicePausedMessage = () => isBangla
-    ? "ভয়েস ইনপুট সাময়িক বন্ধ—সীমা উঠলে নিজে থেকেই ফিরবে।"
-    : "Voice input is paused. I’ll check automatically and show it again when it’s available.";
-
-  const scheduleVoiceCheck = (seconds) => {
-    const delaySeconds = Math.max(60, Math.min(21600, Math.ceil(Number(seconds) || 900)));
-    voiceRetrySeconds = Math.max(voiceRetrySeconds, delaySeconds);
-    micButton.hidden = true;
-    voiceStatus.textContent = voicePausedMessage();
-    window.clearTimeout(voiceCheckTimer);
-    const retryAt = Date.now() + delaySeconds * 1000;
-    try {
-      localStorage.setItem(voicePauseKey, String(retryAt));
-      localStorage.setItem(voiceRetryKey, String(voiceRetrySeconds));
-    } catch {}
-    voiceCheckTimer = window.setTimeout(() => { void checkVoiceAvailability(); }, delaySeconds * 1000);
-  };
-
-  const checkVoiceAvailability = async () => {
-    voiceStatus.textContent = voicePausedMessage();
-    try {
-      localStorage.setItem(voiceLastCheckKey, String(Date.now()));
-    } catch {}
-    try {
-      const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ voiceStatusCheck: true }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (response.ok && data.available === true) {
-        window.clearTimeout(voiceCheckTimer);
-        micButton.hidden = false;
-        voiceRetrySeconds = 900;
-        try { localStorage.removeItem(voicePauseKey); localStorage.removeItem(voiceRetryKey); } catch {}
-        voiceStatus.textContent = isBangla ? "ভয়েস ইনপুট আবার চালু হয়েছে।" : "Voice input is available again.";
-        window.setTimeout(() => {
-          if (!micButton.hidden) voiceStatus.textContent = "";
-        }, 5000);
-        return;
-      }
-      scheduleVoiceCheck(Math.max(Number(data.retryAfterSeconds) || 0, Math.min(21600, voiceRetrySeconds * 2)));
-    } catch {
-      scheduleVoiceCheck(Math.min(21600, voiceRetrySeconds * 2));
-    }
-  };
-
   try {
-    const retryAt = Number(localStorage.getItem(voicePauseKey) || 0);
-    voiceRetrySeconds = Number(localStorage.getItem(voiceRetryKey) || 900);
-    if (retryAt > 0) {
-      micButton.hidden = true;
-      if (retryAt > Date.now()) scheduleVoiceCheck((retryAt - Date.now()) / 1000);
-      else void checkVoiceAvailability();
-    }
+    localStorage.removeItem("portfolio-assistant-voice-paused-until");
+    localStorage.removeItem("portfolio-assistant-voice-retry-seconds");
+    localStorage.removeItem("portfolio-assistant-voice-last-check");
   } catch {}
+
+  const getVoiceTranscriber = async () => {
+    if (!voiceTranscriberPromise) {
+      voiceTranscriberPromise = import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2")
+        .then(({ pipeline }) => pipeline(
+          "automatic-speech-recognition",
+          "onnx-community/whisper-tiny",
+          {
+            progress_callback: (progress) => {
+              if (progress.status !== "progress" || !Number.isFinite(progress.progress)) return;
+              const percent = Math.round(progress.progress);
+              voiceStatus.textContent = isBangla
+                ? `ভয়েস মডেল ডাউনলোড হচ্ছে: ${percent}%`
+                : `Downloading voice model: ${percent}%`;
+            },
+          },
+        ))
+        .catch((error) => {
+          voiceTranscriberPromise = null;
+          throw error;
+        });
+    }
+    return voiceTranscriberPromise;
+  };
 
   const sendQuestion = async (question) => {
     const cleanQuestion = question.trim().slice(0, 300);
@@ -413,11 +347,6 @@ if (footer && footerBottom) {
     }
     if (open) {
       questionInput.focus();
-      if (!micButton.hidden) {
-        let lastVoiceCheck = 0;
-        try { lastVoiceCheck = Number(localStorage.getItem(voiceLastCheckKey) || 0); } catch {}
-        if (Date.now() - lastVoiceCheck > 15 * 60 * 1000) void checkVoiceAvailability();
-      }
     }
   };
 
@@ -448,29 +377,36 @@ if (footer && footerBottom) {
         const blob = new Blob(audioChunks, { type: recorder.mimeType || "audio/webm" });
         if (!blob.size) return;
         if (blob.size > 10 * 1024 * 1024) { voiceStatus.textContent = isBangla ? "রেকর্ডিংটি ১০ MB-এর বেশি। ছোট করে বলুন।" : "Recording is over 10 MB. Please record a shorter message."; return; }
-        voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া হচ্ছে…" : "Transcribing your voice…"; setSending(true);
+        voiceStatus.textContent = isBangla
+          ? "প্রথমবার ভয়েস মডেল ডাউনলোড হতে সময় লাগতে পারে; অডিও এই ডিভাইসেই থাকবে।"
+          : "First use may take a while to download the speech model; your audio stays on this device.";
+        setSending(true);
         try {
-          const formData = new FormData();
-          formData.append("audio", blob, blob.type.includes("mp4") ? "voice.mp4" : "voice.webm");
-          formData.append("language", assistantLanguage);
-          const response = await fetch("https://qnmdmsxxcxwzddomwkea.supabase.co/functions/v1/portfolio-assistant", { method: "POST", body: formData });
-          const data = await response.json().catch(() => ({}));
-          if (response.status === 429) {
-            scheduleVoiceCheck(Number(data.retryAfterSeconds) || 900);
-            return;
+          const transcriber = await getVoiceTranscriber();
+          voiceStatus.textContent = isBangla ? "এই ডিভাইসেই কথাটি লিখে নেওয়া হচ্ছে…" : "Transcribing on this device…";
+          const audioUrl = URL.createObjectURL(blob);
+          let result;
+          try {
+            result = await transcriber(audioUrl, {
+              language: assistantLanguage === "bn" ? "bengali" : "english",
+              task: "transcribe",
+            });
+          } finally {
+            URL.revokeObjectURL(audioUrl);
           }
-          if (!response.ok || !data.transcript) throw new Error(data.error || "Transcription failed");
-          questionInput.value = data.transcript.slice(0, 300);
+          const transcript = typeof result?.text === "string" ? result.text.trim() : "";
+          if (!transcript) throw new Error("No speech detected");
+          questionInput.value = transcript.slice(0, 300);
           voiceStatus.textContent = isBangla ? "কথাটি লিখে দেওয়া হয়েছে—পাঠানোর আগে সম্পাদনা করুন।" : "Transcribed—edit it if you like, then send.";
           questionInput.focus();
         } catch (error) {
           const detail = error instanceof Error ? error.message : "";
-          if (isBangla && detail.toLowerCase().includes("usage limit")) {
-            voiceStatus.textContent = "AI সেবার সাময়িক ব্যবহারসীমার কারণে ভয়েস লেখা যাচ্ছে না। বার্তাটি টাইপ করুন বা কিছুক্ষণ পর চেষ্টা করুন।";
-          } else if (isBangla && detail.toLowerCase().includes("unsupported audio format")) {
-            voiceStatus.textContent = "এই অডিও ফরম্যাটটি সমর্থিত নয়। আবার রেকর্ড করে চেষ্টা করুন।";
+          if (detail.toLowerCase().includes("no speech detected")) {
+            voiceStatus.textContent = isBangla ? "কোনো কথা শনাক্ত হয়নি। আবার চেষ্টা করুন।" : "No speech was detected. Please try again.";
           } else if (detail && detail !== "Transcription failed") {
-            voiceStatus.textContent = isBangla ? "ভয়েস লেখা যায়নি: " + detail : detail;
+            voiceStatus.textContent = isBangla
+              ? "ভয়েস লেখা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
+              : "Voice transcription failed. Check your connection and try again.";
           } else {
             voiceStatus.textContent = isBangla ? "কথা লিখে নেওয়া যায়নি। আবার চেষ্টা করুন।" : "I couldn’t transcribe that. Please try again.";
           }
@@ -569,3 +505,4 @@ if (workCarousel) {
   showWorkSlide(0);
   startRotation();
 }
+
