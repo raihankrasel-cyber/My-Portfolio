@@ -107,6 +107,7 @@ if (footer && footerBottom) {
     "</div>",
   ].join("");
   footer.insertBefore(assistant, footerBottom);
+  footer.querySelector(".assistant-static-fallback")?.remove();
 
   const quickQuestionLabels = assistant.querySelectorAll("[data-question]");
   if (isBangla) {
@@ -503,6 +504,7 @@ if (workCarousel) {
   reduceMotion.addEventListener?.("change", startRotation);
 
   showWorkSlide(0);
+  workCarousel.dataset.carouselReady = "true";
   startRotation();
 }
 
