@@ -7,7 +7,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 // Add a subtle letter-by-letter wave to the main headline.
 const waveHeading = document.querySelector(".hero h1");
 if (waveHeading && !waveHeading.dataset.waveReady) {
-  const accessibleHeading = waveHeading.textContent.replace(/\s+/g, " ").trim();
+  const accessibleHeading = waveHeading.innerText.replace(/\s+/g, " ").trim();
   const textNodes = [];
   const walker = document.createTreeWalker(waveHeading, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
@@ -22,19 +22,31 @@ if (waveHeading && !waveHeading.dataset.waveReady) {
       ? Array.from(segmenter.segment(textNode.nodeValue), ({ segment }) => segment)
       : Array.from(textNode.nodeValue);
     const fragment = document.createDocumentFragment();
+    let word = null;
+    const appendWord = () => {
+      if (!word) return;
+      fragment.appendChild(word);
+      word = null;
+    };
     characters.forEach((character) => {
       if (/\s/u.test(character)) {
+        appendWord();
         fragment.appendChild(document.createTextNode(character));
         return;
       }
+      if (!word) {
+        word = document.createElement("span");
+        word.className = "hero-wave-word";
+        word.setAttribute("aria-hidden", "true");
+      }
       const letter = document.createElement("span");
       letter.className = "hero-wave-letter";
-      letter.setAttribute("aria-hidden", "true");
       letter.style.setProperty("--wave-delay", `${waveIndex * 54}ms`);
       letter.textContent = character;
-      fragment.appendChild(letter);
+      word.appendChild(letter);
       waveIndex += 1;
     });
+    appendWord();
     textNode.replaceWith(fragment);
   });
   waveHeading.setAttribute("aria-label", accessibleHeading);
