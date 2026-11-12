@@ -292,6 +292,9 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 }
 
 /* A gentle character wave runs across readable text throughout the page. */
+.site-wave-text,.site-wave-word,.site-wave-letter{margin:0;color:inherit;letter-spacing:inherit}
+.button .site-wave-text,.button .site-wave-word,.button .site-wave-letter{font-size:inherit}
+.nav-contact .site-wave-text,.nav-contact .site-wave-word,.nav-contact .site-wave-letter,.text-link .site-wave-text,.text-link .site-wave-word,.text-link .site-wave-letter{margin-left:0}
 .site-wave-word{display:inline-block;white-space:nowrap}
 .site-wave-word-long{white-space:normal;overflow-wrap:anywhere}
 .site-wave-letter{display:inline-block;animation:site-letter-wave 2.6s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
