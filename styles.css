@@ -291,10 +291,11 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
 }
 
-/* A soft wave gives the hero headline a little motion without moving body copy. */
-.hero-wave-word{display:inline-block;white-space:nowrap}
-.hero-wave-letter{display:inline-block;animation:hero-letter-wave 2.25s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
-@keyframes hero-letter-wave{0%,100%{transform:translateY(0)}38%{transform:translateY(-.075em)}58%{transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.hero-wave-letter{animation:none;transform:none}}
+/* A gentle character wave runs across readable text throughout the page. */
+.site-wave-word{display:inline-block;white-space:nowrap}
+.site-wave-word-long{white-space:normal;overflow-wrap:anywhere}
+.site-wave-letter{display:inline-block;animation:site-letter-wave 2.6s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
+@keyframes site-letter-wave{0%,100%{transform:translateY(0)}38%{transform:translateY(-.055em)}58%{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.site-wave-letter{animation:none;transform:none}}
 
 
