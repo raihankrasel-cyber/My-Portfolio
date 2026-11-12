@@ -291,4 +291,9 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
 }
 
+/* A soft wave gives the hero headline a little motion without moving body copy. */
+.hero-wave-letter{display:inline-block;animation:hero-letter-wave 2.25s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
+@keyframes hero-letter-wave{0%,100%{transform:translateY(0)}38%{transform:translateY(-.075em)}58%{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.hero-wave-letter{animation:none;transform:none}}
+
 
