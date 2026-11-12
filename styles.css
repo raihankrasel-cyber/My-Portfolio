@@ -291,9 +291,3 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
 }
 
-/* Wave text stays inline so it cannot change the site layout. */
-.site-wave-text,.site-wave-word,.site-wave-letter{display:inline!important;width:auto!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;font:inherit!important;letter-spacing:inherit!important;color:inherit!important;line-height:inherit!important;vertical-align:baseline!important}
-.site-wave-word{white-space:normal!important}
-.site-wave-letter{position:relative;animation:site-letter-wave 2.6s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
-@keyframes site-letter-wave{0%,100%{top:0}38%{top:-.055em}58%{top:0}}
-@media(prefers-reduced-motion:reduce){.site-wave-letter{animation:none;top:auto}}
