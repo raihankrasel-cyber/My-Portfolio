@@ -266,3 +266,29 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 .assistant-static-fallback>a:hover{background:#6c43e318}
 @media(max-width:640px){.assistant-static-fallback{align-items:flex-start;flex-direction:column;padding:21px}}
 
+/* Give the hero portrait a clearer visual stage and analytics cards a shared finish. */
+.hero-visual:before{content:"";position:absolute;width:min(86%,420px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(108,67,227,.18),rgba(0,79,252,.08) 43%,transparent 72%);filter:blur(10px);pointer-events:none}
+.portrait-frame{border-color:rgba(255,255,255,.42);box-shadow:0 0 0 7px rgba(108,67,227,.14),0 0 0 14px rgba(0,79,252,.08),0 24px 80px rgba(0,0,0,.34)}
+.portrait-frame:after{inset:8px;border-color:rgba(255,255,255,.45)}
+.floating-card{background:linear-gradient(145deg,rgba(22,28,48,.96),rgba(12,17,32,.94));border-color:rgba(255,255,255,.2);backdrop-filter:blur(14px)}
+.mini-chart{border-color:rgba(255,255,255,.25)}
+.mini-chart i{background:linear-gradient(180deg,#8f73ff 0%,#386fff 100%);box-shadow:0 0 14px rgba(69,105,255,.18)}
+.mini-chart b{background:linear-gradient(135deg,#a38cff,#65a0ff);background-clip:text;-webkit-background-clip:text;color:transparent}
+@media(max-width:640px){
+  .hero{padding-top:28px;padding-bottom:42px}
+  .hero-visual{height:min(52vw,178px);max-width:280px;margin:0 auto 7px}
+  .portrait-frame{width:min(43vw,150px);box-shadow:0 0 0 5px rgba(108,67,227,.16),0 0 0 10px rgba(0,79,252,.08),0 16px 44px rgba(0,0,0,.3)}
+  .portrait-frame:after{inset:5px}
+  .orbit-one{width:68vw;height:40vw}
+  .orbit-two{width:78vw;height:48vw}
+  .card-growth{left:2%;top:8%;transform:scale(.68);transform-origin:left top}
+  .card-stats{right:2%;bottom:5%;transform:scale(.68);transform-origin:right bottom}
+  .hero-ring{right:23%;top:9%;width:10px;height:10px}
+  .hero-copy{padding-top:10px}
+}
+@media(max-width:360px){
+  .card-growth{left:-3%;transform:scale(.61);transform-origin:left top}
+  .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
+}
+
+
