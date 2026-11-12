@@ -19,6 +19,8 @@ function waveTextNode(textNode) {
     ? Array.from(waveSegmenter.segment(textNode.nodeValue), ({ segment }) => segment)
     : Array.from(textNode.nodeValue);
   const fragment = document.createDocumentFragment();
+  const textGroup = document.createElement("span");
+  textGroup.className = "site-wave-text";
   let word = null;
   let wordIndex = 0;
   const appendWord = () => {
@@ -39,16 +41,21 @@ function waveTextNode(textNode) {
       word = document.createElement("span");
       word.className = "site-wave-word";
     }
-    const letter = document.createElement("span");
-    letter.className = "site-wave-letter";
-    letter.style.setProperty("--wave-delay", `${wordIndex * 48}ms`);
-    letter.textContent = character;
-    word.appendChild(letter);
-    wordIndex += 1;
+    if (/[\p{L}\p{N}]/u.test(character)) {
+      const letter = document.createElement("span");
+      letter.className = "site-wave-letter";
+      letter.style.setProperty("--wave-delay", `${wordIndex * 48}ms`);
+      letter.textContent = character;
+      word.appendChild(letter);
+      wordIndex += 1;
+    } else {
+      word.appendChild(document.createTextNode(character));
+    }
   });
 
   appendWord();
-  textNode.replaceWith(fragment);
+  textGroup.appendChild(fragment);
+  textNode.replaceWith(textGroup);
 }
 
 function wavePageText(root) {
