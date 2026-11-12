@@ -4,6 +4,43 @@ const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only,
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+// Add a subtle letter-by-letter wave to the main headline.
+const waveHeading = document.querySelector(".hero h1");
+if (waveHeading && !waveHeading.dataset.waveReady) {
+  const accessibleHeading = waveHeading.textContent.replace(/\s+/g, " ").trim();
+  const textNodes = [];
+  const walker = document.createTreeWalker(waveHeading, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    if (walker.currentNode.nodeValue.trim()) textNodes.push(walker.currentNode);
+  }
+  const segmenter = typeof Intl.Segmenter === "function"
+    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+    : null;
+  let waveIndex = 0;
+  textNodes.forEach((textNode) => {
+    const characters = segmenter
+      ? Array.from(segmenter.segment(textNode.nodeValue), ({ segment }) => segment)
+      : Array.from(textNode.nodeValue);
+    const fragment = document.createDocumentFragment();
+    characters.forEach((character) => {
+      if (/\s/u.test(character)) {
+        fragment.appendChild(document.createTextNode(character));
+        return;
+      }
+      const letter = document.createElement("span");
+      letter.className = "hero-wave-letter";
+      letter.setAttribute("aria-hidden", "true");
+      letter.style.setProperty("--wave-delay", `${waveIndex * 54}ms`);
+      letter.textContent = character;
+      fragment.appendChild(letter);
+      waveIndex += 1;
+    });
+    textNode.replaceWith(fragment);
+  });
+  waveHeading.setAttribute("aria-label", accessibleHeading);
+  waveHeading.dataset.waveReady = "true";
+}
+
 const isBangla = document.documentElement.lang === "bn";
 const assistantLanguage = document.documentElement.dataset.siteLanguage || document.documentElement.lang || "en";
 
@@ -446,4 +483,5 @@ if (workCarousel) {
   workCarousel.dataset.carouselReady = "true";
   startRotation();
 }
+
 
