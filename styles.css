@@ -291,14 +291,9 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
 }
 
-/* A gentle character wave runs across readable text throughout the page. */
-.site-wave-text,.site-wave-word,.site-wave-letter{margin:0;color:inherit;letter-spacing:inherit}
-.button .site-wave-text,.button .site-wave-word,.button .site-wave-letter{font-size:inherit}
-.nav-contact .site-wave-text,.nav-contact .site-wave-word,.nav-contact .site-wave-letter,.text-link .site-wave-text,.text-link .site-wave-word,.text-link .site-wave-letter{margin-left:0}
-.site-wave-word{display:inline-block;white-space:nowrap}
-.site-wave-word-long{white-space:normal;overflow-wrap:anywhere}
-.site-wave-letter{display:inline-block;animation:site-letter-wave 2.6s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
-@keyframes site-letter-wave{0%,100%{transform:translateY(0)}38%{transform:translateY(-.055em)}58%{transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.site-wave-letter{animation:none;transform:none}}
-
-
+/* Wave text stays inline so it cannot change the site layout. */
+.site-wave-text,.site-wave-word,.site-wave-letter{display:inline!important;width:auto!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;font:inherit!important;letter-spacing:inherit!important;color:inherit!important;line-height:inherit!important;vertical-align:baseline!important}
+.site-wave-word{white-space:normal!important}
+.site-wave-letter{position:relative;animation:site-letter-wave 2.6s ease-in-out infinite;animation-delay:var(--wave-delay,0ms)}
+@keyframes site-letter-wave{0%,100%{top:0}38%{top:-.055em}58%{top:0}}
+@media(prefers-reduced-motion:reduce){.site-wave-letter{animation:none;top:auto}}
