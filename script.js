@@ -4,54 +4,75 @@ const WHATSAPP_NUMBER = "880171299833453"; // International format, digits only,
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Add a subtle letter-by-letter wave to the main headline.
-const waveHeading = document.querySelector(".hero h1");
-if (waveHeading && !waveHeading.dataset.waveReady) {
-  const accessibleHeading = waveHeading.innerText.replace(/\s+/g, " ").trim();
-  const textNodes = [];
-  const walker = document.createTreeWalker(waveHeading, NodeFilter.SHOW_TEXT);
-  while (walker.nextNode()) {
-    if (walker.currentNode.nodeValue.trim()) textNodes.push(walker.currentNode);
-  }
-  const segmenter = typeof Intl.Segmenter === "function"
-    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
-    : null;
-  let waveIndex = 0;
-  textNodes.forEach((textNode) => {
-    const characters = segmenter
-      ? Array.from(segmenter.segment(textNode.nodeValue), ({ segment }) => segment)
-      : Array.from(textNode.nodeValue);
-    const fragment = document.createDocumentFragment();
-    let word = null;
-    const appendWord = () => {
-      if (!word) return;
-      fragment.appendChild(word);
-      word = null;
-    };
-    characters.forEach((character) => {
-      if (/\s/u.test(character)) {
-        appendWord();
-        fragment.appendChild(document.createTextNode(character));
-        return;
-      }
-      if (!word) {
-        word = document.createElement("span");
-        word.className = "hero-wave-word";
-        word.setAttribute("aria-hidden", "true");
-      }
-      const letter = document.createElement("span");
-      letter.className = "hero-wave-letter";
-      letter.style.setProperty("--wave-delay", `${waveIndex * 54}ms`);
-      letter.textContent = character;
-      word.appendChild(letter);
-      waveIndex += 1;
-    });
-    appendWord();
-    textNode.replaceWith(fragment);
+// Animate readable page text character by character, including later-loaded copy.
+const waveExcludedText = "script,style,noscript,input,textarea,select,option,svg,canvas,pre,code,[aria-hidden='true'],[aria-live],[data-wave-exclude]";
+const waveSegmenter = typeof Intl.Segmenter === "function"
+  ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+  : null;
+
+function waveTextNode(textNode) {
+  if (!textNode.nodeValue.trim()) return;
+  const parent = textNode.parentElement;
+  if (!parent || parent.closest(`${waveExcludedText},.site-wave-word`)) return;
+
+  const characters = waveSegmenter
+    ? Array.from(waveSegmenter.segment(textNode.nodeValue), ({ segment }) => segment)
+    : Array.from(textNode.nodeValue);
+  const fragment = document.createDocumentFragment();
+  let word = null;
+  let wordIndex = 0;
+  const appendWord = () => {
+    if (!word) return;
+    if (wordIndex > 18) word.classList.add("site-wave-word-long");
+    fragment.appendChild(word);
+    word = null;
+    wordIndex = 0;
+  };
+
+  characters.forEach((character) => {
+    if (/\s/u.test(character)) {
+      appendWord();
+      fragment.appendChild(document.createTextNode(character));
+      return;
+    }
+    if (!word) {
+      word = document.createElement("span");
+      word.className = "site-wave-word";
+    }
+    const letter = document.createElement("span");
+    letter.className = "site-wave-letter";
+    letter.style.setProperty("--wave-delay", `${wordIndex * 48}ms`);
+    letter.textContent = character;
+    word.appendChild(letter);
+    wordIndex += 1;
   });
-  waveHeading.setAttribute("aria-label", accessibleHeading);
-  waveHeading.dataset.waveReady = "true";
+
+  appendWord();
+  textNode.replaceWith(fragment);
 }
+
+function wavePageText(root) {
+  if (root.nodeType === Node.TEXT_NODE) {
+    waveTextNode(root);
+    return;
+  }
+  if (root.nodeType !== Node.ELEMENT_NODE || root.closest(waveExcludedText)) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach(waveTextNode);
+}
+
+wavePageText(document.body);
+const waveTextObserver = new MutationObserver((mutations) => {
+  const addedRoots = new Set();
+  mutations.forEach((mutation) => {
+    if (mutation.type === "characterData") addedRoots.add(mutation.target);
+    mutation.addedNodes?.forEach((node) => addedRoots.add(node));
+  });
+  addedRoots.forEach(wavePageText);
+});
+waveTextObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 
 const isBangla = document.documentElement.lang === "bn";
 const assistantLanguage = document.documentElement.dataset.siteLanguage || document.documentElement.lang || "en";
