@@ -7,14 +7,13 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
 <section class="login-showcase" aria-label="Interactive desk lamp artwork">
   <div class="showcase-topline"><span class="showcase-status"><i></i> A BRIGHTER WAY FORWARD</span><span>RAIHAN'S PORTFOLIO</span></div>
   <div class="showcase-copy"><p>Ideas start with a spark</p><h2>Make room<br>for <em>bright ideas.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>
-  <div class="login-art" id="login-art" data-lamp-state="off">
+  <div class="login-art" id="login-art" data-lamp-state="on" data-lamp-color="violet">
     <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
     <div class="lamp-backlight" aria-hidden="true"></div>
     <svg class="desk-lamp" viewBox="0 0 460 350" aria-hidden="true">
       <defs>
-        <radialGradient id="lamp-beam-fill"><stop offset="0" stop-color="#9e8aff" stop-opacity=".58"/><stop offset="1" stop-color="#6b59d9" stop-opacity="0"/></radialGradient>
+        <radialGradient id="lamp-beam-fill"><stop id="lamp-beam-core" offset="0" stop-color="#9e8aff" stop-opacity=".58"/><stop id="lamp-beam-edge" offset="1" stop-color="#6b59d9" stop-opacity="0"/></radialGradient>
         <linearGradient id="lamp-shade-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333c55"/><stop offset="1" stop-color="#101522"/></linearGradient>
-        <linearGradient id="lamp-metal-fill" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#4d5870"/><stop offset=".48" stop-color="#d8b77c"/><stop offset="1" stop-color="#59637b"/></linearGradient>
         <filter id="lamp-glow-blur"><feGaussianBlur stdDeviation="12"/></filter>
       </defs>
       <ellipse class="lamp-beam" cx="190" cy="203" rx="92" ry="105" fill="url(#lamp-beam-fill)" filter="url(#lamp-glow-blur)"/>
@@ -23,24 +22,42 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
       <ellipse class="lamp-base" cx="191" cy="294" rx="69" ry="12"/>
       <ellipse class="lamp-base-top" cx="191" cy="291" rx="54" ry="7"/>
       <path class="lamp-lower-arm" d="M190 284 L159 174"/>
-      <path class="lamp-upper-arm" d="M159 174 L193 115"/>
-      <circle class="lamp-joint" cx="159" cy="174" r="9"/><circle class="lamp-joint-core" cx="159" cy="174" r="3"/>
-      <circle class="lamp-joint" cx="193" cy="115" r="7"/><circle class="lamp-joint-core" cx="193" cy="115" r="2.5"/>
-      <circle class="lamp-pivot" cx="190" cy="284" r="8"/>
-      <g class="lamp-head" transform="rotate(-24 194 112)">
-        <path d="M154 76 Q158 42 194 39 Q230 42 234 76 L251 111 Q195 131 137 111Z" fill="url(#lamp-shade-fill)" stroke="#8791aa" stroke-opacity=".5" stroke-width="2"/>
-        <path class="lamp-shade-rim" d="M137 111 Q195 131 251 111" fill="none" stroke="#b6a6ff" stroke-width="4" stroke-linecap="round"/>
-        <ellipse class="lamp-bulb" cx="194" cy="108" rx="34" ry="9"/>
+      <g class="lamp-moving-arm">
+        <path class="lamp-upper-arm" d="M159 174 L193 115"/>
+        <circle class="lamp-joint" cx="159" cy="174" r="9"/><circle class="lamp-joint-core" cx="159" cy="174" r="3"/>
+        <circle class="lamp-joint" cx="193" cy="115" r="7"/><circle class="lamp-joint-core" cx="193" cy="115" r="2.5"/>
+        <g class="lamp-head">
+          <path d="M154 76 Q158 42 194 39 Q230 42 234 76 L251 111 Q195 131 137 111Z" fill="url(#lamp-shade-fill)" stroke="#8791aa" stroke-opacity=".5" stroke-width="2"/>
+          <path class="lamp-shade-rim" d="M137 111 Q195 131 251 111" fill="none" stroke="#b6a6ff" stroke-width="4" stroke-linecap="round"/>
+          <ellipse class="lamp-bulb" cx="194" cy="108" rx="34" ry="9"/>
+        </g>
       </g>
+      <circle class="lamp-pivot" cx="190" cy="284" r="8"/>
       <ellipse class="lamp-floor-glow" cx="191" cy="285" rx="76" ry="10"/>
     </svg>
-    <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="false" aria-label="Turn the desk lamp on">
-      <span class="lamp-toggle-track" aria-hidden="true"><span></span></span>
-      <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT OFF</b></span>
-    </button>
+    <div class="lamp-controls">
+      <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="true" aria-label="Turn the desk lamp off">
+        <span class="lamp-toggle-track" aria-hidden="true"><span></span></span>
+        <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT ON</b></span>
+      </button>
+      <div class="lamp-palette" role="group" aria-label="Lamp light color">
+        <button type="button" class="lamp-color-button is-selected" data-lamp-color-choice="violet" aria-label="Violet light" aria-pressed="true"></button>
+        <button type="button" class="lamp-color-button" data-lamp-color-choice="rose" aria-label="Rose light" aria-pressed="false"></button>
+        <button type="button" class="lamp-color-button" data-lamp-color-choice="amber" aria-label="Amber light" aria-pressed="false"></button>
+      </div>
+    </div>
     <span class="lamp-spark lamp-spark-one" aria-hidden="true">✦</span><span class="lamp-spark lamp-spark-two" aria-hidden="true">✳</span>
   </div>
   <div class="lamp-caption"><span aria-hidden="true">✧</span> A little light can change your perspective.</div>
+  <div class="lamp-code" aria-label="JavaScript lamp sound code">
+    <div class="lamp-code-top"><span></span><span></span><span></span><b>lamp.js</b></div>
+    <pre><code><span class="lamp-code-line"><i>1</i> <b>const</b> hum = audioCtx.createOscillator();</span>
+<span class="lamp-code-line"><i>2</i> hum.type = <em>"sine"</em>;</span>
+<span class="lamp-code-line"><i>3</i> hum.frequency.setValueAtTime(<strong>120</strong>, now + <strong>0.05</strong>);</span>
+<span class="lamp-code-line"><i>4</i> gain.gain.exponentialRampToValueAtTime(<strong>0.001</strong>, now + <strong>0.35</strong>);</span>
+<span class="lamp-code-line"><i>5</i> hum.connect(gain); gain.connect(audioCtx.destination);</span>
+<span class="lamp-code-line"><i>6</i> hum.start(); hum.stop(now + <strong>0.38</strong>);</span></code></pre>
+  </div>
 </section>`);
 const params = new URLSearchParams(location.search);
 const mode = { value: params.get("mode") === "signup" ? "signup" : "signin" };
@@ -234,6 +251,29 @@ if (sessionData.session?.user) {
 
 const art = byId("login-art");
 const lampToggle = byId("lamp-toggle");
+const lampColorButtons = Array.from(document.querySelectorAll("[data-lamp-color-choice]"));
+const lampColorSettings = {
+  violet: { core:"#9e8aff", edge:"#6b59d9", tone:"#a995ff", highlight:"#fff5cf", spark:"#b8a7ff" },
+  rose: { core:"#ff86c9", edge:"#d64293", tone:"#f25bb9", highlight:"#ffe1f2", spark:"#ff9bd5" },
+  amber: { core:"#ffe09a", edge:"#d89434", tone:"#f5b84d", highlight:"#fff0c4", spark:"#ffd780" }
+};
+const setLampColor = (colorName) => {
+  const colors = lampColorSettings[colorName];
+  if (!colors || !art) return;
+  art.dataset.lampColor = colorName;
+  art.style.setProperty("--lamp-tone", colors.tone);
+  art.style.setProperty("--lamp-highlight", colors.highlight);
+  art.style.setProperty("--lamp-spark-color", colors.spark);
+  document.getElementById("lamp-beam-core")?.setAttribute("stop-color", colors.core);
+  document.getElementById("lamp-beam-edge")?.setAttribute("stop-color", colors.edge);
+  lampColorButtons.forEach((button) => {
+    const selected = button.dataset.lampColorChoice === colorName;
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+};
+lampColorButtons.forEach((button) => button.addEventListener("click", () => setLampColor(button.dataset.lampColorChoice)));
+setLampColor("violet");
 if (art && lampToggle) {
   const playLampHum = () => {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
