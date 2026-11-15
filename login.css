@@ -161,3 +161,4 @@
 @media(max-width:760px){.login-art{height:300px}.lamp-caption{margin-top:0}}
 @media(max-width:420px){.login-art{height:260px}.lamp-controls{right:3%;top:7%}.lamp-toggle{padding:8px 9px}.lamp-toggle-copy small{font-size:6px}.lamp-toggle-copy b{font-size:8px}.lamp-palette{padding:6px 8px}}
 @media(prefers-reduced-motion:reduce){.lamp-light-cone,.lamp-beam,.lamp-floor-glow,.lamp-backlight,.lamp-toggle,.lamp-toggle-track,.lamp-toggle-track>span,.lamp-spark,.lamp-moving-arm,.lamp-head,.lamp-color-button{animation:none!important;transition:none!important}}
+.login-form label[hidden]{display:none!important}
