@@ -129,15 +129,8 @@
 .lamp-spark{position:absolute;color:var(--lamp-spark-color,#b8a7ff);text-shadow:0 0 16px var(--lamp-tone,#a995ff);font-size:20px;opacity:.35;transition:opacity .3s,transform .4s}
 .lamp-spark-one{right:12%;bottom:15%}.lamp-spark-two{left:12%;top:12%;font-size:15px}
 .lamp-caption{display:flex;align-items:center;gap:8px;margin-top:-3px;color:#8992aa;font-size:10px;letter-spacing:.02em}
-.lamp-caption>span{color:var(--lamp-tone,#b3a3ff);font-size:16px}
-.lamp-code{margin-top:16px;overflow:hidden;border:1px solid #ffffff15;border-radius:10px;background:#080c14ed;box-shadow:0 15px 35px #0003}
-.lamp-code-top{height:26px;display:flex;align-items:center;gap:5px;padding:0 10px;border-bottom:1px solid #ffffff12}
-.lamp-code-top>span{width:6px;height:6px;border-radius:50%;background:#ff666a}.lamp-code-top>span:nth-child(2){background:#f7c44a}.lamp-code-top>span:nth-child(3){background:#4bd575}
-.lamp-code-top b{margin-left:7px;color:#777f97;font:500 8px var(--font)}
-.lamp-code pre{margin:0;padding:8px 9px 10px;overflow-x:auto;color:#d5d8e5;font:400 8px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}
-.lamp-code-line{display:block;white-space:nowrap}.lamp-code-line i{display:inline-block;width:15px;color:#626a7c;font-style:normal}.lamp-code-line b{color:#c5aaff;font-weight:500}.lamp-code-line em{color:#9ed9ff;font-style:normal}.lamp-code-line strong{color:#ffcc78;font-weight:500}
-@keyframes lamp-beam-on{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+.lamp-caption>span{color:var(--lamp-tone,#b3a3ff);font-size:16px}@keyframes lamp-beam-on{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
 @media(max-width:960px){.login-art{height:320px}}
-@media(max-width:760px){.login-art{height:300px}.lamp-caption{margin-top:0}.lamp-code{margin-top:13px}.lamp-code pre{font-size:8px}}
+@media(max-width:760px){.login-art{height:300px}.lamp-caption{margin-top:0}}
 @media(max-width:420px){.login-art{height:260px}.lamp-controls{right:3%;top:7%}.lamp-toggle{padding:8px 9px}.lamp-toggle-copy small{font-size:6px}.lamp-toggle-copy b{font-size:8px}.lamp-palette{padding:6px 8px}}
 @media(prefers-reduced-motion:reduce){.lamp-light-cone,.lamp-beam,.lamp-floor-glow,.lamp-backlight,.lamp-toggle,.lamp-toggle-track,.lamp-toggle-track>span,.lamp-spark,.lamp-moving-arm,.lamp-head,.lamp-color-button{animation:none!important;transition:none!important}}
