@@ -10,7 +10,7 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
   <div class="login-art" id="login-art" data-lamp-state="off" data-lamp-color="amber">
     <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
     <div class="lamp-backlight" aria-hidden="true"></div>
-    <svg class="desk-lamp" viewBox="0 0 460 350" role="button" tabindex="0" aria-label="Turn the desk lamp on" aria-pressed="false">
+    <svg class="desk-lamp" viewBox="0 0 460 350">
       <defs>
         <radialGradient id="lamp-beam-fill"><stop id="lamp-beam-core" offset="0" stop-color="#9e8aff" stop-opacity=".58"/><stop id="lamp-beam-edge" offset="1" stop-color="#6b59d9" stop-opacity="0"/></radialGradient>
         <linearGradient id="lamp-shade-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333c55"/><stop offset="1" stop-color="#101522"/></linearGradient>
@@ -31,6 +31,11 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
           <path class="lamp-shade-rim" d="M137 111 Q195 131 251 111" fill="none" stroke="#b6a6ff" stroke-width="4" stroke-linecap="round"/>
           <ellipse class="lamp-bulb" cx="194" cy="108" rx="34" ry="9"/>
         </g>
+      </g>
+      <g class="lamp-pull" id="lamp-pull" role="button" tabindex="0" aria-label="Pull chain to turn the light on" aria-pressed="false">
+        <circle class="lamp-pull-hit-area" cx="246" cy="141" r="16"/>
+        <path class="lamp-pull-chain" d="M242 112 C249 122 250 132 246 141"/>
+        <circle class="lamp-pull-knob" cx="246" cy="147" r="5"/>
       </g>
       <circle class="lamp-pivot" cx="190" cy="284" r="8"/>
       <ellipse class="lamp-floor-glow" cx="191" cy="285" rx="76" ry="10"/>
@@ -230,7 +235,7 @@ if (sessionData.session?.user) {
 }
 
 const art = byId("login-art");
-const lampControl = art?.querySelector(".desk-lamp");
+const lampControl = byId("lamp-pull");
 const lampColorSettings = {
   violet: { core:"#aebcff", edge:"#5269d7", tone:"#7488ef", highlight:"#e9efff", spark:"#c3ceff", button:"#8191f5" },
   rose: { core:"#ff86c9", edge:"#d64293", tone:"#f25bb9", highlight:"#ffe1f2", spark:"#ff9bd5", button:"#f25bb9" },
@@ -252,8 +257,10 @@ setLampColor("amber");
 if (art && lampControl) {
   let lampWasManuallySet = false;
   const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const colorTimers = [];
   let turnOnTimer = 0;
+  let colorCycleTimer = 0;
+  let colorIndex = 0;
+  const colorCycle = ["amber", "rose", "violet"];
 
   const playLampHum = () => {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
@@ -279,18 +286,26 @@ if (art && lampControl) {
     art.dataset.lampState = isOn ? "on" : "off";
     document.body.classList.toggle("lamp-lit", isOn);
     lampControl.setAttribute("aria-pressed", String(isOn));
-    lampControl.setAttribute("aria-label", isOn ? "Turn the desk lamp off" : "Turn the desk lamp on");
+    lampControl.setAttribute("aria-label", isOn ? "Pull chain to turn the light off" : "Pull chain to turn the light on");
   };
-  const stopAutomaticSequence = () => {
-    window.clearTimeout(turnOnTimer);
-    colorTimers.forEach((timer) => window.clearTimeout(timer));
+  const stopColorCycle = () => window.clearInterval(colorCycleTimer);
+  const startColorCycle = () => {
+    if (prefersReducedMotion) return;
+    stopColorCycle();
+    colorCycleTimer = window.setInterval(() => {
+      if (art.dataset.lampState !== "on") return;
+      colorIndex = (colorIndex + 1) % colorCycle.length;
+      setLampColor(colorCycle[colorIndex]);
+    }, 2500);
   };
   const toggleLamp = () => {
     lampWasManuallySet = true;
-    stopAutomaticSequence();
+    window.clearTimeout(turnOnTimer);
     const isOn = lampControl.getAttribute("aria-pressed") !== "true";
     if (isOn) playLampHum();
     setLampState(isOn);
+    if (isOn) startColorCycle();
+    else stopColorCycle();
   };
   lampControl.addEventListener("click", toggleLamp);
   lampControl.addEventListener("keydown", (event) => {
@@ -304,11 +319,10 @@ if (art && lampControl) {
     setLampState(true);
   } else {
     turnOnTimer = window.setTimeout(() => {
-      if (!lampWasManuallySet) setLampState(true);
+      if (!lampWasManuallySet) {
+        setLampState(true);
+        startColorCycle();
+      }
     }, 1800);
-    colorTimers.push(
-      window.setTimeout(() => { if (!lampWasManuallySet) setLampColor("rose"); }, 3600),
-      window.setTimeout(() => { if (!lampWasManuallySet) setLampColor("violet"); }, 7600)
-    );
   }
 }

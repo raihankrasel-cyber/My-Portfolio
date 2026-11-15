@@ -55,8 +55,13 @@
 @property --lamp-button-tone{syntax:"<color>";inherits:true;initial-value:#ffb52e}
 .login-page{--lamp-ambient-color:#f5b84d;--lamp-button-tone:#ffb52e;transition:--lamp-ambient-color .95s ease,--lamp-button-tone .95s ease}
 .login-page .button-gold{background:var(--lamp-button-tone);transition:background-color .95s ease,transform .2s,box-shadow .2s,filter .2s}
-.desk-lamp{cursor:pointer;outline:none}
-.desk-lamp:focus-visible{filter:drop-shadow(0 0 10px var(--lamp-tone,#f5b84d))}
+.lamp-pull{cursor:pointer;outline:none}
+.lamp-pull-hit-area{fill:transparent;stroke:transparent;pointer-events:all}
+.lamp-pull-chain{fill:none;stroke:#c4a15d;stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 1px 2px #0009);transition:stroke .35s,filter .25s}
+.lamp-pull-knob{fill:#d4b36b;stroke:#5b4730;stroke-width:1.5;filter:drop-shadow(0 2px 2px #0009);transform-box:fill-box;transform-origin:center;transition:fill .35s,transform .2s,filter .25s}
+.lamp-pull:hover .lamp-pull-knob,.lamp-pull:focus-visible .lamp-pull-knob{filter:drop-shadow(0 0 7px var(--lamp-tone,#f5b84d));transform:scale(1.18)}
+.login-art[data-lamp-state="on"] .lamp-pull-chain{stroke:var(--lamp-highlight,#fff0c4)}
+.login-art[data-lamp-state="on"] .lamp-pull-knob{fill:var(--lamp-highlight,#fff0c4);transform:translateY(2px)}
 @media(prefers-reduced-motion:reduce){.login-page,.login-page .button-gold{transition:none}}
 .login-card-mark{overflow:hidden}.login-card-mark img{display:block;width:34px;height:34px;object-fit:contain;filter:hue-rotate(205deg) saturate(1.45) brightness(1.08)}
 
