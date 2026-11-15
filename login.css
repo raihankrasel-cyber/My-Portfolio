@@ -42,7 +42,7 @@
 .login-page::before{content:"";position:fixed;z-index:0;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 36vw 52vh at 24% 62%,color-mix(in srgb,var(--lamp-ambient-color,#f25bb9) 34%,transparent),transparent 74%);filter:blur(12px);transition:opacity 1.2s ease}
 .login-page.lamp-lit::before{opacity:1}
 .login-topbar,.login-main{position:relative;z-index:1}
-.login-card{animation:login-card-in .68s cubic-bezier(.2,.8,.2,1) .72s both}
+.login-card{animation:login-card-in .68s cubic-bezier(.2,.8,.2,1) 2s both}
 .lamp-backlight{opacity:0!important;filter:blur(20px);transition:opacity 1.05s ease,filter 1.05s ease!important}
 .login-art[data-lamp-state="on"] .lamp-backlight{opacity:.78!important;filter:brightness(1.25) blur(12px)}
 .lamp-light-cone,.lamp-beam,.lamp-floor-glow{transition:opacity .9s cubic-bezier(.2,.75,.25,1)!important}
@@ -50,6 +50,14 @@
 .lamp-bulb,.lamp-shade-rim{transition:fill .75s ease,filter .75s ease,stroke .75s ease!important}
 @keyframes lamp-beam-on{from{opacity:0;transform:scale(.42)}to{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.login-page::before{transition:none}.login-card{animation-delay:0ms}}
+
+@property --lamp-ambient-color{syntax:"<color>";inherits:true;initial-value:#f5b84d}
+@property --lamp-button-tone{syntax:"<color>";inherits:true;initial-value:#ffb52e}
+.login-page{--lamp-ambient-color:#f5b84d;--lamp-button-tone:#ffb52e;transition:--lamp-ambient-color .95s ease,--lamp-button-tone .95s ease}
+.login-page .button-gold{background:var(--lamp-button-tone);transition:background-color .95s ease,transform .2s,box-shadow .2s,filter .2s}
+.desk-lamp{cursor:pointer;outline:none}
+.desk-lamp:focus-visible{filter:drop-shadow(0 0 10px var(--lamp-tone,#f5b84d))}
+@media(prefers-reduced-motion:reduce){.login-page,.login-page .button-gold{transition:none}}
 .login-card-mark{overflow:hidden}.login-card-mark img{display:block;width:34px;height:34px;object-fit:contain;filter:hue-rotate(205deg) saturate(1.45) brightness(1.08)}
 
 /* Desk lamp animation for the sign-in and sign-up showcase */

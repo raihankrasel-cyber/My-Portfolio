@@ -7,10 +7,10 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
 <section class="login-showcase" aria-label="Interactive desk lamp artwork">
   <div class="showcase-topline"><span class="showcase-status"><i></i> A BRIGHTER WAY FORWARD</span><span>RAIHAN'S PORTFOLIO</span></div>
   <div class="showcase-copy"><p>Ideas start with a spark</p><h2>Make room<br>for <em>bright ideas.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>
-  <div class="login-art" id="login-art" data-lamp-state="off" data-lamp-color="rose">
+  <div class="login-art" id="login-art" data-lamp-state="off" data-lamp-color="amber">
     <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
     <div class="lamp-backlight" aria-hidden="true"></div>
-    <svg class="desk-lamp" viewBox="0 0 460 350" aria-hidden="true">
+    <svg class="desk-lamp" viewBox="0 0 460 350" role="button" tabindex="0" aria-label="Turn the desk lamp on" aria-pressed="false">
       <defs>
         <radialGradient id="lamp-beam-fill"><stop id="lamp-beam-core" offset="0" stop-color="#9e8aff" stop-opacity=".58"/><stop id="lamp-beam-edge" offset="1" stop-color="#6b59d9" stop-opacity="0"/></radialGradient>
         <linearGradient id="lamp-shade-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333c55"/><stop offset="1" stop-color="#101522"/></linearGradient>
@@ -35,17 +35,6 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
       <circle class="lamp-pivot" cx="190" cy="284" r="8"/>
       <ellipse class="lamp-floor-glow" cx="191" cy="285" rx="76" ry="10"/>
     </svg>
-    <div class="lamp-controls">
-      <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="false" aria-label="Turn the desk lamp on">
-        <span class="lamp-toggle-track" aria-hidden="true"><span></span></span>
-        <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT OFF</b></span>
-      </button>
-      <div class="lamp-palette" role="group" aria-label="Lamp light color">
-        <button type="button" class="lamp-color-button" data-lamp-color-choice="violet" aria-label="Violet light" aria-pressed="false"></button>
-        <button type="button" class="lamp-color-button is-selected" data-lamp-color-choice="rose" aria-label="Rose light" aria-pressed="true"></button>
-        <button type="button" class="lamp-color-button" data-lamp-color-choice="amber" aria-label="Amber light" aria-pressed="false"></button>
-      </div>
-    </div>
     <span class="lamp-spark lamp-spark-one" aria-hidden="true">✦</span><span class="lamp-spark lamp-spark-two" aria-hidden="true">✳</span>
   </div>
   <div class="lamp-caption"><span aria-hidden="true">✧</span> A little light can change your perspective.</div>
@@ -241,12 +230,11 @@ if (sessionData.session?.user) {
 }
 
 const art = byId("login-art");
-const lampToggle = byId("lamp-toggle");
-const lampColorButtons = Array.from(document.querySelectorAll("[data-lamp-color-choice]"));
+const lampControl = art?.querySelector(".desk-lamp");
 const lampColorSettings = {
-  violet: { core:"#9e8aff", edge:"#6b59d9", tone:"#a995ff", highlight:"#fff5cf", spark:"#b8a7ff" },
-  rose: { core:"#ff86c9", edge:"#d64293", tone:"#f25bb9", highlight:"#ffe1f2", spark:"#ff9bd5" },
-  amber: { core:"#ffe09a", edge:"#d89434", tone:"#f5b84d", highlight:"#fff0c4", spark:"#ffd780" }
+  violet: { core:"#aebcff", edge:"#5269d7", tone:"#7488ef", highlight:"#e9efff", spark:"#c3ceff", button:"#8191f5" },
+  rose: { core:"#ff86c9", edge:"#d64293", tone:"#f25bb9", highlight:"#ffe1f2", spark:"#ff9bd5", button:"#f25bb9" },
+  amber: { core:"#ffe09a", edge:"#d89434", tone:"#f5b84d", highlight:"#fff0c4", spark:"#ffd780", button:"#ffb52e" }
 };
 const setLampColor = (colorName) => {
   const colors = lampColorSettings[colorName];
@@ -258,25 +246,14 @@ const setLampColor = (colorName) => {
   document.getElementById("lamp-beam-core")?.setAttribute("stop-color", colors.core);
   document.getElementById("lamp-beam-edge")?.setAttribute("stop-color", colors.edge);
   document.body.style.setProperty("--lamp-ambient-color", colors.tone);
-  lampColorButtons.forEach((button) => {
-    const selected = button.dataset.lampColorChoice === colorName;
-    button.classList.toggle("is-selected", selected);
-    button.setAttribute("aria-pressed", String(selected));
-  });
+  document.body.style.setProperty("--lamp-button-tone", colors.button);
 };
-lampColorButtons.forEach((button) => button.addEventListener("click", () => setLampColor(button.dataset.lampColorChoice)));
-setLampColor("rose");
-if (art && lampToggle) {
+setLampColor("amber");
+if (art && lampControl) {
   let lampWasManuallySet = false;
   const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.setTimeout(() => {
-    if (lampWasManuallySet) return;
-    art.dataset.lampState = "on";
-    lampToggle.setAttribute("aria-pressed", "true");
-    lampToggle.setAttribute("aria-label", "Turn the desk lamp off");
-    byId("lamp-status").textContent = "LIGHT ON";
-    document.body.classList.add("lamp-lit");
-  }, prefersReducedMotion ? 0 : 180);
+  const colorTimers = [];
+  let turnOnTimer = 0;
 
   const playLampHum = () => {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
@@ -298,28 +275,40 @@ if (art && lampToggle) {
       hum.addEventListener("ended", () => { void audioContext.close(); }, { once: true });
     } catch {}
   };
-  lampToggle.addEventListener("click", () => {
-    lampWasManuallySet = true;
-    const isOn = lampToggle.getAttribute("aria-pressed") !== "true";
-    if (isOn) playLampHum();
+  const setLampState = (isOn) => {
     art.dataset.lampState = isOn ? "on" : "off";
     document.body.classList.toggle("lamp-lit", isOn);
-    lampToggle.setAttribute("aria-pressed", String(isOn));
-    lampToggle.setAttribute(
-      "aria-label",
-      isOn ? "Turn the desk lamp off" : "Turn the desk lamp on"
+    lampControl.setAttribute("aria-pressed", String(isOn));
+    lampControl.setAttribute("aria-label", isOn ? "Turn the desk lamp off" : "Turn the desk lamp on");
+  };
+  const stopAutomaticSequence = () => {
+    window.clearTimeout(turnOnTimer);
+    colorTimers.forEach((timer) => window.clearTimeout(timer));
+  };
+  const toggleLamp = () => {
+    lampWasManuallySet = true;
+    stopAutomaticSequence();
+    const isOn = lampControl.getAttribute("aria-pressed") !== "true";
+    if (isOn) playLampHum();
+    setLampState(isOn);
+  };
+  lampControl.addEventListener("click", toggleLamp);
+  lampControl.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    toggleLamp();
+  });
+
+  if (prefersReducedMotion) {
+    setLampColor("violet");
+    setLampState(true);
+  } else {
+    turnOnTimer = window.setTimeout(() => {
+      if (!lampWasManuallySet) setLampState(true);
+    }, 1800);
+    colorTimers.push(
+      window.setTimeout(() => { if (!lampWasManuallySet) setLampColor("rose"); }, 3600),
+      window.setTimeout(() => { if (!lampWasManuallySet) setLampColor("violet"); }, 7600)
     );
-    byId("lamp-status").textContent = isOn ? "LIGHT ON" : "LIGHT OFF";
-  });
-}
-if (art && matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  art.addEventListener("pointermove", (event) => {
-    const rect = art.getBoundingClientRect();
-    art.style.setProperty("--tilt-x", (((event.clientX - rect.left) / rect.width - .5) * 3).toFixed(2) + "deg");
-    art.style.setProperty("--tilt-y", -(((event.clientY - rect.top) / rect.height - .5) * 3).toFixed(2) + "deg");
-  });
-  art.addEventListener("pointerleave", () => {
-    art.style.setProperty("--tilt-x", "0deg");
-    art.style.setProperty("--tilt-y", "0deg");
-  });
+  }
 }
