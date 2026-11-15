@@ -7,7 +7,7 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
 <section class="login-showcase" aria-label="Interactive desk lamp artwork">
   <div class="showcase-topline"><span class="showcase-status"><i></i> A BRIGHTER WAY FORWARD</span><span>RAIHAN'S PORTFOLIO</span></div>
   <div class="showcase-copy"><p>Ideas start with a spark</p><h2>Make room<br>for <em>bright ideas.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>
-  <div class="login-art" id="login-art" data-lamp-state="on" data-lamp-color="violet">
+  <div class="login-art" id="login-art" data-lamp-state="on" data-lamp-color="rose">
     <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
     <div class="lamp-backlight" aria-hidden="true"></div>
     <svg class="desk-lamp" viewBox="0 0 460 350" aria-hidden="true">
@@ -41,23 +41,14 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
         <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT ON</b></span>
       </button>
       <div class="lamp-palette" role="group" aria-label="Lamp light color">
-        <button type="button" class="lamp-color-button is-selected" data-lamp-color-choice="violet" aria-label="Violet light" aria-pressed="true"></button>
-        <button type="button" class="lamp-color-button" data-lamp-color-choice="rose" aria-label="Rose light" aria-pressed="false"></button>
+        <button type="button" class="lamp-color-button" data-lamp-color-choice="violet" aria-label="Violet light" aria-pressed="false"></button>
+        <button type="button" class="lamp-color-button is-selected" data-lamp-color-choice="rose" aria-label="Rose light" aria-pressed="true"></button>
         <button type="button" class="lamp-color-button" data-lamp-color-choice="amber" aria-label="Amber light" aria-pressed="false"></button>
       </div>
     </div>
     <span class="lamp-spark lamp-spark-one" aria-hidden="true">✦</span><span class="lamp-spark lamp-spark-two" aria-hidden="true">✳</span>
   </div>
   <div class="lamp-caption"><span aria-hidden="true">✧</span> A little light can change your perspective.</div>
-  <div class="lamp-code" aria-label="JavaScript lamp sound code">
-    <div class="lamp-code-top"><span></span><span></span><span></span><b>lamp.js</b></div>
-    <pre><code><span class="lamp-code-line"><i>1</i> <b>const</b> hum = audioCtx.createOscillator();</span>
-<span class="lamp-code-line"><i>2</i> hum.type = <em>"sine"</em>;</span>
-<span class="lamp-code-line"><i>3</i> hum.frequency.setValueAtTime(<strong>120</strong>, now + <strong>0.05</strong>);</span>
-<span class="lamp-code-line"><i>4</i> gain.gain.exponentialRampToValueAtTime(<strong>0.001</strong>, now + <strong>0.35</strong>);</span>
-<span class="lamp-code-line"><i>5</i> hum.connect(gain); gain.connect(audioCtx.destination);</span>
-<span class="lamp-code-line"><i>6</i> hum.start(); hum.stop(now + <strong>0.38</strong>);</span></code></pre>
-  </div>
 </section>`);
 const params = new URLSearchParams(location.search);
 const mode = { value: params.get("mode") === "signup" ? "signup" : "signin" };
@@ -273,7 +264,7 @@ const setLampColor = (colorName) => {
   });
 };
 lampColorButtons.forEach((button) => button.addEventListener("click", () => setLampColor(button.dataset.lampColorChoice)));
-setLampColor("violet");
+setLampColor("rose");
 if (art && lampToggle) {
   const playLampHum = () => {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
