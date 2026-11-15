@@ -64,6 +64,7 @@ const messages = {
   passwordLength: "Use a password with at least 8 characters.", emailFirst: "Enter your email address first.",
   resetSent: "If an account exists for this email, password reset instructions have been sent.",
   resetFailed: "We couldn’t send the reset email. Please try again.",
+  resetRateLimited: "Too many reset requests. Please wait a minute before trying again.",
   confirmEmailFirst: "Your account needs email confirmation before you can sign in. Check your inbox, or request a fresh confirmation email below.",
   confirmationResent: "If a confirmation is pending for this address, a fresh email has been sent. Check your inbox and spam folder.",
   confirmationResendFailed: "We couldn’t resend the confirmation email. Please wait a minute and try again.",
@@ -189,9 +190,17 @@ byId("forgot-password").addEventListener("click", async () => {
   }
   const button = byId("forgot-password");
   button.disabled = true;
-  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/login.html" });
-  button.disabled = false;
-  setMessage(byId("login-message"), error ? messages.resetFailed : messages.resetSent, error ? "error" : "success");
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/login.html" });
+    if (error) throw error;
+    setMessage(byId("login-message"), messages.resetSent, "success");
+  } catch (error) {
+    const detail = `${error?.code || ""} ${error?.message || ""}`;
+    const rateLimited = error?.status === 429 || /rate.?limit|too many requests/i.test(detail);
+    setMessage(byId("login-message"), rateLimited ? messages.resetRateLimited : messages.resetFailed, "error");
+  } finally {
+    window.setTimeout(() => { button.disabled = false; }, 60_000);
+  }
 });
 byId("mfa-form").addEventListener("submit", async (event) => {
   event.preventDefault();

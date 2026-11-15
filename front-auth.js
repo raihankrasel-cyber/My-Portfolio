@@ -215,11 +215,19 @@ $("front-auth-forgot").addEventListener("click", async () => {
   }
   const button = $("front-auth-forgot");
   button.disabled = true;
-  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/" });
-  button.disabled = false;
-  feedback($("front-auth-feedback"), error
-    ? (document.documentElement.lang === "bn" ? "রিসেট ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন।" : "We couldn’t send the reset email. Please try again.")
-    : (document.documentElement.lang === "bn" ? "যদি এই ইমেইলে অ্যাকাউন্ট থাকে, পাসওয়ার্ড রিসেটের নির্দেশনা পাঠানো হয়েছে।" : "If an account exists for this email, password reset instructions have been sent."), error ? "error" : "success");
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/login.html" });
+    if (error) throw error;
+    feedback($("front-auth-feedback"), document.documentElement.lang === "bn" ? "যদি এই ইমেইলে অ্যাকাউন্ট থাকে, পাসওয়ার্ড রিসেটের নির্দেশনা পাঠানো হয়েছে।" : "If an account exists for this email, password reset instructions have been sent.", "success");
+  } catch (error) {
+    const detail = `${error?.code || ""} ${error?.message || ""}`;
+    const rateLimited = error?.status === 429 || /rate.?limit|too many requests/i.test(detail);
+    feedback($("front-auth-feedback"), rateLimited
+      ? (document.documentElement.lang === "bn" ? "অনেকবার রিসেট চাওয়া হয়েছে। এক মিনিট অপেক্ষা করে আবার চেষ্টা করুন।" : "Too many reset requests. Please wait a minute before trying again.")
+      : (document.documentElement.lang === "bn" ? "রিসেট ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন।" : "We couldn’t send the reset email. Please try again."), "error");
+  } finally {
+    window.setTimeout(() => { button.disabled = false; }, 60_000);
+  }
 });
 $("front-auth-recovery-back").addEventListener("click", () => {
   $("front-auth-recovery-form").hidden = true;
