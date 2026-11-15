@@ -32,6 +32,11 @@ function feedback(element, text, state) {
   element.textContent = text || "";
   element.dataset.state = state || "";
 }
+function signupErrorMessage(error) {
+  const details = `${error?.code || ""} ${error?.message || ""}`;
+  if (error?.status === 429 || /rate.?limit|too many requests/i.test(details)) return msg("signupRateLimited");
+  return msg("authError");
+}
 function updateHeader() {
   $("front-auth-actions").hidden = Boolean(currentUser);
   $("front-auth-account-button").hidden = !currentUser;
@@ -169,11 +174,14 @@ authForm.addEventListener("submit", async (event) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: $("front-auth-name").value.trim() } }
+      options: {
+        data: { display_name: $("front-auth-name").value.trim() },
+        emailRedirectTo: window.location.origin + "/login.html"
+      }
     });
     submit.disabled = false;
     if (error) {
-      feedback($("front-auth-feedback"), msg("authError"), "error");
+      feedback($("front-auth-feedback"), signupErrorMessage(error), "error");
       return;
     }
     if (data.session) {

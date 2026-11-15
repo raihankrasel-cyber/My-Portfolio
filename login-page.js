@@ -64,6 +64,7 @@ const messages = {
   passwordLength: "Use a password with at least 8 characters.", emailFirst: "Enter your email address first.",
   resetSent: "If an account exists for this email, password reset instructions have been sent.",
   resetFailed: "We couldn’t send the reset email. Please try again.",
+  signupRateLimited: "Sign-up emails are temporarily rate limited. Please wait a while and try again. The site owner needs to configure a custom email sender for more sign-ups.",
   signupSent: "Check your inbox to confirm your account, then sign in.",
   signedIn: "You’re signed in.", codeError: "That code didn’t work. Check it and try again.",
   recoveryFailed: "This reset link may have expired. Request a new reset email.",
@@ -142,8 +143,10 @@ byId("login-form").addEventListener("submit", async (event) => {
       if (result.requiresMfa) showMfa(result);
       else showSignedIn(result.user?.email || email);
     }
-  } catch {
-    setMessage(byId("login-message"), messages.invalid, "error");
+  } catch (error) {
+    const detail = `${error?.code || ""} ${error?.message || ""}`;
+    const rateLimited = error?.status === 429 || /rate.?limit|too many requests/i.test(detail);
+    setMessage(byId("login-message"), mode.value === "signup" && rateLimited ? messages.signupRateLimited : messages.invalid, "error");
   } finally { button.disabled = false; manualAuthInProgress = false; }
 });
 byId("forgot-password").addEventListener("click", async () => {
