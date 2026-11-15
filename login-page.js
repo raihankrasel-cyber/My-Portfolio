@@ -235,8 +235,29 @@ if (sessionData.session?.user) {
 const art = byId("login-art");
 const lampToggle = byId("lamp-toggle");
 if (art && lampToggle) {
+  const playLampHum = () => {
+    const AudioContextType = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextType) return;
+    try {
+      const audioContext = new AudioContextType();
+      const hum = audioContext.createOscillator();
+      const humGain = audioContext.createGain();
+      const now = audioContext.currentTime;
+      hum.type = "sine";
+      hum.frequency.setValueAtTime(120, now + 0.05);
+      humGain.gain.setValueAtTime(0, now);
+      humGain.gain.linearRampToValueAtTime(0.012, now + 0.08);
+      humGain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+      hum.connect(humGain);
+      humGain.connect(audioContext.destination);
+      hum.start(now + 0.05);
+      hum.stop(now + 0.35);
+      hum.addEventListener("ended", () => { void audioContext.close(); }, { once: true });
+    } catch {}
+  };
   lampToggle.addEventListener("click", () => {
     const isOn = lampToggle.getAttribute("aria-pressed") !== "true";
+    if (isOn) playLampHum();
     art.dataset.lampState = isOn ? "on" : "off";
     lampToggle.setAttribute("aria-pressed", String(isOn));
     lampToggle.setAttribute(
