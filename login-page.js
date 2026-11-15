@@ -3,8 +3,45 @@ import { supabase, signInWithPassword, challengeExistingSessionIfNeeded, verifyF
 const byId = (id) => document.getElementById(id);
 
 const loginCard = document.querySelector(".login-card");
-if (loginCard) loginCard.insertAdjacentHTML("beforebegin", "<section class=\"login-showcase\" aria-label=\"Interactive digital marketing artwork\">\n  <div class=\"showcase-topline\"><span class=\"showcase-status\"><i></i> DIGITAL MARKETING</span><span>01 / 03</span></div>\n  <div class=\"showcase-copy\"><p>Strategy in motion</p><h2>Turn good ideas<br>into <em>real growth.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>\n  <div class=\"login-art\" id=\"login-art\">\n    <div class=\"art-halo art-halo-one\"></div><div class=\"art-halo art-halo-two\"></div><div class=\"art-grid\"></div>\n    <div class=\"art-chart-card\"><div class=\"art-chart-head\"><span>Campaign growth</span><span class=\"art-chart-period\">● LIVE</span></div>\n      <div class=\"art-chart-summary\"><strong id=\"art-value\">+38.6%</strong><span>this quarter <b>↗</b></span></div>\n      <svg class=\"growth-chart\" viewBox=\"0 0 520 190\" role=\"img\" aria-label=\"Illustrated upward growth chart\">\n        <defs><linearGradient id=\"area-fill\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7c67f3\" stop-opacity=\".42\"/><stop offset=\"1\" stop-color=\"#4268f1\" stop-opacity=\"0\"/></linearGradient><linearGradient id=\"line-fill\" x1=\"0\" x2=\"1\"><stop stop-color=\"#a593ff\"/><stop offset=\"1\" stop-color=\"#45d6c8\"/></linearGradient></defs>\n        <path class=\"chart-gridline\" d=\"M20 30H500M20 75H500M20 120H500M20 165H500\"/>\n        <path class=\"chart-area\" id=\"chart-area\" d=\"M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25 V180 H20Z\"/>\n        <path class=\"chart-line\" id=\"chart-line\" d=\"M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25\"/>\n        <circle class=\"chart-point\" cx=\"500\" cy=\"25\" r=\"5\"/>\n      </svg><div class=\"chart-axis\"><span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span></div>\n    </div>\n    <div class=\"float-card float-traffic\"><span class=\"float-icon\">↗</span><span><small>QUALIFIED REACH</small><b>24.8K</b></span><i>+18%</i></div>\n    <div class=\"float-card float-conversion\"><span class=\"conversion-donut\"><i></i></span><span><small>CONVERSION</small><b>4.82%</b></span></div>\n    <div class=\"art-spark spark-one\">✳</div><div class=\"art-spark spark-two\">✦</div>\n  </div>\n  <div class=\"showcase-footer\"><div class=\"showcase-dots\" aria-hidden=\"true\"><i class=\"active\"></i><i></i><i></i></div><button id=\"art-next\" class=\"art-next\" type=\"button\" aria-label=\"Show another campaign insight\">Explore insights <span aria-hidden=\"true\">↗</span></button></div>\n</section>");
-
+if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
+<section class="login-showcase" aria-label="Interactive desk lamp artwork">
+  <div class="showcase-topline"><span class="showcase-status"><i></i> A BRIGHTER WAY FORWARD</span><span>RAIHAN'S PORTFOLIO</span></div>
+  <div class="showcase-copy"><p>Ideas start with a spark</p><h2>Make room<br>for <em>bright ideas.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>
+  <div class="login-art" id="login-art" data-lamp-state="off">
+    <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
+    <div class="lamp-backlight" aria-hidden="true"></div>
+    <svg class="desk-lamp" viewBox="0 0 460 350" aria-hidden="true">
+      <defs>
+        <radialGradient id="lamp-beam-fill"><stop offset="0" stop-color="#9e8aff" stop-opacity=".58"/><stop offset="1" stop-color="#6b59d9" stop-opacity="0"/></radialGradient>
+        <linearGradient id="lamp-shade-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#333c55"/><stop offset="1" stop-color="#101522"/></linearGradient>
+        <linearGradient id="lamp-metal-fill" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#4d5870"/><stop offset=".48" stop-color="#d8b77c"/><stop offset="1" stop-color="#59637b"/></linearGradient>
+        <filter id="lamp-glow-blur"><feGaussianBlur stdDeviation="12"/></filter>
+      </defs>
+      <ellipse class="lamp-beam" cx="190" cy="203" rx="92" ry="105" fill="url(#lamp-beam-fill)" filter="url(#lamp-glow-blur)"/>
+      <path class="lamp-light-cone" d="M177 105 L316 277 L64 277Z" fill="url(#lamp-beam-fill)"/>
+      <ellipse class="lamp-floor-shadow" cx="191" cy="303" rx="94" ry="13"/>
+      <ellipse class="lamp-base" cx="191" cy="294" rx="69" ry="12"/>
+      <ellipse class="lamp-base-top" cx="191" cy="291" rx="54" ry="7"/>
+      <path class="lamp-lower-arm" d="M190 284 L159 174"/>
+      <path class="lamp-upper-arm" d="M159 174 L193 115"/>
+      <circle class="lamp-joint" cx="159" cy="174" r="9"/><circle class="lamp-joint-core" cx="159" cy="174" r="3"/>
+      <circle class="lamp-joint" cx="193" cy="115" r="7"/><circle class="lamp-joint-core" cx="193" cy="115" r="2.5"/>
+      <circle class="lamp-pivot" cx="190" cy="284" r="8"/>
+      <g class="lamp-head" transform="rotate(-24 194 112)">
+        <path d="M154 76 Q158 42 194 39 Q230 42 234 76 L251 111 Q195 131 137 111Z" fill="url(#lamp-shade-fill)" stroke="#8791aa" stroke-opacity=".5" stroke-width="2"/>
+        <path class="lamp-shade-rim" d="M137 111 Q195 131 251 111" fill="none" stroke="#b6a6ff" stroke-width="4" stroke-linecap="round"/>
+        <ellipse class="lamp-bulb" cx="194" cy="108" rx="34" ry="9"/>
+      </g>
+      <ellipse class="lamp-floor-glow" cx="191" cy="285" rx="76" ry="10"/>
+    </svg>
+    <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="false" aria-label="Turn the desk lamp on">
+      <span class="lamp-toggle-track" aria-hidden="true"><span></span></span>
+      <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT OFF</b></span>
+    </button>
+    <span class="lamp-spark lamp-spark-one" aria-hidden="true">✦</span><span class="lamp-spark lamp-spark-two" aria-hidden="true">✳</span>
+  </div>
+  <div class="lamp-caption"><span aria-hidden="true">✧</span> A little light can change your perspective.</div>
+</section>`);
 const params = new URLSearchParams(location.search);
 const mode = { value: params.get("mode") === "signup" ? "signup" : "signin" };
 const safeNext = (() => {
@@ -194,28 +231,21 @@ if (sessionData.session?.user) {
     else showSignedIn(sessionData.session.user.email);
   } catch { showSignedIn(sessionData.session.user.email); }
 }
-const artNext = byId("art-next");
-if (artNext) {
-  const insights = [
-    { value: "+38.6%", line: "M20 151 C72 140 85 117 126 126 S188 145 232 98 S302 105 344 72 S422 77 500 25" },
-    { value: "+24.2%", line: "M20 158 C65 145 93 152 126 117 S193 131 232 85 S303 91 344 60 S421 58 500 20" },
-    { value: "+51.8%", line: "M20 163 C69 150 93 123 126 138 S190 102 232 110 S300 65 344 78 S423 49 500 15" }
-  ];
-  let index = 0;
-  artNext.addEventListener("click", () => {
-    index = (index + 1) % insights.length;
-    const insight = insights[index];
-    byId("art-value").textContent = insight.value;
-    byId("chart-line").setAttribute("d", insight.line);
-    byId("chart-area").setAttribute("d", insight.line + " V180 H20Z");
-    document.querySelectorAll(".showcase-dots i").forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === index));
-    const art = byId("login-art");
-    art.classList.remove("art-refresh");
-    void art.offsetWidth;
-    art.classList.add("art-refresh");
+
+const art = byId("login-art");
+const lampToggle = byId("lamp-toggle");
+if (art && lampToggle) {
+  lampToggle.addEventListener("click", () => {
+    const isOn = lampToggle.getAttribute("aria-pressed") !== "true";
+    art.dataset.lampState = isOn ? "on" : "off";
+    lampToggle.setAttribute("aria-pressed", String(isOn));
+    lampToggle.setAttribute(
+      "aria-label",
+      isOn ? "Turn the desk lamp off" : "Turn the desk lamp on"
+    );
+    byId("lamp-status").textContent = isOn ? "LIGHT ON" : "LIGHT OFF";
   });
 }
-const art = byId("login-art");
 if (art && matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
   art.addEventListener("pointermove", (event) => {
     const rect = art.getBoundingClientRect();
