@@ -64,6 +64,9 @@ const messages = {
   passwordLength: "Use a password with at least 8 characters.", emailFirst: "Enter your email address first.",
   resetSent: "If an account exists for this email, password reset instructions have been sent.",
   resetFailed: "We couldn’t send the reset email. Please try again.",
+  confirmEmailFirst: "Your account needs email confirmation before you can sign in. Check your inbox, or request a fresh confirmation email below.",
+  confirmationResent: "If a confirmation is pending for this address, a fresh email has been sent. Check your inbox and spam folder.",
+  confirmationResendFailed: "We couldn’t resend the confirmation email. Please wait a minute and try again.",
   signupRateLimited: "Sign-up emails are temporarily rate limited. Please wait a while and try again. The site owner needs to configure a custom email sender for more sign-ups.",
   signupSent: "Check your inbox to confirm your account, then sign in.",
   signedIn: "You’re signed in.", codeError: "That code didn’t work. Check it and try again.",
@@ -85,6 +88,7 @@ function setMode(nextMode) {
   byId("name").required = nextMode === "signup";
   byId("password").autocomplete = nextMode === "signup" ? "new-password" : "current-password";
   byId("forgot-password").hidden = nextMode !== "signin";
+  byId("resend-confirmation").hidden = true;
   byId("submit-button").innerHTML = (nextMode === "signup" ? messages.signup : messages.signIn) + ' <span aria-hidden="true">↗</span>';
   byId("tab-signin").setAttribute("aria-selected", String(nextMode === "signin"));
   byId("tab-signup").setAttribute("aria-selected", String(nextMode === "signup"));
@@ -146,8 +150,35 @@ byId("login-form").addEventListener("submit", async (event) => {
   } catch (error) {
     const detail = `${error?.code || ""} ${error?.message || ""}`;
     const rateLimited = error?.status === 429 || /rate.?limit|too many requests/i.test(detail);
-    setMessage(byId("login-message"), mode.value === "signup" && rateLimited ? messages.signupRateLimited : messages.invalid, "error");
+    const needsConfirmation = mode.value === "signin" && (error?.code === "email_not_confirmed" || /email not confirmed/i.test(detail));
+    byId("resend-confirmation").hidden = !needsConfirmation;
+    setMessage(byId("login-message"), needsConfirmation ? messages.confirmEmailFirst : mode.value === "signup" && rateLimited ? messages.signupRateLimited : messages.invalid, "error");
   } finally { button.disabled = false; manualAuthInProgress = false; }
+});
+byId("resend-confirmation").addEventListener("click", async () => {
+  const email = byId("email").value.trim();
+  if (!email) {
+    setMessage(byId("login-message"), messages.emailFirst, "error");
+    byId("email").focus();
+    return;
+  }
+  const button = byId("resend-confirmation");
+  button.disabled = true;
+  try {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: location.origin + "/login.html" }
+    });
+    if (error) throw error;
+    setMessage(byId("login-message"), messages.confirmationResent, "success");
+  } catch (error) {
+    const detail = `${error?.code || ""} ${error?.message || ""}`;
+    const rateLimited = error?.status === 429 || /rate.?limit|too many requests/i.test(detail);
+    setMessage(byId("login-message"), rateLimited ? messages.signupRateLimited : messages.confirmationResendFailed, "error");
+  } finally {
+    window.setTimeout(() => { button.disabled = false; }, 60_000);
+  }
 });
 byId("forgot-password").addEventListener("click", async () => {
   const email = byId("email").value.trim();
