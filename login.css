@@ -36,6 +36,20 @@
 @media(max-width:760px){.login-topbar{width:calc(100% - 36px);height:68px}.login-main{width:min(460px,calc(100% - 32px));min-height:auto;grid-template-columns:1fr;gap:28px;padding:30px 0 48px}.login-showcase{padding-top:3px}.showcase-copy{margin:28px 0 0}.showcase-copy h2{font-size:clamp(39px,10vw,56px)}.showcase-copy>span{margin-top:11px}.login-art{height:300px;max-width:500px;margin-inline:auto;width:100%}.art-chart-card{top:37px;height:245px;width:84%;left:8%;padding:16px}.growth-chart{height:118px}.float-traffic{right:1%;top:13px}.float-conversion{left:0;bottom:8px}.showcase-footer{margin-top:-2px}.login-card{max-width:460px;justify-self:center;padding:27px 28px 20px}}
 @media(max-width:420px){.login-home-link{font-size:10px}.login-main{width:calc(100% - 26px);gap:23px}.showcase-topline{font-size:8px}.showcase-copy h2{font-size:40px}.login-art{height:260px}.art-chart-card{height:220px;padding:14px;top:27px;width:87%;left:6.5%}.growth-chart{height:99px}.float-card{padding:9px 10px;gap:7px}.float-traffic{right:-1%}.float-card small{font-size:6px}.float-card b{font-size:12px}.login-card{padding:24px 21px 18px}}
 @media(prefers-reduced-motion:reduce){.login-page *,.login-page *:before,.login-page *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Recreate the reference's staged lamp-on reveal. */
+.login-page{position:relative;isolation:isolate}
+.login-page::before{content:"";position:fixed;z-index:0;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 36vw 52vh at 24% 62%,color-mix(in srgb,var(--lamp-ambient-color,#f25bb9) 34%,transparent),transparent 74%);filter:blur(12px);transition:opacity 1.2s ease}
+.login-page.lamp-lit::before{opacity:1}
+.login-topbar,.login-main{position:relative;z-index:1}
+.login-card{animation:login-card-in .68s cubic-bezier(.2,.8,.2,1) .72s both}
+.lamp-backlight{opacity:0!important;filter:blur(20px);transition:opacity 1.05s ease,filter 1.05s ease!important}
+.login-art[data-lamp-state="on"] .lamp-backlight{opacity:.78!important;filter:brightness(1.25) blur(12px)}
+.lamp-light-cone,.lamp-beam,.lamp-floor-glow{transition:opacity .9s cubic-bezier(.2,.75,.25,1)!important}
+.login-art[data-lamp-state="on"] .lamp-beam{animation:lamp-beam-on .9s cubic-bezier(.2,.75,.25,1) both}
+.lamp-bulb,.lamp-shade-rim{transition:fill .75s ease,filter .75s ease,stroke .75s ease!important}
+@keyframes lamp-beam-on{from{opacity:0;transform:scale(.42)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.login-page::before{transition:none}.login-card{animation-delay:0ms}}
 .login-card-mark{overflow:hidden}.login-card-mark img{display:block;width:34px;height:34px;object-fit:contain;filter:hue-rotate(205deg) saturate(1.45) brightness(1.08)}
 
 /* Desk lamp animation for the sign-in and sign-up showcase */

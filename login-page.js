@@ -7,7 +7,7 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
 <section class="login-showcase" aria-label="Interactive desk lamp artwork">
   <div class="showcase-topline"><span class="showcase-status"><i></i> A BRIGHTER WAY FORWARD</span><span>RAIHAN'S PORTFOLIO</span></div>
   <div class="showcase-copy"><p>Ideas start with a spark</p><h2>Make room<br>for <em>bright ideas.</em></h2><span>Creative thinking, meaningful data, measurable progress.</span></div>
-  <div class="login-art" id="login-art" data-lamp-state="on" data-lamp-color="rose">
+  <div class="login-art" id="login-art" data-lamp-state="off" data-lamp-color="rose">
     <div class="art-halo art-halo-one"></div><div class="art-halo art-halo-two"></div><div class="art-grid"></div>
     <div class="lamp-backlight" aria-hidden="true"></div>
     <svg class="desk-lamp" viewBox="0 0 460 350" aria-hidden="true">
@@ -36,9 +36,9 @@ if (loginCard) loginCard.insertAdjacentHTML("beforebegin", `
       <ellipse class="lamp-floor-glow" cx="191" cy="285" rx="76" ry="10"/>
     </svg>
     <div class="lamp-controls">
-      <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="true" aria-label="Turn the desk lamp off">
+      <button type="button" class="lamp-toggle" id="lamp-toggle" aria-pressed="false" aria-label="Turn the desk lamp on">
         <span class="lamp-toggle-track" aria-hidden="true"><span></span></span>
-        <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT ON</b></span>
+        <span class="lamp-toggle-copy"><small>DESK LAMP</small><b id="lamp-status">LIGHT OFF</b></span>
       </button>
       <div class="lamp-palette" role="group" aria-label="Lamp light color">
         <button type="button" class="lamp-color-button" data-lamp-color-choice="violet" aria-label="Violet light" aria-pressed="false"></button>
@@ -257,6 +257,7 @@ const setLampColor = (colorName) => {
   art.style.setProperty("--lamp-spark-color", colors.spark);
   document.getElementById("lamp-beam-core")?.setAttribute("stop-color", colors.core);
   document.getElementById("lamp-beam-edge")?.setAttribute("stop-color", colors.edge);
+  document.body.style.setProperty("--lamp-ambient-color", colors.tone);
   lampColorButtons.forEach((button) => {
     const selected = button.dataset.lampColorChoice === colorName;
     button.classList.toggle("is-selected", selected);
@@ -266,6 +267,17 @@ const setLampColor = (colorName) => {
 lampColorButtons.forEach((button) => button.addEventListener("click", () => setLampColor(button.dataset.lampColorChoice)));
 setLampColor("rose");
 if (art && lampToggle) {
+  let lampWasManuallySet = false;
+  const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.setTimeout(() => {
+    if (lampWasManuallySet) return;
+    art.dataset.lampState = "on";
+    lampToggle.setAttribute("aria-pressed", "true");
+    lampToggle.setAttribute("aria-label", "Turn the desk lamp off");
+    byId("lamp-status").textContent = "LIGHT ON";
+    document.body.classList.add("lamp-lit");
+  }, prefersReducedMotion ? 0 : 180);
+
   const playLampHum = () => {
     const AudioContextType = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextType) return;
@@ -287,9 +299,11 @@ if (art && lampToggle) {
     } catch {}
   };
   lampToggle.addEventListener("click", () => {
+    lampWasManuallySet = true;
     const isOn = lampToggle.getAttribute("aria-pressed") !== "true";
     if (isOn) playLampHum();
     art.dataset.lampState = isOn ? "on" : "off";
+    document.body.classList.toggle("lamp-lit", isOn);
     lampToggle.setAttribute("aria-pressed", String(isOn));
     lampToggle.setAttribute(
       "aria-label",
