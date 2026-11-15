@@ -11,6 +11,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090b0d">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem("portfolio-theme")==="light"?"light":"dark"}catch{document.documentElement.dataset.theme="dark"}</script>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <meta name="description" content="Raihan combines digital marketing with hands-on garment production, quality inspection, and sales experience.">
   <script defer src="/_vercel/insights/script.js"></script>
@@ -21,6 +22,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="medium.css">
   <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="theme.css">
   <script>
     (() => {
       const supported = new Set(["en","bn"]);
@@ -267,6 +269,7 @@
     <footer class="footer section-wrap"><a class="brand" href="#home"><img class="brand-logo" src="/assets/raihan-logo-full.png" alt=""><span>Raihan<span class="brand-dot">.</span></span></a><p>Hello, I'm Raihan. Thanks for stopping by—let's make something grow together.</p><a class="footer-telegram" href="https://t.me/RaselRaihanKabir" target="_blank" rel="noopener noreferrer" aria-label="Start a Telegram chat with Raihan">Start a chat on Telegram <span aria-hidden="true">↗</span></a><section class="assistant-static-fallback" aria-label="Portfolio assistant fallback"><div><span class="assistant-static-kicker">PORTFOLIO ASSISTANT</span><h2>Let’s think it through together.</h2><p>The interactive assistant isn’t available in this browser session. You can still reach Raihan directly.</p></div><a href="https://t.me/RaselRaihanKabir" target="_blank" rel="noopener noreferrer">Chat with Raihan on Telegram ↗</a></section><div class="footer-bottom"><span>© <span id="year"></span> Raihan. All rights reserved.</span><a class="codex-credit" href="https://openai.com/codex/" target="_blank" rel="noreferrer">Built with Codex <span>↗</span></a><a href="#home">Back to top ↑</a></div></footer>
   </div>
   <script src="script.js"></script>
+  <script src="theme.js"></script>
   <script src="language.js"></script>
   <script type="module" src="front-auth.js"></script>
   <script type="module" src="medium-feed.js"></script>
