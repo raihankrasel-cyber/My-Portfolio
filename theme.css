@@ -68,6 +68,27 @@
 :root[data-theme="light"] .experience-card{background:linear-gradient(140deg,#fff,#f1f3f8);border-color:#dce1eb;box-shadow:0 10px 28px #25314b0c}
 :root[data-theme="light"] .skill-chips span{background:#fff;border-color:#dce1eb;color:#41495b}
 
+/* Keep the portfolio assistant readable in the light theme. */
+:root[data-theme="light"] .portfolio-assistant{background:radial-gradient(ellipse at 88% 6%,rgba(108,67,227,.08),transparent 38%),linear-gradient(135deg,#fff 0%,#f0f2f8 70%);border-color:#dce1eb;box-shadow:0 22px 70px #25314b18}
+:root[data-theme="light"] .assistant-online,:root[data-theme="light"] .assistant-intro-copy,:root[data-theme="light"] .assistant-guidance,:root[data-theme="light"] .assistant-preview-items span,:root[data-theme="light"] .assistant-preview-items i{color:#626a7b}
+:root[data-theme="light"] .assistant-preview{border-color:#dce1eb}
+:root[data-theme="light"] .portfolio-assistant-panel{background:rgba(255,255,255,.88);border-color:#dce1eb;box-shadow:0 14px 36px #25314b12}
+:root[data-theme="light"] .assistant-chat-header{border-color:#e2e5ed}
+:root[data-theme="light"] .assistant-chat-title{color:#252b3d}
+:root[data-theme="light"] .assistant-chat-subtitle,:root[data-theme="light"] .assistant-chat-status,:root[data-theme="light"] .assistant-typing,:root[data-theme="light"] .assistant-notice,:root[data-theme="light"] .assistant-media-status{color:#687184}
+:root[data-theme="light"] .assistant-message{background:#f0f2f7;border-color:#e1e4ed;color:#30374a}
+:root[data-theme="light"] .assistant-message-user{background:#eeeaff;border-color:#d9d1ff;color:#382d70}
+:root[data-theme="light"] .assistant-quick-questions button,:root[data-theme="light"] .assistant-tool{background:#fff;border-color:#dce1eb;color:#41495b}
+:root[data-theme="light"] .assistant-speak{border-color:#dce1eb;color:#535c70}
+:root[data-theme="light"] .assistant-image-remove{background:#fff;border-color:#dce1eb;color:#252b3d}
+:root[data-theme="light"] .assistant-quick-questions button:hover:not(:disabled),:root[data-theme="light"] .assistant-tool:hover:not(:disabled),:root[data-theme="light"] .assistant-speak:hover{background:#f0efff;border-color:#b9afea;color:#4939a3}
+:root[data-theme="light"] .assistant-form input{background:#fff;border-color:#dce1eb;color:#252b3d}
+:root[data-theme="light"] .assistant-form input::placeholder{color:#858c9b}
+:root[data-theme="light"] .assistant-submit{color:#fff}
+:root[data-theme="light"] .assistant-image-preview{border-color:#dce1eb;background:#f8f9fc}
+:root[data-theme="light"] .assistant-static-fallback{background:linear-gradient(120deg,#fff,#f0f2f8);border-color:#dce1eb;color:#252b3d}
+:root[data-theme="light"] .assistant-static-fallback>a{color:#4939a3}
+
 /* Make each selected-work change visibly travel into the frame. */
 .work-grid[aria-roledescription="carousel"] .work-item.is-active{animation:work-slide-in .48s cubic-bezier(.2,.72,.25,1) both}
 .work-grid[aria-roledescription="carousel"][data-slide-direction="previous"] .work-item.is-active{animation-name:work-slide-in-previous}
