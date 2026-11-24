@@ -100,3 +100,12 @@
 :root[data-theme="light"] .brand-logo{content:url("/assets/raihan-logo-light.svg");filter:none}
 
 :root:not([data-theme="light"]) .brand-logo{content:url("/assets/raihan-logo-dark.svg");filter:none}
+
+
+/* Keep the experience section aligned with the blue-tinted dark palette. */
+:root:not([data-theme="light"]) .experience-card{background:linear-gradient(140deg,#10182a,#0b1020);border-color:rgba(108,67,227,.22)}
+:root:not([data-theme="light"]) .experience-card h3{border-bottom-color:rgba(108,67,227,.38)}
+:root:not([data-theme="light"]) .experience-item h4,:root:not([data-theme="light"]) .education-list strong,:root:not([data-theme="light"]) .language-list strong{color:#f5f4ef}
+:root:not([data-theme="light"]) .experience-item p,:root:not([data-theme="light"]) .education-list span,:root:not([data-theme="light"]) .language-list{color:#a7aaa9}
+:root:not([data-theme="light"]) .experience-item small,:root:not([data-theme="light"]) .experience-date,:root:not([data-theme="light"]) .experience-note{color:#8b91a2}
+:root:not([data-theme="light"]) .skill-chips span{background:#162033;border-color:rgba(108,67,227,.22);color:#d8d9e4}
