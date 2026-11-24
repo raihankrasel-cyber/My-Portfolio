@@ -98,3 +98,5 @@
 @media(prefers-reduced-motion:reduce){.theme-toggle{transition:none}}
 
 :root[data-theme="light"] .brand-logo{content:url("/assets/raihan-logo-light.svg");filter:none}
+
+:root:not([data-theme="light"]) .brand-logo{content:url("/assets/raihan-logo-dark.svg");filter:none}
