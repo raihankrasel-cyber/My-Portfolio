@@ -293,7 +293,4 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
 
 .faq-section{padding-top:80px;padding-bottom:90px}.faq-list{max-width:900px;margin-inline:auto;border-top:1px solid var(--line)}.faq-list details{border-bottom:1px solid var(--line);padding:22px 4px}.faq-list summary{cursor:pointer;list-style:none;font-size:18px;font-weight:600;padding-right:32px;position:relative}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary::after{content:'+';position:absolute;right:4px;color:var(--gold);font-size:24px;top:-5px}.faq-list details[open] summary::after{content:'−'}.faq-list details p{max-width:760px;color:var(--muted);line-height:1.75;margin:14px 0 0}
 
-
-.work-grid[aria-roledescription="carousel"] .work-zohrasoft{background:radial-gradient(ellipse at 50% 35%,rgba(108,67,227,.2),transparent 42%),linear-gradient(135deg,#0b1020,#141b35 58%,#211445)}
-.work-zohrasoft .zohrasoft-logo{position:absolute;z-index:1;top:46%;left:50%;transform:translate(-50%,-50%);color:#f5f4ef;font:800 clamp(78px,16vw,180px)/1 var(--display);letter-spacing:-.1em;text-shadow:0 12px 60px rgba(0,79,252,.22)}
-.work-zohrasoft .zohrasoft-logo span{background:linear-gradient(135deg,#6c43e3,#004ffc);-webkit-background-clip:text;background-clip:text;color:transparent}
+ 
