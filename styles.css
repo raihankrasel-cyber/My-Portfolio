@@ -291,3 +291,4 @@ html[lang="bn"] .hero h1,html[lang="bn"] .intro h2,html[lang="bn"] .section-head
   .card-stats{right:-3%;transform:scale(.61);transform-origin:right bottom}
 }
 
+.faq-section{padding-top:80px;padding-bottom:90px}.faq-list{max-width:900px;margin-inline:auto;border-top:1px solid var(--line)}.faq-list details{border-bottom:1px solid var(--line);padding:22px 4px}.faq-list summary{cursor:pointer;list-style:none;font-size:18px;font-weight:600;padding-right:32px;position:relative}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary::after{content:'+';position:absolute;right:4px;color:var(--gold);font-size:24px;top:-5px}.faq-list details[open] summary::after{content:'−'}.faq-list details p{max-width:760px;color:var(--muted);line-height:1.75;margin:14px 0 0}

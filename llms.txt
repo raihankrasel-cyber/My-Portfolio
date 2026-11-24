@@ -1,0 +1,18 @@
+# Raihan Kabir — Digital Marketer
+
+Raihan Kabir is a Bangladesh-based digital marketer. This portfolio describes his experience, services, selected creative work, and contact options.
+
+## Services
+- Search engine optimization (SEO)
+- Google Ads and Meta Ads
+- Social media and content marketing
+- Marketing strategy
+- Analytics, GA4, Google Tag Manager, and conversion tracking
+
+## Pages
+- [Portfolio](https://raihan-my-portfolio.vercel.app/)
+- [বাংলা পোর্টফোলিও](https://raihan-my-portfolio.vercel.app/bn.html)
+- [Blog](https://raihan-my-portfolio.vercel.app/blog.html)
+- [Privacy policy](https://raihan-my-portfolio.vercel.app/privacy.html)
+
+For enquiries, use the contact options on the portfolio.
