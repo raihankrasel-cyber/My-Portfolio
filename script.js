@@ -393,8 +393,9 @@ if (workCarousel) {
   let rotationTimer;
   let isPaused = false;
 
-  const showWorkSlide = (index) => {
+  const showWorkSlide = (index, direction = "next") => {
     activeSlide = (index + workSlides.length) % workSlides.length;
+    workCarousel.dataset.slideDirection = direction;
     workSlides.forEach((slide, slideIndex) => {
       const isActive = slideIndex === activeSlide;
       slide.classList.toggle("is-active", isActive);
@@ -409,24 +410,16 @@ if (workCarousel) {
   const startRotation = () => {
     stopRotation();
     if (!isPaused && !reduceMotion.matches && !document.hidden) {
-      rotationTimer = window.setInterval(() => showWorkSlide(activeSlide + 1), 3000);
+      rotationTimer = window.setInterval(() => showWorkSlide(activeSlide + 1, "next"), 3000);
     }
   };
 
   previousButton.addEventListener("click", () => {
-    showWorkSlide(activeSlide - 1);
+    showWorkSlide(activeSlide - 1, "previous");
     startRotation();
   });
   nextButton.addEventListener("click", () => {
-    showWorkSlide(activeSlide + 1);
-    startRotation();
-  });
-  workCarousel.addEventListener("mouseenter", () => {
-    isPaused = true;
-    stopRotation();
-  });
-  workCarousel.addEventListener("mouseleave", () => {
-    isPaused = false;
+    showWorkSlide(activeSlide + 1, "next");
     startRotation();
   });
   workCarousel.addEventListener("focusin", () => {

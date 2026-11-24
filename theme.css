@@ -49,5 +49,29 @@
 :root[data-theme="light"] .login-form input{background:#fff;color:#252b3d;border-color:#dce1eb}
 :root[data-theme="light"] .login-form input::placeholder{color:#858c9b}
 :root[data-theme="light"] .login-text-button{color:#5748b5}
+
+/* Keep the language chooser and dropdown in the active color theme. */
+:root[data-theme="light"] .language-menu-options{background:#fff;border-color:#dce1eb;box-shadow:0 16px 42px #25314b20}
+:root[data-theme="light"] .language-menu-options button,:root[data-theme="light"] .language-options button{color:#252b3d;background:#fff}
+:root[data-theme="light"] .language-menu-options button:hover,:root[data-theme="light"] .language-menu-options button:focus-visible,:root[data-theme="light"] .language-options button:hover,:root[data-theme="light"] .language-options button:focus-visible{background:#f0efff;border-color:#b9afea;color:#252b3d}
+:root[data-theme="light"] .language-backdrop{background:rgba(30,36,54,.42)}
+:root[data-theme="light"] .language-card{background:linear-gradient(145deg,#fff,#f1f3fa);border-color:#d7d9eb;box-shadow:0 28px 100px #25314b30}
+:root[data-theme="light"] .language-card h2{color:#202438}
+:root[data-theme="light"] .language-card>p:not(.language-eyebrow){color:#626a7b}
+:root[data-theme="light"] .language-card small{color:#687184}
+:root[data-theme="light"] .language-options button{border-color:#d9d4f1}
+
+/* Experience cards and the detailed work history follow the light palette too. */
+:root[data-theme="light"] .experience-subhead,:root[data-theme="light"] .experience-card h3{color:#252b3d}
+:root[data-theme="light"] .experience-item h4,:root[data-theme="light"] .education-list strong,:root[data-theme="light"] .language-list strong{color:#252b3d}
+:root[data-theme="light"] .experience-item p,:root[data-theme="light"] .experience-item small,:root[data-theme="light"] .experience-date,:root[data-theme="light"] .experience-note,:root[data-theme="light"] .education-list span,:root[data-theme="light"] .language-list{color:#626a7b}
+:root[data-theme="light"] .experience-card{background:linear-gradient(140deg,#fff,#f1f3f8);border-color:#dce1eb;box-shadow:0 10px 28px #25314b0c}
+:root[data-theme="light"] .skill-chips span{background:#fff;border-color:#dce1eb;color:#41495b}
+
+/* Make each selected-work change visibly travel into the frame. */
+.work-grid[aria-roledescription="carousel"] .work-item.is-active{animation:work-slide-in .48s cubic-bezier(.2,.72,.25,1) both}
+.work-grid[aria-roledescription="carousel"][data-slide-direction="previous"] .work-item.is-active{animation-name:work-slide-in-previous}
+@keyframes work-slide-in{from{opacity:.35;transform:translateX(42px)}to{opacity:1;transform:translateX(0)}}
+@keyframes work-slide-in-previous{from{opacity:.35;transform:translateX(-42px)}to{opacity:1;transform:translateX(0)}}
 @media(max-width:640px){.theme-toggle{right:14px;bottom:14px;min-height:40px;padding-inline:13px}}
 @media(prefers-reduced-motion:reduce){.theme-toggle{transition:none}}
