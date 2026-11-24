@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Raihan logo">
+  <g fill="none" stroke="#6c43e3" stroke-width="1.5">
+    <ellipse cx="60" cy="60" rx="52" ry="30" transform="rotate(-28 60 60)" opacity=".38"/>
+    <ellipse cx="60" cy="60" rx="52" ry="30" transform="rotate(28 60 60)" opacity=".38"/>
+    <circle cx="60" cy="60" r="35" opacity=".65"/>
+  </g>
+  <text x="60" y="73" text-anchor="middle" fill="#252b3d" font-family="Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="-3">R<tspan fill="#f0b82f">.</tspan></text>
+</svg>
