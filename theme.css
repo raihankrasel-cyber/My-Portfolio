@@ -96,3 +96,5 @@
 @keyframes work-slide-in-previous{from{opacity:.35;transform:translateX(-42px)}to{opacity:1;transform:translateX(0)}}
 @media(max-width:640px){.theme-toggle{right:14px;bottom:14px;min-height:40px;padding-inline:13px}}
 @media(prefers-reduced-motion:reduce){.theme-toggle{transition:none}}
+
+:root[data-theme="light"] .brand-logo{content:url("/assets/raihan-logo-light.svg");filter:none}
