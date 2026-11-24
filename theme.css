@@ -109,3 +109,7 @@
 :root:not([data-theme="light"]) .experience-item p,:root:not([data-theme="light"]) .education-list span,:root:not([data-theme="light"]) .language-list{color:#a7aaa9}
 :root:not([data-theme="light"]) .experience-item small,:root:not([data-theme="light"]) .experience-date,:root:not([data-theme="light"]) .experience-note{color:#8b91a2}
 :root:not([data-theme="light"]) .skill-chips span{background:#162033;border-color:rgba(108,67,227,.22);color:#d8d9e4}
+
+
+:root[data-theme="light"] .work-grid[aria-roledescription="carousel"] .work-zohrasoft{background:radial-gradient(ellipse at 50% 35%,rgba(108,67,227,.14),transparent 42%),linear-gradient(135deg,#f5f3ff,#e9f1ff 58%,#eee8ff)}
+:root[data-theme="light"] .work-zohrasoft .zohrasoft-logo{color:#252b3d;text-shadow:none}
