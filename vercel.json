@@ -1,8 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/zahrasoft-preview",
+      "destination": "https://zahrasoft.xyz/"
+    },
+    {
+      "source": "/zahrasoft-preview/:path*",
+      "destination": "https://zahrasoft.xyz/:path*"
+    }
+  ],
   "headers": [
     {
-      "source": "/((?!reply-bd-widget\\.html).*)",
+      "source": "/((?!reply-bd-widget\\.html|zahrasoft-preview).*)",
       "headers": [
         {
           "key": "X-Frame-Options",
@@ -42,6 +52,28 @@
           "value": "strict-origin-when-cross-origin"
         }
       ]
+    },
+    {
+      "source": "/zahrasoft-preview(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self';"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
     }
   ]
 }
+
